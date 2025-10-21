@@ -10,13 +10,12 @@ nixPkgs = ["nodejs_22", "yarn", "curl"]
 cmds = [
     "set -e",
     "NODE_VER=22.12.0",
-    # Определяем архитектуру
     "ARCH=$(uname -m); case \"$ARCH\" in x86_64) TARARCH=linux-x64;; aarch64) TARARCH=linux-arm64;; *) echo 'Unsupported arch:' $ARCH; exit 1;; esac",
-    # Ставим Node в /opt/node и добавляем в PATH логин-оболочки (bash -l загружает профиль)
     "mkdir -p /opt",
     "curl -fsSL https://nodejs.org/dist/v$NODE_VER/node-v$NODE_VER-$TARARCH.tar.xz | tar -xJ -C /opt",
     "ln -sfn /opt/node-v$NODE_VER-$TARARCH /opt/node",
-    "printf '\nexport PATH=/opt/node/bin:$PATH\n' >> /root/.profile",
+    # ВАЖНО: не используем многострочный printf — из-за этого Dockerfile ломался на строке 'export'.
+    "echo 'export PATH=/opt/node/bin:$PATH' >> /root/.profile",
     # Проверка версии
     "source /root/.profile && node -v && npm -v"
 ]
@@ -25,12 +24,13 @@ cmds = [
 NODE_ENV = "production"
 NPM_CONFIG_PRODUCTION = "false"
 NIXPACKS_NO_MUSL = "1"
+# Делаем Node из /opt доступным в каждом RUN без source
+PATH = "/opt/node/bin:$PATH"
 
 [phases.install]
-# Фиксируем установку зависимостей; движок Node уже соответствует требованиям
 cmds = [
-    "source /root/.profile && corepack enable || true",
-    "source /root/.profile && yarn install --frozen-lockfile"
+    "corepack enable || true",
+    "yarn install --frozen-lockfile"
 ]
 
 [phases.build]
