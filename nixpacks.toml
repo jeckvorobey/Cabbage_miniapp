@@ -1,27 +1,12 @@
 [phases.setup]
 # Nix уже ставит node и yarn — ничего руками не качаем
-nixPkgs = ["nodejs_22", "yarn", "curl"]
-nixOverlays = ["https://github.com/railwayapp/nix-npm-overlay/archive/main.tar.gz"]
-# optional: пин заархивирован уже в плане, можно не дублировать
+nixPkgs = ["nodejs_20", "yarn", "curl"]
 
-[variables]
-CI = "true"
-NODE_ENV = "production"
-NPM_CONFIG_PRODUCTION = "false"
-# гарантируем доступ к nix и локальным бинарям проекта
-PATH = "/nix/var/nix/profiles/default/bin:/root/.nix-profile/bin:/usr/local/bin:/usr/bin:/bin:/app/node_modules/.bin"
 
 [phases.install]
 cmds = [
-    "corepack enable || true",
     "yarn install --frozen-lockfile"
 ]
-cacheDirectories = ["/usr/local/share/.cache/yarn/v6"]
-paths = ["/app/node_modules/.bin"]
 
 [phases.build]
-# если quasar в devDependencies:
-# cmds = ["yarn quasar build"]
-# если cli не в зависимостях, используйте dlx (рекомендуется):
-cmds = ["yarn dlx @quasar/cli@2 quasar build"]
-cacheDirectories = ["node_modules/.cache"]
+cmds = ["yarn build"]
