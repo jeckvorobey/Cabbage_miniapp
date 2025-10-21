@@ -1,0 +1,19 @@
+# nixpacks.toml
+[phases.setup]
+# Явно просим Node 20 и yarn 1.x
+nixPkgs = ["nodejs_20", "yarn-1_x"]
+
+[variables]
+NODE_ENV = "production"
+NPM_CONFIG_PRODUCTION = "false"
+
+[phases.install]
+cmds = ["yarn install --frozen-lockfile"]
+
+[phases.build]
+# Quasar сам соберёт SPA в dist/spa
+cmds = ["yarn quasar build"]
+
+# Для статики start не нужен, но чтобы план не падал:
+[phases.start]
+cmds = ["echo 'Static app (SPA). Start phase is not used.'"]
