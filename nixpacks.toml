@@ -1,40 +1,27 @@
-# Конфигурация для Nixpacks (Coolify: Build Pack = nixpacks)
-# Причина падения: образ с nixpkgs подтянул nodejs_22 версии 22.11.0,
-# а @vitejs/plugin-vue@6.x требует ^20.19.0 или >=22.12.0. Фиксим,
-# принудительно устанавливая Node.js 22.12.0 в фазе setup и кладём его в PATH.
-
 [phases.setup]
-# Базовые пакеты и утилиты
+# Nix уже ставит node и yarn — ничего руками не качаем
 nixPkgs = ["nodejs_22", "yarn", "curl"]
-# Скачиваем официальный бинарник Node 22.12.0 под текущую архитектуру и добавляем в PATH
-cmds = [
-    "set -e",
-    "NODE_VER=22.12.0",
-    "ARCH=$(uname -m); case \"$ARCH\" in x86_64) TARARCH=linux-x64;; aarch64) TARARCH=linux-arm64;; *) echo 'Unsupported arch:' $ARCH; exit 1;; esac",
-    "mkdir -p /opt",
-    "curl -fsSL https://nodejs.org/dist/v$NODE_VER/node-v$NODE_VER-$TARARCH.tar.xz | tar -xJ -C /opt",
-    "ln -sfn /opt/node-v$NODE_VER-$TARARCH /opt/node",
-    # ВАЖНО: не используем многострочный printf — из-за этого Dockerfile ломался на строке 'export'.
-    "echo 'export PATH=/opt/node/bin:$PATH' >> /root/.profile",
-    # Проверка версии
-    "source /root/.profile && node -v && npm -v"
-]
+nixOverlays = ["https://github.com/railwayapp/nix-npm-overlay/archive/main.tar.gz"]
+# optional: пин заархивирован уже в плане, можно не дублировать
 
 [variables]
+CI = "true"
 NODE_ENV = "production"
 NPM_CONFIG_PRODUCTION = "false"
-NIXPACKS_NO_MUSL = "1"
-# Делаем Node из /opt доступным в каждом RUN без source
-PATH = "/opt/node/bin:$PATH"
+# гарантируем доступ к nix и локальным бинарям проекта
+PATH = "/nix/var/nix/profiles/default/bin:/root/.nix-profile/bin:/usr/local/bin:/usr/bin:/bin:/app/node_modules/.bin"
 
 [phases.install]
 cmds = [
     "corepack enable || true",
     "yarn install --frozen-lockfile"
 ]
+cacheDirectories = ["/usr/local/share/.cache/yarn/v6"]
+paths = ["/app/node_modules/.bin"]
 
 [phases.build]
-# Сборка приложения Quasar/Vite
-cmds = [
-    "source /root/.profile && quasar build"
-]
+# если quasar в devDependencies:
+# cmds = ["yarn quasar build"]
+# если cli не в зависимостях, используйте dlx (рекомендуется):
+cmds = ["yarn dlx @quasar/cli@2 quasar build"]
+cacheDirectories = ["node_modules/.cache"]
