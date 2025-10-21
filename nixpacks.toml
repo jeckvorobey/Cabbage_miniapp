@@ -1,0 +1,23 @@
+# Конфигурация для Nixpacks (Coolify: Build Pack = nixpacks)
+# Документация: https://nixpacks.com/docs/configuration/file
+
+# Явно задаём среду NodeJS совместимую с @vitejs/plugin-vue@6.x
+# Требование плагина: ^20.19.0 или >=22.12.0. Выбираем стабильный LTS 20.19.0.
+[phases.setup]
+nixPkgs = ["nodejs_20"]
+
+[variables]
+# Принудительно фиксируем точную версию Node для билда.
+NIXPACKS_NODE_VERSION = "20.19.0"
+
+[phases.install]
+# Используем yarn install c frozen lockfile (соответствует текущей сборке)
+cmds = [
+  "yarn install --frozen-lockfile"
+]
+
+[phases.build]
+# Сборка приложения Quasar/Vite
+cmds = [
+  "yarn build"
+]
