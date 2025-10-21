@@ -1,23 +1,40 @@
 # Конфигурация для Nixpacks (Coolify: Build Pack = nixpacks)
-# Документация: https://nixpacks.com/docs/configuration/file
+# Причина падения: образ с nixpkgs подтянул nodejs_22 версии 22.11.0,
+# а @vitejs/plugin-vue@6.x требует ^20.19.0 или >=22.12.0. Фиксим,
+# принудительно устанавливая Node.js 22.12.0 в фазе setup и кладём его в PATH.
 
-# Явно задаём среду NodeJS совместимую с @vitejs/plugin-vue@6.x
-# Требование плагина: ^20.19.0 или >=22.12.0. Используем Node.js 22.x (>=22.12.0).
 [phases.setup]
-nixPkgs = ["nodejs_22", "yarn"]
+# Базовые пакеты и утилиты
+nixPkgs = ["nodejs_22", "yarn", "curl"]
+# Скачиваем официальный бинарник Node 22.12.0 под текущую архитектуру и добавляем в PATH
+cmds = [
+    "set -e",
+    "NODE_VER=22.12.0",
+    # Определяем архитектуру
+    "ARCH=$(uname -m); case \"$ARCH\" in x86_64) TARARCH=linux-x64;; aarch64) TARARCH=linux-arm64;; *) echo 'Unsupported arch:' $ARCH; exit 1;; esac",
+    # Ставим Node в /opt/node и добавляем в PATH логин-оболочки (bash -l загружает профиль)
+    "mkdir -p /opt",
+    "curl -fsSL https://nodejs.org/dist/v$NODE_VER/node-v$NODE_VER-$TARARCH.tar.xz | tar -xJ -C /opt",
+    "ln -sfn /opt/node-v$NODE_VER-$TARARCH /opt/node",
+    "printf '\nexport PATH=/opt/node/bin:$PATH\n' >> /root/.profile",
+    # Проверка версии
+    "source /root/.profile && node -v && npm -v"
+]
 
 [variables]
-# Отключаем автоопределение версии Node, используем только nixPkgs
+NODE_ENV = "production"
+NPM_CONFIG_PRODUCTION = "false"
 NIXPACKS_NO_MUSL = "1"
 
 [phases.install]
-# Используем yarn install c frozen lockfile (соответствует текущей сборке)
+# Фиксируем установку зависимостей; движок Node уже соответствует требованиям
 cmds = [
-  "yarn install --frozen-lockfile"
+    "source /root/.profile && corepack enable || true",
+    "source /root/.profile && yarn install --frozen-lockfile"
 ]
 
 [phases.build]
 # Сборка приложения Quasar/Vite
 cmds = [
-  "quasar build"
+    "source /root/.profile && quasar build"
 ]
