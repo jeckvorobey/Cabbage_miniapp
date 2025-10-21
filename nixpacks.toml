@@ -4,7 +4,7 @@
 # Явно задаём среду NodeJS совместимую с @vitejs/plugin-vue@6.x
 # Требование плагина: ^20.19.0 или >=22.12.0. Выбираем стабильный LTS 20.19.0.
 [phases.setup]
-nixPkgs = ["nodejs_20"]
+nixPkgs = ["nodejs_20", "yarn"]
 
 [variables]
 # Принудительно фиксируем точную версию Node для билда.
