@@ -1,24 +1,23 @@
 [phases.setup]
-# Устанавливаем Node.js с помощью apt из репозитория nodesource, поэтому убираем его из nixPkgs.
-# curl и yarn все еще нужны.
 nixPkgs = ["curl", "yarn"]
-# Эти пакеты необходимы для безопасного добавления репозитория.
-# ca-certificates - для проверки SSL-сертификата репозитория.
-# gnupg - для проверки GPG-подписи пакетов.
-aptPkgs = ["ca-certificates", "gnupg"]
 cmds = [
-    "echo 'Установка Node.js из nodesource'",
-    "curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg",
-    "echo \"deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main\" | sudo tee /etc/apt/sources.list.d/nodesource.list",
-    "sudo apt-get update",
-    "sudo apt-get install -y nodejs"
+    "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash",
+    ". $HOME/.nvm/nvm.sh && nvm install 22.12.0 && nvm use 22.12.0"
 ]
 
 [phases.install]
 cmds = [
-    "node -v", # Проверяем версию
-    "yarn install --frozen-lockfile"
+    '''. $HOME/.nvm/nvm.sh
+    node -v
+    yarn --version
+    yarn install --frozen-lockfile
+    '''
 ]
 
 [phases.build]
-cmds = ["yarn lint", "yarn build"]
+cmds = [
+    '''. $HOME/.nvm/nvm.sh
+    yarn lint
+    yarn build
+    '''
+]
