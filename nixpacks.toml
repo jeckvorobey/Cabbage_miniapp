@@ -1,23 +1,12 @@
 [phases.setup]
-nixPkgs = ["curl", "yarn"]
-cmds = [
-    "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash",
-    ". $HOME/.nvm/nvm.sh && nvm install 22.12.0 && nvm use 22.12.0"
-]
+nixPkgs = ["nodejs_22", "yarn", "curl"]
+nixpkgsArchive = "d1fa2249e3375835132333541638935533963df9"
+
 
 [phases.install]
 cmds = [
-    '''. $HOME/.nvm/nvm.sh
-    node -v
-    yarn --version
-    yarn install --frozen-lockfile
-    '''
+    "yarn install --frozen-lockfile"
 ]
 
 [phases.build]
-cmds = [
-    '''. $HOME/.nvm/nvm.sh
-    yarn lint
-    yarn build
-    '''
-]
+cmds = ["yarn build"]
