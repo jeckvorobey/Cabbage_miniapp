@@ -10,8 +10,8 @@ declare module 'vue' {
 }
 
 const client = axios.create({
-  baseURL: `/tg/webapp/`,
-  timeout: 10000,
+  baseURL: `https://dev-api-cabbage.sergeywebdev.ru/tg/webapp/`,
+  timeout: 30000,
 });
 
 client.interceptors.request.use((request) => {
