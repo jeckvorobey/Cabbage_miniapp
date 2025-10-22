@@ -1,7 +1,5 @@
 # Nix уже ставит node и yarn — ничего руками не качаем
-nixPkgs = ["nodejs_22", "yarn", "curl"]
-nixpkgsArchive = "d1fa2249e3375835132333541638935533963df9"
-
+nixPkgs = ["nodejs_23", "yarn", "curl"]
 
 [phases.install]
 cmds = [
