@@ -1,6 +1,6 @@
 [phases.setup]
 # Nix уже ставит node и yarn — ничего руками не качаем
-nixPkgs = ["nodejs_20", "yarn", "curl"]
+nixPkgs = ["nodejs_24", "yarn", "curl"]
 
 
 [phases.install]
