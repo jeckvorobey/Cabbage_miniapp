@@ -1,10 +1,24 @@
-# Nix уже ставит node и yarn — ничего руками не качаем
-nixPkgs = ["nodejs_23", "yarn", "curl"]
+[phases.setup]
+# Устанавливаем Node.js с помощью apt из репозитория nodesource, поэтому убираем его из nixPkgs.
+# curl и yarn все еще нужны.
+nixPkgs = ["curl", "yarn"]
+# Эти пакеты необходимы для безопасного добавления репозитория.
+# ca-certificates - для проверки SSL-сертификата репозитория.
+# gnupg - для проверки GPG-подписи пакетов.
+aptPkgs = ["ca-certificates", "gnupg"]
+cmds = [
+    "echo 'Установка Node.js из nodesource'",
+    "curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg",
+    "echo \"deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main\" | sudo tee /etc/apt/sources.list.d/nodesource.list",
+    "sudo apt-get update",
+    "sudo apt-get install -y nodejs"
+]
 
 [phases.install]
 cmds = [
+    "node -v", # Проверяем версию
     "yarn install --frozen-lockfile"
 ]
 
 [phases.build]
-cmds = ["yarn build"]
+cmds = ["yarn lint", "yarn build"]
