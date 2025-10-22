@@ -1,12 +1,21 @@
 [phases.setup]
-nixPkgs = ["nodejs_22", "yarn", "curl"]
-nixpkgsArchive = "d1fa2249e3375835132333541638935533963df9"
-
+# Только curl из nixpkgs
+nixPkgs = ["curl"]
+# Минимум пакетов для репозитория
+aptPkgs = ["ca-certificates", "gnupg"]
+cmds = [
+  "curl -fsSL https://deb.nodesource.com/setup_24.x | bash -",
+  "apt-get install -y nodejs=24.6.0-1nodesource1",
+  "apt-mark hold nodejs",
+  "npm i -g yarn"
+]
 
 [phases.install]
 cmds = [
-    "yarn install --frozen-lockfile"
+  "node -v",
+  "yarn --version",
+  "yarn install --frozen-lockfile"
 ]
 
 [phases.build]
-cmds = ["yarn build"]
+cmds = ["yarn lint", "yarn build"]
