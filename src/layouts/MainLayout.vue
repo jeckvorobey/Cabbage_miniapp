@@ -83,7 +83,7 @@
         <BasketItems />
       </q-list>
     </q-drawer>
-    <pre>{{ tmpInfo }}</pre>
+    <pre>{{ tmpInfo || '' }}</pre>
     <q-page-container>
       <router-view />
     </q-page-container>
