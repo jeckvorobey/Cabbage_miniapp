@@ -190,6 +190,7 @@ const menuList: IMenuItems[] = [
 
 onMounted(() => {
   tgUser.value = window?.Telegram?.WebApp?.initData;
+  console.log(tgUser.value);
   getUser();
 });
 
