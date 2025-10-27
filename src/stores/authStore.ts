@@ -8,7 +8,7 @@ export const useAuthStore = defineStore('auth', () => {
   const toWalletAddress = ref('');
 
   async function auth(initData: any) {
-    console.log(initData);
+    console.log('Init Data',initData);
     return client
       .post(`/tg/webapp/auth`, initData)
       .then((res: { data: { token: string; toWalletAddress: string } }) => {
