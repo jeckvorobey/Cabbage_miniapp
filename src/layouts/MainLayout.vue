@@ -83,7 +83,7 @@
         <BasketItems />
       </q-list>
     </q-drawer>
-
+    <pre>{{ tmpInfo }}</pre>
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -119,6 +119,7 @@ const themeToggle = () => {
 };
 
 const tgUser = ref();
+const tmpInfo = ref(null);
 
 const menuList: IMenuItems[] = [
   {
@@ -198,6 +199,7 @@ async function getUser() {
   try {
     $q.loading.show();
     const data = await authStore.auth(tgUser.value);
+    tmpInfo.value = data
     console.log('user', data);
     accessLevel(data);
   } catch (e: any) {
