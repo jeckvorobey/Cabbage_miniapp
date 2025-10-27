@@ -96,7 +96,7 @@ import MenuItems, { type IMenuItems } from 'components/MenuItems.vue';
 import BasketItems from 'components/BasketItems.vue';
 import { Dark, useQuasar } from 'quasar';
 import { useAuthStore } from 'src/stores/authStore';
-import { admin, maneger, accessLevel } from 'src/use/useUtils';
+import { admin, manager, accessLevel } from 'src/use/useUtils';
 
 Dark.set(false);
 const $q = useQuasar();
@@ -132,7 +132,7 @@ const menuList: IMenuItems[] = [
     icon: 'home',
     name: '',
     action: 'add-category',
-    disabled: !admin.value || !maneger.value,
+    disabled: !admin.value || !manager.value,
   },
   {
     title: 'Каталог',

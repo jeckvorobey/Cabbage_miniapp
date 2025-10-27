@@ -17,7 +17,7 @@
           {{ title }}
         </div>
         <q-btn
-          v-if="deleted && (admin || maneger)"
+          v-if="deleted && (admin || manager)"
           flat
           round
           color="red"
@@ -59,7 +59,7 @@ import { useQuasar } from 'quasar';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { admin, maneger } from 'src/use/useUtils';
+import { admin, manager } from 'src/use/useUtils';
 import { useProductsStore } from 'src/stores/productsStore';
 
 export interface IMenuItems {
