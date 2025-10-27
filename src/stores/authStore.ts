@@ -9,7 +9,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function auth(initData: any) {
     return client
-      .post(`auth`, initData)
+      .post(`/tg/webapp/auth`, initData)
       .then((res: { data: { token: string; toWalletAddress: string } }) => {
         localStorage.setItem('token', res.data.token);
         user.value = res.data;

@@ -8,9 +8,10 @@ declare module 'vue' {
     $api: AxiosInstance;
   }
 }
-
+const BASE_URL = import.meta.env.VITE_API_URL ?? null;
+console.log('API BASE_URL:', BASE_URL);
 const client = axios.create({
-  baseURL: import.meta.env.VUE_API_URL ?? 'http://localhost:8080',
+  baseURL: BASE_URL ?? 'https://dev-cabbage.sergeywebdev.ru/',
   timeout: 30000,
 });
 
