@@ -13,6 +13,7 @@ console.log('API BASE_URL:', BASE_URL);
 const client = axios.create({
   baseURL: BASE_URL ?? 'https://dev-api-cabbage.sergeywebdev.ru/',
   timeout: 30000,
+  withCredentials: true,
 });
 
 client.interceptors.request.use((request) => {
