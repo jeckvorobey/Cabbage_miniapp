@@ -197,6 +197,7 @@ async function getUser() {
   try {
     $q.loading.show();
     const data = await authStore.auth(tgUser.value);
+    console.log(data);
     accessLevel(data);
   } catch (e: any) {
     console.error(e);
