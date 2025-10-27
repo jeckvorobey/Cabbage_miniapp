@@ -10,21 +10,13 @@ declare module 'vue' {
 }
 
 const client = axios.create({
-  baseURL: `https://dev-api-cabbage.sergeywebdev.ru/tg/webapp/`,
+  baseURL: import.meta.env.VUE_API_URL ?? 'http://localhost:8080',
   timeout: 30000,
 });
 
 client.interceptors.request.use((request) => {
-  // Из запроса удаляются заголовки xsrf для запроса к сервису https://dadata.ru
-  if (request.headers.Authorization) {
-    delete request.xsrfHeaderName;
-    delete request.xsrfCookieName;
-    delete request.withCredentials;
-    delete request.withXSRFToken;
-  }
-
   if (!request.headers.SkipAuth) {
-    request.headers.Authorization = 'Bearer ' + localStorage.getItem('token');
+    request.headers.Authorization = 'X-Telegram-Id ' + localStorage.getItem('token');
   }
 
   return request;
