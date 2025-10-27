@@ -11,7 +11,7 @@ declare module 'vue' {
 const BASE_URL = import.meta.env.VITE_API_URL ?? null;
 console.log('API BASE_URL:', BASE_URL);
 const client = axios.create({
-  baseURL: BASE_URL ?? 'https://dev-cabbage.sergeywebdev.ru/',
+  baseURL: BASE_URL ?? 'https://dev-api-cabbage.sergeywebdev.ru/',
   timeout: 30000,
 });
 
