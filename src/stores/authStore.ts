@@ -10,9 +10,8 @@ export const useAuthStore = defineStore('auth', () => {
   const telegramData = ref()
 
   async function auth(initData: any) {
-    console.log('Init Data',initData);
     return client
-      .post(`/tg/webapp/auth`, initData)
+      .post(`/tg/webapp/auth`, { init_data: initData })
       .then((res: { data: { token: string; toWalletAddress: string } }) => {
         token.value = res.data.token
         user.value = res.data;
