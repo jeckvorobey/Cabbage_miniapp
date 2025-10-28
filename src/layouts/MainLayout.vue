@@ -94,13 +94,12 @@
 import { computed, onMounted, ref, shallowReactive } from 'vue';
 import MenuItems, { type IMenuItems } from 'components/MenuItems.vue';
 import BasketItems from 'components/BasketItems.vue';
-import { Dark, useQuasar } from 'quasar';
-import { useAuthStore } from 'src/stores/authStore';
-import { admin, manager, accessLevel } from 'src/use/useUtils';
+import { Dark } from 'quasar';
+import { admin, manager } from 'src/use/useUtils';
 
 Dark.set(false);
-const $q = useQuasar();
-const authStore = useAuthStore();
+// const $q = useQuasar();
+// const authStore = useAuthStore();
 type Theme = 'dark' | 'light';
 const themeData = ref('dark');
 const showSearch = ref(false);
@@ -118,7 +117,7 @@ const themeToggle = () => {
   window.localStorage.setItem('theme', themeStatus.value);
 };
 
-const tgUser = ref();
+// const tgUser = ref();
 const tmpInfo = ref();
 
 const menuList: IMenuItems[] = [
@@ -190,23 +189,25 @@ const menuList: IMenuItems[] = [
 ];
 
 onMounted(() => {
-  tgUser.value = window?.Telegram?.WebApp?.initData
-  getUser();
+  // tgUser.value = window?.Telegram?.WebApp?.initData
+  // getUser();
 });
 
-async function getUser() {
-  try {
-    $q.loading.show();
-    const data = await authStore.auth(tgUser.value);
-    tmpInfo.value = data
-    console.log('user', data);
-    accessLevel(data);
-  } catch (e: any) {
-    console.error(e);
-  } finally {
-    $q.loading.hide();
-  }
-}
+// async function getUser() {
+//   try {
+//     $q.loading.show();
+//     debugger
+//     const data = await authStore.auth(tgUser.value);
+
+//     tmpInfo.value = data
+//     console.log('user', data);
+//     accessLevel(data);
+//   } catch (e: any) {
+//     console.error(e);
+//   } finally {
+//     $q.loading.hide();
+//   }
+// }
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
