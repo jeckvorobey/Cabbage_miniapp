@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia';
 import { client } from 'src/boot/axios';
+import type { ICategorie } from 'src/types/categorie';
 
 export const useCategoriesStore = defineStore('Categories', () => {
-  async function createCategories(categori: any) {
+  async function createCategories(categori: ICategorie) {
     return client
-      .post<any>('categories', categori)
+      .post<ICategorie>('categories', categori)
       .then((res) => res.data)
       .catch((err) => {
         console.error(

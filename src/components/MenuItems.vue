@@ -85,7 +85,7 @@ const route = useRoute();
 const categoriesStore = useCategoriesStore();
 const productsStore = useProductsStore();
 const categoryModal = ref(false);
-const categoryName = ref('');
+const categoryName = ref();
 
 function actionMenu(path?: string, action?: string, category_id?: number) {
   if (action) categoryModal.value = !categoryModal.value;
@@ -108,7 +108,8 @@ async function fetchProducts(id: number) {
 async function addCategory() {
   try {
     $q.loading.show();
-    const res = await categoriesStore.createCategories(categoryName.value);
+    if (!categoryName.value) return
+     const res = await categoriesStore.createCategories(categoryName.value);
     if (res) {
       $q.notify({
         message: `Категория успешно добавлена`,

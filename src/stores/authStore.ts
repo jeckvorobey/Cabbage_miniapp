@@ -6,15 +6,16 @@ import { client } from 'src/boot/axios';
 export const useAuthStore = defineStore('auth', () => {
   const user = ref();
   const toWalletAddress = ref('');
+  const token = ref()
+  const telegramData = ref()
 
   async function auth(initData: any) {
     console.log('Init Data',initData);
     return client
       .post(`/tg/webapp/auth`, initData)
       .then((res: { data: { token: string; toWalletAddress: string } }) => {
-        localStorage.setItem('token', res.data.token);
+        token.value = res.data.token
         user.value = res.data;
-        toWalletAddress.value = res.data.toWalletAddress;
         return res.data;
       })
       .catch((err: AxiosError<any>) => {
@@ -25,5 +26,9 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     auth,
+    user,
+    toWalletAddress,
+    token,
+    telegramData
   };
 });
