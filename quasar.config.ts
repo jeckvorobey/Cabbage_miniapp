@@ -51,7 +51,7 @@ export default defineConfig((ctx) => {
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
-      // publicPath: '/',
+      publicPath: process.env.VITE_PUBLIC_PATH || '/',
       // analyze: true,
       // env: {},
       // rawDefine: {}
@@ -215,7 +215,7 @@ export default defineConfig((ctx) => {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'vegetables',
+        appId: 'Cabbage'
       },
     },
 
