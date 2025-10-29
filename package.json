@@ -1,8 +1,8 @@
 {
-  "name": "vegetables",
+  "name": "Cabbage",
   "version": "0.0.1",
-  "description": "vegetablesShop",
-  "productName": "vegetablesShop",
+  "description": "",
+  "productName": "Cabbage",
   "author": "Denis <91ivanov_denis@mail.ru>",
   "type": "module",
   "private": true,
