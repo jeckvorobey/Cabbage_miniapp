@@ -1,8 +1,8 @@
-name: Deploy to tets-page branch
+name: Deploy to test-page branch
 
 on:
   push:
-    branches: ["**"]  # реагирует на пуш в любую ветку
+    branches: ["**"]
   workflow_dispatch:
 
 permissions:
@@ -23,19 +23,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          cache: 'npm'
+          cache: 'yarn'
 
       - name: Install dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
 
       - name: Build project
-        run: npm run build
+        run: yarn build
 
-      - name: Deploy to tets-page branch
+      - name: Deploy to test-page branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist/spa
-          publish_branch: tats-page 
-
-
+          publish_branch: test-page
