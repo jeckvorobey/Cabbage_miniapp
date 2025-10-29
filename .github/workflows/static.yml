@@ -30,6 +30,9 @@ jobs:
 
       - name: Build project
         run: yarn build
+        env:
+          VITE_API_URL: https://mammoth-light-bison.ngrok-free.app/
+          VITE_PUBLIC_PATH: /Cabbage_miniapp/
 
       - name: Deploy to test-page branch
         uses: peaceiris/actions-gh-pages@v4
