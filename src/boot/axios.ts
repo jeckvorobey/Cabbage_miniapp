@@ -9,7 +9,7 @@ declare module 'vue' {
   }
 }
 const client = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? 'https://dev-api-cabbage.sergeywebdev.ru/',
+  baseURL: import.meta.env.VITE_API_URL ?? 'https://example.com/',
   timeout: 30000,
   withCredentials: true,
 });
