@@ -18,6 +18,19 @@ export const useProductsStore = defineStore('Products', () => {
       });
   }
 
+  async function fetchProductsById(id: number) {
+    return client
+      .get(`/products/${id}`)
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(
+          '[ProductsStore] - An error occurred while fetching via product',
+          err.message,
+        );
+        throw err;
+      });
+  }
+
   async function fetchProducts(params: any) {
     return client
       .get('products', { params })
@@ -44,5 +57,5 @@ export const useProductsStore = defineStore('Products', () => {
       });
   }
 
-  return { products, createProduct, fetchProducts, deleteProduct };
+  return { products, createProduct, fetchProducts, deleteProduct, fetchProductsById };
 });
