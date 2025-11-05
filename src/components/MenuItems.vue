@@ -4,7 +4,7 @@
     clickable
     tag="a"
     target="_blank"
-    @click="actionMenu(path, action, category_id)"
+    @click="actionMenu(path, action, parent_id)"
     :class="name === route.name ? 'active-menu-item' : ''"
   >
     <q-item-section v-if="icon" avatar>
@@ -16,14 +16,14 @@
         <div class="content-center">
           {{ title }}
         </div>
-        <div v-if="action_btn">
+        <div v-if="!hide_buttons">
           <q-btn
             v-if="deleted && (admin || manager)"
             flat
             round
             color="red"
             icon="delete"
-            @click="deleteCategory(category_id)"
+            @click="deleteCategory(parent_id)"
           />
           <q-btn
             v-if="deleted && manager"
@@ -31,7 +31,7 @@
             round
             color="primary"
             icon="edit"
-            @click="categoryModal(category_id)"
+            @click="categoryModal(parent_id)"
           />
         </div>
       </div>
@@ -81,16 +81,17 @@ import { admin, manager } from 'src/use/useUtils';
 import { useProductsStore } from 'src/stores/productsStore';
 
 export interface IMenuItems {
-  title: string;
+  title?: string;
   path?: string;
   icon?: string;
   children?: IMenuItems[];
   action?: string;
   disabled?: boolean;
   deleted?: boolean;
-  category_id?: number;
+  parent_id?: number;
   name?: string;
-  action_btn?: boolean;
+  hide_buttons?: boolean;
+  description?: string
 }
 
 withDefaults(defineProps<IMenuItems>(), {

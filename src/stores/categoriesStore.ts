@@ -1,8 +1,11 @@
 import { defineStore } from 'pinia';
 import { client } from 'src/boot/axios';
-import type { ICategorie } from 'src/types/categorie';
+import type { ICategorie } from 'src/types/categorie.interface';
+import { ref } from 'vue';
 
 export const useCategoriesStore = defineStore('Categories', () => {
+  const categories = ref<any[]>()
+
   async function createCategories(categori: ICategorie) {
     return client
       .post<ICategorie>('/categories', categori)
@@ -16,7 +19,22 @@ export const useCategoriesStore = defineStore('Categories', () => {
       });
   }
 
-  async function updateCategorie(id: number, data: any) {
+  async function fetchCategories() {
+    return client
+      .get<ICategorie[]>('categories')
+      .then((res) => {
+        categories.value = res.data
+      })
+      .catch((err) => {
+        console.error(
+          '[CategoriesStore] - An error occurred while fetching via fetchCategorie',
+          err.message,
+        );
+        throw err;
+      });
+  }
+
+  async function updateCategorie(id: number, data: ICategorie) {
     return client
       .put(`/categories/${id}`, { data })
       .then((res: any) =>  res.data)
@@ -39,5 +57,5 @@ export const useCategoriesStore = defineStore('Categories', () => {
       });
   }
 
-  return { createCategories, updateCategorie, deleteCategories };
+  return {categories, createCategories, fetchCategories, updateCategorie, deleteCategories };
 });

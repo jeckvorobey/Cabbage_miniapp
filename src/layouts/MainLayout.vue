@@ -94,12 +94,14 @@
 import { computed, onMounted, ref, shallowReactive } from 'vue';
 import MenuItems, { type IMenuItems } from 'components/MenuItems.vue';
 import BasketItems from 'components/BasketItems.vue';
-import { Dark } from 'quasar';
+import { Dark, useQuasar } from 'quasar';
 import { admin, manager } from 'src/use/useUtils';
+import { useCategoriesStore } from 'src/stores/categoriesStore';
 
 Dark.set(false);
-// const $q = useQuasar();
+const $q = useQuasar();
 // const authStore = useAuthStore();
+const categoriesStore = useCategoriesStore()
 type Theme = 'dark' | 'light';
 const themeData = ref('dark');
 const showSearch = ref(false);
@@ -139,28 +141,28 @@ const menuList: IMenuItems[] = [
     icon: 'reorder',
     children: [
       {
-        category_id: 1,
+        parent_id: 1,
         title: 'Овощи',
         icon: 'play_arrow',
         name: '',
         path: '/',
-        action_btn: true
+        hide_buttons: true
       },
       {
-        category_id: 2,
+        parent_id: 2,
         title: 'Фрукты',
         icon: 'play_arrow',
         name: '',
         path: '/',
-        action_btn: true
+        hide_buttons: true
       },
       {
-        category_id: 3,
+        parent_id: 3,
         title: 'Хлеб',
         icon: 'play_arrow',
         name: '',
         path: '/',
-        action_btn: true
+        hide_buttons: true
       },
     ],
   },
@@ -187,19 +189,17 @@ const menuList: IMenuItems[] = [
     icon: 'settings',
     children: [
       {
-        category_id: 1,
-        title: 'Пользователи',
+         title: 'Пользователи',
         icon: 'people',
-        action_btn: false,
+        hide_buttons: true,
         name: 'users',
         path: 'users',
         disabled: !admin.value,
       },
       {
-        category_id: 2,
         title: 'Единица измерения',
         icon: 'equalizer',
-        action_btn: false,
+        hide_buttons: true,
         name: 'units',
         path: 'units',
       },
@@ -207,7 +207,15 @@ const menuList: IMenuItems[] = [
   },
 ];
 
-onMounted(() => {
+onMounted(async () => {
+  try {
+    await categoriesStore.fetchCategories();
+    $q.loading.show();
+  } catch (e) {
+    console.error(e);
+  } finally {
+    $q.loading.hide();
+  }
   // tgUser.value = window?.Telegram?.WebApp?.initData
   // getUser();
 });
