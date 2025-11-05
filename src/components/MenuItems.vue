@@ -16,7 +16,7 @@
         <div class="content-center">
           {{ title }}
         </div>
-        <div>
+        <div v-if="action_btn">
           <q-btn
             v-if="deleted && (admin || manager)"
             flat
@@ -90,6 +90,7 @@ export interface IMenuItems {
   deleted?: boolean;
   category_id?: number;
   name?: string;
+  action_btn?: boolean;
 }
 
 withDefaults(defineProps<IMenuItems>(), {

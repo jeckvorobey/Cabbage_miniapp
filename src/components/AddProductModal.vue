@@ -15,10 +15,12 @@
           />
           <q-select
             v-model="product.unit_id"
-            :options="unitOptions"
+            :options="unitsStore.units"
             label="Вес"
             emit-value
             map-options
+            option-label="name"
+            option-value="symbol"
           />
           <q-input class="q-mt-sm" v-model="product.description" filled type="textarea" rows="2" label="Описание"/>
         </q-card-section>
@@ -34,10 +36,12 @@
 <script lang="ts" setup>
   import { useQuasar } from 'quasar';
   import { useProductsStore } from 'src/stores/productsStore';
+  import { useUnitsStore } from 'src/stores/unitsStore';
   import { ref } from 'vue'
 
   const $q = useQuasar();
   const productsStore = useProductsStore();
+  const unitsStore = useUnitsStore()
   const showDialog = ref(false)
   const product = ref({
     name: "",
@@ -58,20 +62,6 @@
     },
     {
       label: 'Ягоды',
-      value: 3
-    },
-  ]
-  const unitOptions = [
-    {
-      label: 'Кг',
-      value: 1
-    },
-    {
-      label: 'г',
-      value: 2
-    },
-    {
-      label: 'Шт',
       value: 3
     },
   ]

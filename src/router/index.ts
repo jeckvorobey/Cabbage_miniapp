@@ -32,15 +32,17 @@ export default defineRouter(function (/* { store, ssrContext } */) {
 
   router.beforeEach((to, from, next) => {
     const authStore = useAuthStore()
-    if (to.meta.hasAuth) {
-      if (authStore?.user?.token) {
-        next()
-      } else {
-        next('/start')
-      }
-    } else {
-      next()
-    }
+    console.log(authStore)
+    next()
+    // if (to.meta.hasAuth) {
+    //   if (authStore?.user?.token) {
+    //     next()
+    //   } else {
+    //     next('/start')
+    //   }
+    // } else {
+    //   next()
+    // }
   })
 
   return router;

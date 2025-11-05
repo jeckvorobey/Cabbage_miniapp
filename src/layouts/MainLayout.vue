@@ -144,6 +144,7 @@ const menuList: IMenuItems[] = [
         icon: 'play_arrow',
         name: '',
         path: '/',
+        action_btn: true
       },
       {
         category_id: 2,
@@ -151,6 +152,7 @@ const menuList: IMenuItems[] = [
         icon: 'play_arrow',
         name: '',
         path: '/',
+        action_btn: true
       },
       {
         category_id: 3,
@@ -158,6 +160,7 @@ const menuList: IMenuItems[] = [
         icon: 'play_arrow',
         name: '',
         path: '/',
+        action_btn: true
       },
     ],
   },
@@ -180,11 +183,27 @@ const menuList: IMenuItems[] = [
     path: 'user',
   },
   {
-    title: 'Пользователи',
-    icon: 'people',
-    name: 'users',
-    path: 'users',
-    disabled: !admin.value,
+    title: 'Настройки',
+    icon: 'settings',
+    children: [
+      {
+        category_id: 1,
+        title: 'Пользователи',
+        icon: 'people',
+        action_btn: false,
+        name: 'users',
+        path: 'users',
+        disabled: !admin.value,
+      },
+      {
+        category_id: 2,
+        title: 'Единица измерения',
+        icon: 'equalizer',
+        action_btn: false,
+        name: 'units',
+        path: 'units',
+      },
+    ],
   },
 ];
 
