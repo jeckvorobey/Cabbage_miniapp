@@ -1,9 +1,9 @@
 <template>
   <div v-if="loading" class="align-center pt-2.5">
-    <h3>loading...</h3>
+    <h3>Загрузка...</h3>
   </div>
   <div v-if="!tgUser" class="align-center pt-2.5">
-    <h4>You need to log in via telegram</h4>
+    <h4>Вам необходимо войти через Telegram.</h4>
   </div>
   <ExpandedViewport force/>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-mx-xs">
-    <ProductList class="q-mb-lg q-mt-md"></ProductList>
+    <ProductList class="q-mb-lg"></ProductList>
   </q-page>
 </template>
 

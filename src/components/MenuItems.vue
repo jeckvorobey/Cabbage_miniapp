@@ -16,14 +16,24 @@
         <div class="content-center">
           {{ title }}
         </div>
-        <q-btn
-          v-if="deleted && (admin || manager)"
-          flat
-          round
-          color="red"
-          icon="delete"
-          @click="deleteCategory(category_id)"
-        />
+        <div>
+          <q-btn
+            v-if="deleted && (admin || manager)"
+            flat
+            round
+            color="red"
+            icon="delete"
+            @click="deleteCategory(category_id)"
+          />
+          <q-btn
+            v-if="deleted && manager"
+            flat
+            round
+            color="primary"
+            icon="edit"
+            @click="categoryModal(category_id)"
+          />
+        </div>
       </div>
     </q-item-section>
   </q-item>
@@ -36,14 +46,22 @@
       </q-expansion-item>
     </q-list>
   </template>
-  <q-dialog v-model="categoryModal">
-    <q-card>
+  <q-dialog v-model="showCategoryModal">
+    <q-card style="min-width: 90svw;">
       <q-card-section>
         <div class="text-h6">Добавить категорию</div>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
-        <q-input v-model="categoryName" label="Наиминование категории" />
+        <q-input v-model="category.name" label="Наиминование категории" />
+        <q-select
+          v-model="category.parent_id"
+          :options="['1','2']"
+          label="Тип тары"
+          emit-value
+          map-options
+        />
+        <q-input class="q-mt-sm" v-model="category.description" filled type="textarea" rows="2" label="Описание"/>
       </q-card-section>
 
       <q-card-actions align="right">
@@ -84,11 +102,28 @@ const router = useRouter();
 const route = useRoute();
 const categoriesStore = useCategoriesStore();
 const productsStore = useProductsStore();
-const categoryModal = ref(false);
-const categoryName = ref();
+const showCategoryModal = ref(false);
+const categoryId = ref()
+const category = ref(
+  {
+    name: '',
+    parent_id: null,
+    description: ''
+  }
+);
+const pagination = ref({
+  offset: 0,
+  limit: 2,
+  totla: 0
+})
+
+function categoryModal(id?: number) {
+  if(id) categoryId.value = id
+  showCategoryModal.value = !showCategoryModal.value
+}
 
 function actionMenu(path?: string, action?: string, category_id?: number) {
-  if (action) categoryModal.value = !categoryModal.value;
+  if (action) showCategoryModal.value = !showCategoryModal.value;
   if (category_id) fetchProducts(category_id);
   if (path) router.push(path);
 }
@@ -97,7 +132,7 @@ async function fetchProducts(id: number) {
   try {
     $q.loading.show();
     console.log(id);
-    await productsStore.fetchProducts();
+    await productsStore.fetchProducts(pagination.value);
   } catch (e: any) {
     console.error(e);
   } finally {
@@ -106,13 +141,34 @@ async function fetchProducts(id: number) {
 }
 
 async function addCategory() {
+  if (categoryId.value) {
+    editCategory(categoryId.value)
+    return
+  }
   try {
     $q.loading.show();
-    if (!categoryName.value) return
-     const res = await categoriesStore.createCategories(categoryName.value);
+    if (!category.value) return
+     const res = await categoriesStore.createCategories(category.value);
     if (res) {
       $q.notify({
         message: `Категория успешно добавлена`,
+        color: 'primary',
+      });
+    }
+  } catch (e: any) {
+    console.error(e);
+  } finally {
+    $q.loading.hide();
+  }
+}
+
+async function editCategory(id: number) {
+  try {
+    $q.loading.show();
+     const res = await categoriesStore.updateCategorie(id, category.value);
+    if (res) {
+      $q.notify({
+        message: `Категория успешно  обнавлена`,
         color: 'primary',
       });
     }
