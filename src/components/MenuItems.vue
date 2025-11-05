@@ -81,7 +81,7 @@ import { admin, manager } from 'src/use/useUtils';
 import { useProductsStore } from 'src/stores/productsStore';
 
 export interface IMenuItems {
-  title?: string;
+  title: string;
   path?: string;
   icon?: string;
   children?: IMenuItems[];
