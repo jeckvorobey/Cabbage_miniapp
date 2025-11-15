@@ -8,10 +8,12 @@
           <q-input v-model="product.qty" label="Количество" stack-label />
           <q-select
             v-model="product.category_id"
-            :options="categoryOptions"
+            :options="categoriesStore.categories"
             label="Тип тары"
             emit-value
             map-options
+            option-label="name"
+            option-value="id"
           />
           <q-select
             v-model="product.unit_id"
@@ -20,13 +22,36 @@
             emit-value
             map-options
             option-label="name"
-            option-value="symbol"
+            option-value="id"
           />
           <q-input class="q-mt-sm" v-model="product.description" filled type="textarea" rows="2" label="Описание"/>
+          <q-uploader
+            v-if="!image && product.id"
+            class="q-mt-sm"
+            ref="uploaderRef"
+            color="primary"
+            flat
+            @added="addFile">
+            <template #header=""/>
+            <template #list="">
+              <q-uploader-add-trigger />
+              <div class="text-center upload-title">
+                <q-icon
+                  class="q-mr-sm"
+                  name="note_add"
+                  size="24px" />
+                <span>Загрузить картинку</span>
+              </div>
+            </template>
+          </q-uploader>
+          <q-img
+            v-else
+            class="q-mt-sm"
+            :src="image" />
         </q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup color="red" label="Отмена" />
-          <q-btn v-close-popup color="primary" label="Подтвердить" @click="addProduct()"/>
+          <q-btn color="primary" label="Подтвердить" @click="addProduct()"/>
         </q-card-actions>
       </q-form>
     </q-card>
@@ -34,16 +59,21 @@
 </template>
 
 <script lang="ts" setup>
-  import { useQuasar } from 'quasar';
+  import { useDialogPluginComponent, useQuasar } from 'quasar';
+  import { useCategoriesStore } from 'src/stores/categoriesStore';
   import { useProductsStore } from 'src/stores/productsStore';
   import { useUnitsStore } from 'src/stores/unitsStore';
   import { ref } from 'vue'
 
   const $q = useQuasar();
   const productsStore = useProductsStore();
+  const categoriesStore = useCategoriesStore();
+  const { dialogRef } = useDialogPluginComponent()
   const unitsStore = useUnitsStore()
   const showDialog = ref(false)
+  const image = ref()
   const product = ref({
+    id: null,
     name: "",
     category_id: '',
     unit_id: '',
@@ -51,29 +81,42 @@
     description: ""
   })
 
-  const categoryOptions = [
-    {
-      label: 'Овощи',
-      value: 1
-    },
-    {
-      label: 'Фрукты',
-      value: 2
-    },
-    {
-      label: 'Ягоды',
-      value: 3
-    },
-  ]
-
   async function addProduct() {
     try {
       const res = await productsStore.createProduct(product.value);
       if (res) {
+        product.value.id = res.id
         $q.notify({
-          message: `Товар успешно создан`,
+          message: `Товар успешно создан, теперь вам необходимо добавить картинку`,
           color: 'primary',
         });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function addFile(files: any) {
+    const reader = new FileReader()
+    reader.readAsDataURL(files[0])
+    reader.onload = () => {
+      // eslint-disable-next-line
+      if(reader?.result) image.value = String(reader.result)
+    }
+    uploadFile(files[0])
+  }
+
+  async function uploadFile(files: any) {
+    const data = new FormData()
+    data.append('file', files)
+    try {
+      const res = await productsStore.uploadFile(product.value.id!, data);
+      if (res) {
+        $q.notify({
+          message: `Картинка успешно добавлена`,
+          color: 'primary',
+        });
+        dialogRef.value?.hide()
       }
     } catch (e) {
       console.error(e);
