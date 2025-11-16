@@ -1,21 +1,18 @@
 import { defineStore } from 'pinia';
 import { client } from 'src/boot/axios';
-import type { IUnit } from 'src/types/unit.interface';
 import { ref } from 'vue';
 
 export const useUsersStore = defineStore('Users', () => {
 
   const users = ref()
 
-  async function fetchUsers() {
+  async function fetchUsers(params: any) {
     return client
-      .get<IUnit[]>('users')
-      .then((res) => {
-        users.value = res.data
-      })
+      .get('users', { params })
+      .then((res) => res.data)
       .catch((err) => {
         console.error(
-          '[UsersStore ] - An error occurred while fetching via fetchUsers',
+          '[UsersStore] - An error occurred while fetching via Users',
           err.message,
         );
         throw err;

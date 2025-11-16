@@ -85,7 +85,7 @@ const showProductModal = ref(false)
 const pagination = ref({
   offset: 0,
   limit: 20,
-  totla: 0
+  total: 0
 })
 
 onMounted(async () => {
@@ -108,7 +108,7 @@ async function fetchProducts() {
         productsStore.products.push(res.items)
       } else {
         productsStore.products = res.items;
-        pagination.value.totla = res.total
+        pagination.value.total = res.total
       }
     }
   } catch (e) {
@@ -149,7 +149,7 @@ function recalculationGoods(newGoods: any, oldGoods: any) {
 }
 
 const onLoad = (index: number, done: (stop?: boolean) => void) => {
-  if (productsStore?.products?.length >= pagination.value.totla) {
+  if (productsStore?.products?.length >= pagination.value.total) {
     allDataLoaded.value = true;
     done(true);
     return;

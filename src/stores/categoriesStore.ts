@@ -19,11 +19,22 @@ export const useCategoriesStore = defineStore('Categories', () => {
       });
   }
 
+  async function updateCategorie(data: ICategorie) {
+    return client
+      .put(`/categories/${data.id}`, { data })
+      .then((res: any) =>  res.data)
+      .catch((err) => {
+        console.error('[CategoriesStore] - An error occurred while fetching via updateCategorie', err.message)
+        throw err
+      })
+  }
+
   async function fetchCategories() {
     return client
       .get<ICategorie[]>('categories')
       .then((res) => {
         categories.value = res.data
+        return res.data
       })
       .catch((err) => {
         console.error(
@@ -32,16 +43,6 @@ export const useCategoriesStore = defineStore('Categories', () => {
         );
         throw err;
       });
-  }
-
-  async function updateCategorie(id: number, data: ICategorie) {
-    return client
-      .put(`/categories/${id}`, { data })
-      .then((res: any) =>  res.data)
-      .catch((err) => {
-        console.error('[CategoriesStore] - An error occurred while fetching via updateCategorie', err.message)
-        throw err
-      })
   }
 
   async function deleteCategories(id: number) {

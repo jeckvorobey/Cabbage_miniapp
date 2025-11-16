@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <q-infinite-scroll @load="onLoad" :offset="250">
     <h6 class="text-center q-mt-md q-mb-md">Пользователи</h6>
     <q-card class="my-card q-ma-sm" flat bordered>
-      <q-list v-for="(user, index) in users" :key="index">
+      <q-list v-for="(user, index) in usersStore.users" :key="index">
         <q-item>
           <q-item-section avatar>
             <q-icon color="primary" name="local_bar" />
@@ -10,7 +10,11 @@
 
           <q-item-section>
             <q-item-label>{{ user.name }}</q-item-label>
-            <q-item-label caption>{{ user.phone }}</q-item-label>
+            <q-item-label caption>{{ user.telegram_id }}</q-item-label>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>{{ user.username }}</q-item-label>
+            <q-item-label caption>{{ user.role }}</q-item-label>
           </q-item-section>
           <q-item-action>
             <q-btn
@@ -27,29 +31,54 @@
         <q-separator />
       </q-list>
     </q-card>
-  </div>
+  </q-infinite-scroll>
+
 </template>
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { ref } from 'vue';
 import { admin } from 'src/use/useUtils';
+import { useUsersStore } from 'src/stores/usersStore';
 
 const $q = useQuasar();
-const users = ref([
-  {
-    id: 1,
-    image: '',
-    name: 'Игорь',
-    phone: '+7078 000 00 00',
-  },
-  {
-    id: 2,
-    image: '',
-    name: 'Игорь',
-    phone: '+7078 000 00 00',
-  },
-]);
+const usersStore = useUsersStore()
+const pagination = ref({
+  offset: 0,
+  limit: 20,
+  total: 0
+})
+
+const onLoad = (index: number, done: (stop?: boolean) => void) => {
+  console.log(index)
+  if (usersStore?.users?.length >= pagination.value.total) {
+    done(true);
+    return;
+  }
+  fetchUsers()
+  pagination.value.offset++;
+
+  done();
+};
+
+async function fetchUsers() {
+  try {
+    $q.loading.show();
+    const res = await usersStore.fetchUsers(pagination.value);
+    if (res) {
+      if(usersStore?.users?.length) {
+        usersStore.users.push(res.items)
+      } else {
+        usersStore.users = res.items;
+        pagination.value.total = res.total
+      }
+    }
+  } catch (e: any) {
+    console.error(e);
+  } finally {
+    $q.loading.hide();
+  }
+}
 
 function disabledUser(user: any) {
   try {
