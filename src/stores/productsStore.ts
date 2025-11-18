@@ -57,5 +57,19 @@ export const useProductsStore = defineStore('Products', () => {
       });
   }
 
-  return { products, createProduct, fetchProducts, deleteProduct, fetchProductsById };
+  async function uploadFile(id: number, formData: any) {
+    return client
+      .post(`/products/${id}/images`, formData)
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(
+          '[ProductsStore] - An error occurred while createing via uploadFile',
+          err.message,
+        );
+        throw err;
+      });
+  }
+
+
+  return { products, createProduct, fetchProducts, deleteProduct, fetchProductsById, uploadFile };
 });

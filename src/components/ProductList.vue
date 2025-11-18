@@ -1,6 +1,6 @@
 <template>
   <q-infinite-scroll @load="onLoad" :offset="250">
-    <q-btn @click="showConfirmationModal = !showConfirmationModal" class="full-width q-mb-sm" color="secondary" label="Добавление товара"></q-btn>
+    <q-btn @click="showProductModal = !showProductModal" class="full-width q-mb-sm" color="secondary" label="Добавление товара"></q-btn>
     <div class="product-card row q-col-gutter-xs">
       <div class="col-6" v-for="(item, index) in productsStore.products" :key="index">
         <q-card class="my-card radius-12 full-height" style="border-radius: 20px" flat bordered>
@@ -62,29 +62,42 @@
       Все данные загружены.
     </div> -->
     <AddProductModal
-      v-model="showConfirmationModal"
+      v-model="showProductModal"
       label="test" />
   </q-infinite-scroll>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useProductsStore } from 'stores/productsStore.js';
 import { useOrderStore } from 'src/stores/orderStore';
 import { toRaw } from 'vue';
 import { useQuasar } from 'quasar';
 import AddProductModal from 'components/AddProductModal.vue'
+import { useUnitsStore } from 'src/stores/unitsStore';
 
 const $q = useQuasar();
+const unitsStore = useUnitsStore()
 const productsStore = useProductsStore();
 const orderStore = useOrderStore();
 const allDataLoaded = ref(false);
-const showConfirmationModal = ref(false)
+const showProductModal = ref(false)
 const pagination = ref({
   offset: 0,
   limit: 20,
-  totla: 0
+  total: 0
 })
+
+onMounted(async () => {
+  try {
+    await unitsStore.fetchUnits();
+    $q.loading.show();
+  } catch (e) {
+    console.error(e);
+  } finally {
+    $q.loading.hide();
+  }
+});
 
 async function fetchProducts() {
   try {
@@ -95,7 +108,7 @@ async function fetchProducts() {
         productsStore.products.push(res.items)
       } else {
         productsStore.products = res.items;
-        pagination.value.totla = res.total
+        pagination.value.total = res.total
       }
     }
   } catch (e) {
@@ -136,7 +149,7 @@ function recalculationGoods(newGoods: any, oldGoods: any) {
 }
 
 const onLoad = (index: number, done: (stop?: boolean) => void) => {
-  if (productsStore?.products?.length >= pagination.value.totla) {
+  if (productsStore?.products?.length >= pagination.value.total) {
     allDataLoaded.value = true;
     done(true);
     return;

@@ -5,8 +5,8 @@ export enum EPermissionTypes {
   USER = '9',
 }
 
-const admin = ref<boolean>(false);
-const manager = ref<boolean>(false);
+const admin = ref<boolean>(true);
+const manager = ref<boolean>(true);
 const user = ref<boolean>(false);
 
 function accessLevel(data: any) {

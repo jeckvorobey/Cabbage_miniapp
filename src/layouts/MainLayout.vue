@@ -72,8 +72,8 @@
             </div>
           </div>
         </q-item-label>
+        <MenuItems v-for="link in menuList" :key="link.name" v-bind="link" />
 
-        <MenuItems v-for="link in menuList" :key="link.title" v-bind="link" />
       </q-list>
     </q-drawer>
 
@@ -94,12 +94,14 @@
 import { computed, onMounted, ref, shallowReactive } from 'vue';
 import MenuItems, { type IMenuItems } from 'components/MenuItems.vue';
 import BasketItems from 'components/BasketItems.vue';
-import { Dark } from 'quasar';
-import { admin, manager } from 'src/use/useUtils';
+import { Dark, useQuasar } from 'quasar';
+import { admin } from 'src/use/useUtils';
+import { useCategoriesStore } from 'src/stores/categoriesStore';
 
 Dark.set(false);
-// const $q = useQuasar();
+const $q = useQuasar();
 // const authStore = useAuthStore();
+const categoriesStore = useCategoriesStore()
 type Theme = 'dark' | 'light';
 const themeData = ref('dark');
 const showSearch = ref(false);
@@ -116,79 +118,88 @@ const themeToggle = () => {
   Dark.toggle();
   window.localStorage.setItem('theme', themeStatus.value);
 };
-
-// const tgUser = ref();
 const tmpInfo = ref();
+const menuList = ref<IMenuItems[]>(
+  [
+    {
+      name: 'Главная',
+      icon: 'home',
+      pathName: '/',
+      path: '/',
+    },
+    {
+      name: 'Каталог',
+      icon: 'reorder',
+      children: [],
+    },
+    {
+      name: 'Доставка и оплата',
+      icon: 'local_shipping',
+      pathName: '',
+      path: '',
+    },
+    {
+      name: 'История заказов',
+      icon: 'history',
+      pathName: 'history',
+      path: 'history',
+    },
+    {
+      name: 'Мой кабинет',
+      icon: 'perm_identity',
+      pathName: 'user',
+      path: 'user',
+    },
+    {
+      name: 'Настройки',
+      icon: 'settings',
+      children: [
+        {
+          name: 'Пользователи',
+          icon: 'people',
+          hide_buttons: true,
+          pathName: 'users',
+          path: 'users',
+          disabled: !admin.value,
+        },
+        {
+          name: 'Единица измерения',
+          icon: 'equalizer',
+          hide_buttons: true,
+          pathName: 'units',
+          path: 'units',
+        },
+        {
+          name: 'Категории',
+          icon: 'reorder',
+          hide_buttons: true,
+          pathName: 'categories',
+          path: 'categories',
+        },
+      ],
+    },
+  ]
+)
 
-const menuList: IMenuItems[] = [
-  {
-    title: 'Главная',
-    icon: 'home',
-    name: '/',
-    path: '/',
-  },
-  {
-    title: 'Добавить категорию',
-    icon: 'home',
-    name: '',
-    action: 'add-category',
-    disabled: !admin.value || !manager.value,
-  },
-  {
-    title: 'Каталог',
-    icon: 'reorder',
-    children: [
-      {
-        category_id: 1,
-        title: 'Овощи',
-        icon: 'play_arrow',
-        name: '',
-        path: '/',
-      },
-      {
-        category_id: 2,
-        title: 'Фрукты',
-        icon: 'play_arrow',
-        name: '',
-        path: '/',
-      },
-      {
-        category_id: 3,
-        title: 'Хлеб',
-        icon: 'play_arrow',
-        name: '',
-        path: '/',
-      },
-    ],
-  },
-  {
-    title: 'Доставка и оплата',
-    icon: 'local_shipping',
-    name: '',
-    path: '',
-  },
-  {
-    title: 'История заказов',
-    icon: 'history',
-    name: 'history',
-    path: 'history',
-  },
-  {
-    title: 'Мой кабинет',
-    icon: 'perm_identity',
-    name: 'user',
-    path: 'user',
-  },
-  {
-    title: 'Пользователи',
-    icon: 'people',
-    name: 'users',
-    path: 'users',
-    disabled: !admin.value,
-  },
-];
 
-onMounted(() => {
+
+
+onMounted(async () => {
+  try {
+    const res = await categoriesStore.fetchCategories();
+    if (res) {
+      const category = res
+      category.forEach((el: any) => {
+        el.path = '/'
+      })
+      menuList.value[1]!.children = category as any
+    }
+    $q.loading.show();
+  } catch (e) {
+    console.error(e);
+  } finally {
+    $q.loading.hide();
+  }
   // tgUser.value = window?.Telegram?.WebApp?.initData
   // getUser();
 });
@@ -196,7 +207,6 @@ onMounted(() => {
 // async function getUser() {
 //   try {
 //     $q.loading.show();
-//     debugger
 //     const data = await authStore.auth(tgUser.value);
 
 //     tmpInfo.value = data
