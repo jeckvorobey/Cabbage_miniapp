@@ -10,10 +10,23 @@ export const useAuthStore = defineStore('auth', () => {
   const telegramData = ref()
 
   async function auth(initData: any) {
+    telegramData.value = initData;
     return client
-      .post(`/tg/webapp/auth`, { init_data: initData })
-      .then((res: { data: { token: string; toWalletAddress: string } }) => {
-        token.value = res.data.token
+      .post(
+        `/tg/webapp/auth`,
+        { init_data: initData },
+        { headers: { SkipAuth: 'true' } }
+      )
+      .then((res: { data: { token: string; toWalletAddress?: string } }) => {
+        token.value = res.data.token;
+        if (res.data.toWalletAddress) {
+          toWalletAddress.value = res.data.toWalletAddress;
+        }
+        try {
+          if (res.data.token) localStorage.setItem('token', res.data.token);
+        } catch (e: any) {
+          console.warn('[AuthStore] - Cannot access localStorage to save token', e.message);
+        }
         user.value = res.data;
         return res.data;
       })
