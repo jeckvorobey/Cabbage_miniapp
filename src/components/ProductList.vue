@@ -148,17 +148,28 @@ function recalculationGoods(newGoods: any, oldGoods: any) {
   if (newGoods.oldPrice) newGoods.oldPrice += oldGoods.oldPrice;
 }
 
-const onLoad = (index: number, done: (stop?: boolean) => void) => {
-  if (productsStore?.products?.length >= pagination.value.total) {
-    allDataLoaded.value = true;
+async function onLoad (index: number, done: (stop?: boolean) => void) {
+  if (allDataLoaded.value) {
     done(true);
     return;
   }
-  fetchProducts()
-  pagination.value.offset++;
+  try {
+    const prevLength = productsStore.products?.length ?? 0;
+    await fetchProducts();
+    const newLength = productsStore.products?.length ?? 0;
+    if (newLength === prevLength) {
+      allDataLoaded.value = true;
+      done(true);
+      return;
+    }
+    pagination.value.offset++;
+    done();
+  } catch (e) {
+    console.error('[ProductList] onLoad error', e);
+    done(true);
+  }
+}
 
-  done();
-};
 </script>
 
 <style scoped lang="scss">
