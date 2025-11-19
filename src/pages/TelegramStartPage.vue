@@ -25,6 +25,7 @@
 
   async function getUser() {
     try {
+      console.log('TelegramStartPage', tgUser.value)
       localStorage.removeItem('token')
       authStore.token = null
       if (tgUser.value) {
