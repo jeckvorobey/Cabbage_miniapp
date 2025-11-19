@@ -4,8 +4,8 @@
       <q-form greedy>
         <q-card-section>
           <div class="text-h6 q-mb-md">Добавление единицы измерения</div>
-          <q-input v-model="unit.name" label="Наименование" stack-label />
-          <q-input v-model="unit.symbol" label="Количество" stack-label />
+          <q-input v-model="unit.name" outlined class="q-mb-xs" label="Наименование" />
+          <q-input v-model="unit.symbol" outlined class="q-mb-xs" label="Символ" />
         </q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup color="red" label="Отмена" />

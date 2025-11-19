@@ -72,7 +72,9 @@
             </div>
           </div>
         </q-item-label>
-        <MenuItems v-for="link in menuList" :key="link.name" v-bind="link" />
+        <MenuItems
+          v-for="link in menuList" :key="link.name"
+          v-bind="link" />
 
       </q-list>
     </q-drawer>
@@ -180,9 +182,6 @@ const menuList = ref<IMenuItems[]>(
     },
   ]
 )
-
-
-
 
 onMounted(async () => {
   try {

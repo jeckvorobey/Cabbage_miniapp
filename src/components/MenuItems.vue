@@ -4,8 +4,8 @@
     clickable
     tag="a"
     target="_blank"
-    @click="actionMenu(path, action, parent_id)"
-    :class="pathName === route.name ? 'active-menu-item' : ''"
+    @click="actionMenu(name, path, action, id)"
+    :class="isActiveMenu === name ? 'active-menu-item' : ''"
   >
     <q-item-section v-if="icon" avatar>
       <q-icon :name="icon" />
@@ -53,8 +53,10 @@ import { useQuasar } from 'quasar';
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useProductsStore } from 'src/stores/productsStore';
+import { isActiveMenu } from 'src/use/useUtils';
 
 export interface IMenuItems {
+  id?: number;
   name: string;
   path?: string;
   icon?: string;
@@ -78,24 +80,26 @@ const router = useRouter();
 const route = useRoute();
 const productsStore = useProductsStore();
 const showCategoryModal = ref(false);
-const pagination = ref({
-  offset: 0,
-  limit: 2,
-  totla: 0
-})
 
-
-function actionMenu(path?: string, action?: string, category_id?: number) {
+function actionMenu(name: string, path?: string, action?: string, id?: number) {
+  route.meta.sorting = id
+  isActiveMenu.value = name
+  fetchProducts(id);
   if (action) showCategoryModal.value = !showCategoryModal.value;
-  if (category_id) fetchProducts(category_id);
   if (path) router.push(path);
 }
 
-async function fetchProducts(id: number) {
+async function fetchProducts(id?: number) {
   try {
     $q.loading.show();
-    console.log(id);
-    await productsStore.fetchProducts(pagination.value);
+    if (id) {
+      productsStore.pagination.category_ids = id
+      productsStore.pagination.offset = 0
+    } else {
+      delete productsStore.pagination.category_ids
+      productsStore.pagination.offset = 0
+    }
+    await productsStore.fetchProducts(productsStore.pagination);
   } catch (e: any) {
     console.error(e);
   } finally {

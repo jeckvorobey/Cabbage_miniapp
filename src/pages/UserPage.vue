@@ -5,10 +5,10 @@
       <q-card class="my-card full-height" flat bordered>
         <q-card-section>
           <div class="text-h6">Ваши данные:</div>
-          <q-input class="q-mb-sm" rounded outlined v-model="userData.name" label="Имя" />
-          <q-input class="q-mb-sm" rounded outlined v-model="userData.phone" label="Телефон" />
-          <q-input class="q-mb-sm" rounded outlined v-model="userData.mail" label="Mail" />
-          <q-input class="q-mb-sm" rounded outlined v-model="userData.addres" label="Адрес" />
+          <q-input class="q-mb-sm" outlined v-model="userData.name" label="Имя" />
+          <q-input class="q-mb-sm" outlined v-model="userData.phone" label="Телефон" />
+          <q-input class="q-mb-sm" outlined v-model="userData.mail" label="Mail" />
+          <q-input class="q-mb-sm" outlined v-model="userData.addres" label="Адрес" />
         </q-card-section>
       </q-card>
     </div>

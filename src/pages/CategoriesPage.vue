@@ -38,10 +38,11 @@
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          <q-input v-model="category.name" label="Наиминование категории" />
+          <q-input v-model="category.name" class="q-mb-xs" outlined label="Наиминование категории" />
           <q-select
             v-model="category.parent_id"
             :options="['1','2']"
+            outlined
             label="Тип тары"
             emit-value
             map-options
