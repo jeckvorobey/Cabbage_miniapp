@@ -1,6 +1,12 @@
 <template>
   <q-infinite-scroll @load="onLoad" :offset="250">
-    <q-btn @click="showProductModal = !showProductModal" class="full-width q-mb-sm" color="secondary" label="Добавление товара"></q-btn>
+    <q-btn
+      v-if="isManager"
+      @click="showProductModal = !showProductModal"
+      class="full-width q-mb-sm"
+      color="secondary"
+      label="Добавление товара"
+    ></q-btn>
     <div class="product-card row q-col-gutter-xs">
       <div class="col-6" v-for="(item, index) in productsStore.products" :key="index">
         <q-card class="my-card radius-12 full-height" style="border-radius: 20px" flat bordered>
@@ -15,7 +21,9 @@
               <div class="text-center card-title">{{ item.name }}</div>
               <div class="text-center">
                 <span class="text-bold">{{ item.price }}</span> ₽
-                <span v-if="item?.oldPrice" class="text-grey old-price">{{ item.old_price }} ₽</span>
+                <span v-if="item?.oldPrice" class="text-grey old-price"
+                  >{{ item.old_price }} ₽</span
+                >
                 / {{ item.unit_symbol }}
               </div>
               <!-- <div class="q-mt-sm q-mb-xs text-center">
@@ -64,25 +72,30 @@
     <AddProductModal
       v-if="showProductModal"
       v-model="showProductModal"
-      @refresh-data="refreshData()" />
+      @refresh-data="refreshData()"
+    />
   </q-infinite-scroll>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useProductsStore } from 'stores/productsStore.js';
 import { useOrderStore } from 'src/stores/orderStore';
 import { toRaw } from 'vue';
 import { useQuasar } from 'quasar';
-import AddProductModal from 'components/AddProductModal.vue'
+import AddProductModal from 'components/AddProductModal.vue';
 import { useUnitsStore } from 'src/stores/unitsStore';
+import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
+import { useAuthStore } from 'stores/authStore';
 
 const $q = useQuasar();
-const unitsStore = useUnitsStore()
+const unitsStore = useUnitsStore();
 const productsStore = useProductsStore();
 const orderStore = useOrderStore();
+const authStore = useAuthStore();
+const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
 const allDataLoaded = ref(false);
-const showProductModal = ref(false)
+const showProductModal = ref(false);
 
 onMounted(async () => {
   try {
@@ -96,7 +109,7 @@ onMounted(async () => {
 });
 
 function refreshData() {
-  fetchProducts()
+  fetchProducts();
 }
 
 async function fetchProducts() {
@@ -104,10 +117,10 @@ async function fetchProducts() {
     $q.loading.show();
     const res = await productsStore.fetchProducts(productsStore.pagination);
     if (res) {
-      productsStore.pagination.total = res.total
-      productsStore.pagination.has_more = res.has_more
-      if(productsStore?.products?.length) {
-        productsStore.products.push(res.items)
+      productsStore.pagination.total = res.total;
+      productsStore.pagination.has_more = res.has_more;
+      if (productsStore?.products?.length) {
+        productsStore.products.push(res.items);
       } else {
         productsStore.products = res.items;
       }
@@ -155,7 +168,7 @@ const onLoad = async (index: number, done: (stop?: boolean) => void) => {
     done(true);
     return;
   }
-  await fetchProducts()
+  await fetchProducts();
   productsStore.pagination.offset += productsStore.pagination.limit;
   done();
 };

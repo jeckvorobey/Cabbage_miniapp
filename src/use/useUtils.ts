@@ -16,7 +16,7 @@ function accessLevel(data: any) {
       return 'Администратор'
     case EPermissionTypes.MANAGER:
       manager.value = true;
-      return 'Мунуджер'
+      return 'Менеджер'
     case EPermissionTypes.USER:
       user.value = true;
       return 'Пользователь'
