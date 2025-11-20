@@ -1,1 +1,0 @@
-import{r as e}from"./index-CJK5khiL.js";const n=e("Главная"),t=e(!0),a=e(!0),s=e(!1);function c(r){switch(r){case 1:return t.value=!0,"Администратор";case 2:return a.value=!0,"Мунуджер";case 9:return s.value=!0,"Пользователь";default:return}}export{t as a,c as b,n as i};

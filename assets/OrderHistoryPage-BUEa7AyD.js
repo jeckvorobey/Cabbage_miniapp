@@ -1,1 +1,0 @@
-import{_ as r}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{ah as t,ai as o,ao as a}from"./index-CJK5khiL.js";const s={};function n(c,e){return o(),t("div",null,[...e[0]||(e[0]=[a("h6",{class:"text-center q-mt-md"},"История заказов",-1)])])}const f=r(s,[["render",n]]);export{f as default};
