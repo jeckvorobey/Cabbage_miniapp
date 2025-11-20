@@ -4,11 +4,13 @@
       <q-form greedy>
         <q-card-section>
           <div class="text-h6 q-mb-md">Добавление товара</div>
-          <q-input v-model="product.name" label="Наименование товара" stack-label />
-          <q-input v-model="product.qty" label="Количество" stack-label />
+          <q-input v-model="product.name" class="q-mb-xs" outlined label="Наименование товара" />
+          <q-input v-model="product.qty" class="q-mb-xs" outlined label="Количество"/>
           <q-select
             v-model="product.category_id"
             :options="categoriesStore.categories"
+            class="q-mb-xs"
+            outlined
             label="Тип тары"
             emit-value
             map-options
@@ -18,6 +20,7 @@
           <q-select
             v-model="product.unit_id"
             :options="unitsStore.units"
+            outlined
             label="Вес"
             emit-value
             map-options
@@ -45,7 +48,7 @@
             </template>
           </q-uploader>
           <q-img
-            v-else
+            v-if="image"
             class="q-mt-sm"
             :src="image" />
         </q-card-section>
@@ -65,6 +68,7 @@
   import { useUnitsStore } from 'src/stores/unitsStore';
   import { ref } from 'vue'
 
+  const emit = defineEmits(['refresh-data']);
   const $q = useQuasar();
   const productsStore = useProductsStore();
   const categoriesStore = useCategoriesStore();
@@ -120,6 +124,8 @@
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      emit('refresh-data');
     }
   }
 

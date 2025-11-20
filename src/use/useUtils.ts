@@ -1,28 +1,28 @@
 import { ref } from 'vue';
 export enum EPermissionTypes {
-  ADMIN = '1',
-  MANAGER = '2',
-  USER = '9',
+  ADMIN = 1,
+  MANAGER = 2,
+  USER = 9
 }
-
+const isActiveMenu = ref('Главная')
 const admin = ref<boolean>(true);
 const manager = ref<boolean>(true);
 const user = ref<boolean>(false);
 
 function accessLevel(data: any) {
-  switch (data.role) {
+  switch (data) {
     case EPermissionTypes.ADMIN:
       admin.value = true;
-      break;
+      return 'Администратор'
     case EPermissionTypes.MANAGER:
       manager.value = true;
-      break;
-      case EPermissionTypes.USER:
-        user.value = true;
-        break;
+      return 'Мунуджер'
+    case EPermissionTypes.USER:
+      user.value = true;
+      return 'Пользователь'
     default:
-      break;
+      return
   }
 }
 
-export { admin, manager, accessLevel };
+export { isActiveMenu, admin, manager, accessLevel };

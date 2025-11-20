@@ -4,6 +4,12 @@ import { ref } from 'vue';
 
 export const useProductsStore = defineStore('Products', () => {
   const products = ref();
+  const pagination = ref<any>({
+    offset: 0,
+    limit: 20,
+    total: 0,
+    has_more: true,
+  })
 
   async function createProduct(product: any) {
     return client
@@ -71,5 +77,5 @@ export const useProductsStore = defineStore('Products', () => {
   }
 
 
-  return { products, createProduct, fetchProducts, deleteProduct, fetchProductsById, uploadFile };
+  return {pagination, products, createProduct, fetchProducts, deleteProduct, fetchProductsById, uploadFile };
 });

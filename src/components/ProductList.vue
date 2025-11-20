@@ -62,8 +62,9 @@
       Все данные загружены.
     </div> -->
     <AddProductModal
+      v-if="showProductModal"
       v-model="showProductModal"
-      label="test" />
+      @refresh-data="refreshData()" />
   </q-infinite-scroll>
 </template>
 
@@ -82,11 +83,6 @@ const productsStore = useProductsStore();
 const orderStore = useOrderStore();
 const allDataLoaded = ref(false);
 const showProductModal = ref(false)
-const pagination = ref({
-  offset: 0,
-  limit: 20,
-  total: 0
-})
 
 onMounted(async () => {
   try {
@@ -99,16 +95,21 @@ onMounted(async () => {
   }
 });
 
+function refreshData() {
+  fetchProducts()
+}
+
 async function fetchProducts() {
   try {
     $q.loading.show();
-    const res = await productsStore.fetchProducts(pagination.value);
+    const res = await productsStore.fetchProducts(productsStore.pagination);
     if (res) {
+      productsStore.pagination.total = res.total
+      productsStore.pagination.has_more = res.has_more
       if(productsStore?.products?.length) {
         productsStore.products.push(res.items)
       } else {
         productsStore.products = res.items;
-        pagination.value.total = res.total
       }
     }
   } catch (e) {
@@ -148,28 +149,16 @@ function recalculationGoods(newGoods: any, oldGoods: any) {
   if (newGoods.oldPrice) newGoods.oldPrice += oldGoods.oldPrice;
 }
 
-async function onLoad (index: number, done: (stop?: boolean) => void) {
-  if (allDataLoaded.value) {
+const onLoad = async (index: number, done: (stop?: boolean) => void) => {
+  if (!productsStore.pagination.has_more) {
+    allDataLoaded.value = true;
     done(true);
     return;
   }
-  try {
-    const prevLength = productsStore.products?.length ?? 0;
-    await fetchProducts();
-    const newLength = productsStore.products?.length ?? 0;
-    if (newLength === prevLength) {
-      allDataLoaded.value = true;
-      done(true);
-      return;
-    }
-    pagination.value.offset++;
-    done();
-  } catch (e) {
-    console.error('[ProductList] onLoad error', e);
-    done(true);
-  }
-}
-
+  await fetchProducts()
+  productsStore.pagination.offset += productsStore.pagination.limit;
+  done();
+};
 </script>
 
 <style scoped lang="scss">

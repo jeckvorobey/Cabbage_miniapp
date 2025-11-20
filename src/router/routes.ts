@@ -5,7 +5,8 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     meta: {
       hasAuth: true,
-      headerTitle: ''
+      headerTitle: '',
+      sorting: ''
     },
     redirect: '/dashboard',
     component: () => import('layouts/MainLayout.vue'),
