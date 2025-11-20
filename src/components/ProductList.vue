@@ -78,10 +78,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, toRaw } from 'vue';
 import { useProductsStore } from 'stores/productsStore.js';
 import { useOrderStore } from 'src/stores/orderStore';
-import { toRaw } from 'vue';
 import { useQuasar } from 'quasar';
 import AddProductModal from 'components/AddProductModal.vue';
 import { useUnitsStore } from 'src/stores/unitsStore';
