@@ -1,8 +1,11 @@
 export interface IProduct {
-  id?: number
+  id?: number | null
   name?: string
   description?: string
-  category_id?: number
-  unit_id?: number
-  qty?: number
+  category_id?: number | null
+  unit_id?: number | null
+  qty?: number | null
+  origin_country?: string
+  price?: number | null
+  images?: any
 }
