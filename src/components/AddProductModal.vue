@@ -1,10 +1,33 @@
 <template>
   <q-dialog ref="dialogRef" v-model="showDialog" persistent>
     <q-card class="add-product">
-      <q-form greedy>
+      <q-form v-if="isManager" greedy>
         <q-card-section>
           <div class="text-h6 q-mb-md">Добавление товара</div>
+          <q-uploader
+            class="q-mt-sm"
+            ref="uploaderRef"
+            color="primary"
+            flat
+            @added="addFile">
+            <template #header=""/>
+            <template #list="">
+              <q-uploader-add-trigger />
+              <div class="text-center upload-title">
+                <q-icon
+                  class="q-mr-sm"
+                  name="note_add"
+                  size="24px" />
+                <span>Загрузить картинку</span>
+              </div>
+            </template>
+          </q-uploader>
+          <q-img
+            v-if="image"
+            class="q-mt-sm"
+            :src="image" />
           <q-input v-model="product.name" class="q-mb-xs" outlined label="Наименование товара" />
+          <q-input v-model="product.price" class="q-mb-xs" outlined label="Стоимость товара"/>
           <q-input v-model="product.qty" class="q-mb-xs" outlined label="Количество"/>
           <q-select
             v-model="product.category_id"
@@ -28,33 +51,26 @@
             option-value="id"
           />
           <q-input class="q-mt-sm" v-model="product.description" filled type="textarea" rows="2" label="Описание"/>
-          <q-uploader
-            v-if="!image && product.id"
-            class="q-mt-sm"
-            ref="uploaderRef"
-            color="primary"
-            flat
-            @added="addFile">
-            <template #header=""/>
-            <template #list="">
-              <q-uploader-add-trigger />
-              <div class="text-center upload-title">
-                <q-icon
-                  class="q-mr-sm"
-                  name="note_add"
-                  size="24px" />
-                <span>Загрузить картинку</span>
-              </div>
-            </template>
-          </q-uploader>
-          <q-img
-            v-if="image"
-            class="q-mt-sm"
-            :src="image" />
         </q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup color="red" label="Отмена" />
-          <q-btn color="primary" label="Подтвердить" @click="addProduct()"/>
+          <q-btn v-close-popup color="primary" label="Подтвердить" @click="addProduct()"/>
+        </q-card-actions>
+      </q-form>
+      <q-form v-else>
+        <q-card-section>
+          <q-img
+            class="q-mt-sm"
+            :src="product?.images" />
+            <div class="text-h6 text-center">{{ product.name }}</div>
+            <div>Стоимость товара: {{ product.price }}</div>
+            <div>Количество: {{ product.qty }}</div>
+            <div>Вес: 11 </div>
+            <div>Описание: {{ product.description }} </div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn v-close-popup color="red" label="Отмена" />
+          <q-btn v-close-popup color="primary" label="Добавить в карзину" @click="addOrder()"/>
         </q-card-actions>
       </q-form>
     </q-card>
@@ -63,26 +79,38 @@
 
 <script lang="ts" setup>
   import { useDialogPluginComponent, useQuasar } from 'quasar';
+  import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
+  import { useAuthStore } from 'src/stores/authStore';
   import { useCategoriesStore } from 'src/stores/categoriesStore';
   import { useProductsStore } from 'src/stores/productsStore';
   import { useUnitsStore } from 'src/stores/unitsStore';
-  import { ref } from 'vue'
+  import type { IProduct } from 'src/types/product.interface';
+  import { computed, onMounted, ref } from 'vue'
 
-  const emit = defineEmits(['refresh-data']);
+  const props = defineProps<{ productData: any; }>();
+  const emit = defineEmits(['refresh-data', 'add-product']);
   const $q = useQuasar();
   const productsStore = useProductsStore();
   const categoriesStore = useCategoriesStore();
   const { dialogRef } = useDialogPluginComponent()
+  const authStore = useAuthStore();
+  const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
   const unitsStore = useUnitsStore()
   const showDialog = ref(false)
   const image = ref()
-  const product = ref({
+  const product = ref<IProduct>({
     id: null,
     name: "",
-    category_id: '',
-    unit_id: '',
+    price: null,
+    category_id: null,
+    unit_id: null,
     qty: null,
-    description: ""
+    description: "",
+    images: ''
+  })
+
+  onMounted(() => {
+    if (props.productData) product.value = props.productData
   })
 
   async function addProduct() {
@@ -94,10 +122,15 @@
           message: `Товар успешно создан, теперь вам необходимо добавить картинку`,
           color: 'primary',
         });
+        emit('refresh-data');
       }
     } catch (e) {
       console.error(e);
     }
+  }
+
+  function addOrder() {
+    emit('add-product', product.value);
   }
 
   function addFile(files: any) {
@@ -107,27 +140,29 @@
       // eslint-disable-next-line
       if(reader?.result) image.value = String(reader.result)
     }
-    uploadFile(files[0])
+    const data = new FormData()
+    data.append('file', files[0])
+    product.value.images = data
   }
 
-  async function uploadFile(files: any) {
-    const data = new FormData()
-    data.append('file', files)
-    try {
-      const res = await productsStore.uploadFile(product.value.id!, data);
-      if (res) {
-        $q.notify({
-          message: `Картинка успешно добавлена`,
-          color: 'primary',
-        });
-        dialogRef.value?.hide()
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      emit('refresh-data');
-    }
-  }
+  // async function uploadFile(files: any) {
+  //   const data = new FormData()
+  //   data.append('file', files)
+  //   try {
+  //     const res = await productsStore.uploadFile(product.value.id!, data);
+  //     if (res) {
+  //       $q.notify({
+  //         message: `Картинка успешно добавлена`,
+  //         color: 'primary',
+  //       });
+  //       dialogRef.value?.hide()
+  //     }
+  //   } catch (e) {
+  //     console.error(e);
+  //   } finally {
+  //     emit('refresh-data');
+  //   }
+  // }
 
 </script>
 

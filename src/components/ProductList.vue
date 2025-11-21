@@ -2,7 +2,7 @@
   <q-infinite-scroll @load="onLoad" :offset="250">
     <q-btn
       v-if="isManager"
-      @click="showProductModal = !showProductModal"
+      @click="productModal()"
       class="full-width q-mb-sm"
       color="secondary"
       label="Добавление товара"
@@ -11,7 +11,7 @@
       <div class="col-6" v-for="(item, index) in productsStore.products" :key="index">
         <q-card class="my-card radius-12 full-height" style="border-radius: 20px" flat bordered>
           <q-card-section class="q-pa-sm full-height">
-            <div>
+            <div @click="productModal(item)">
               <q-img
                 class="cursor-pointer"
                 src="https://media.istockphoto.com/id/1141529240/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B5-%D1%8F%D0%B1%D0%BB%D0%BE%D0%BA%D0%BE-%D0%B2-%D0%BF%D0%BB%D0%BE%D1%81%D0%BA%D0%BE%D0%BC-%D1%81%D1%82%D0%B8%D0%BB%D0%B5-%D0%B8%D0%BB%D0%BB%D1%8E%D1%81%D1%82%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%B0.jpg?s=612x612&w=0&k=20&c=B-KXrA7VTm8E6t4jk9qcuFz8bDFzTJwiIGaYGYUcsZI="
@@ -72,7 +72,9 @@
     <AddProductModal
       v-if="showProductModal"
       v-model="showProductModal"
+      :productData="product"
       @refresh-data="refreshData()"
+      @add-product="addOrder"
     />
   </q-infinite-scroll>
 </template>
@@ -86,6 +88,7 @@ import AddProductModal from 'components/AddProductModal.vue';
 import { useUnitsStore } from 'src/stores/unitsStore';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
 import { useAuthStore } from 'stores/authStore';
+import type { IProduct } from 'src/types/product.interface';
 
 const $q = useQuasar();
 const unitsStore = useUnitsStore();
@@ -95,6 +98,7 @@ const authStore = useAuthStore();
 const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
 const allDataLoaded = ref(false);
 const showProductModal = ref(false);
+const product = ref<IProduct>()
 
 onMounted(async () => {
   try {
@@ -171,6 +175,11 @@ const onLoad = async (index: number, done: (stop?: boolean) => void) => {
   productsStore.pagination.offset += productsStore.pagination.limit;
   done();
 };
+
+function productModal(it?: IProduct) {
+  product.value = it
+  showProductModal.value = !showProductModal.value
+}
 </script>
 
 <style scoped lang="scss">
