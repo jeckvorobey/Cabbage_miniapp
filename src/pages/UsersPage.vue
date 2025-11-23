@@ -59,7 +59,7 @@ const pagination = ref({
 
 const roleData = ref([
   {name: 'Администратор', value: 1},
-  {name: 'Мунуджер', value: 2},
+  {name: 'Менеджер', value: 2},
   {name: 'Пользователь', value: 9},
 ])
 
@@ -110,6 +110,7 @@ async function changeRole(id: number, role: number) {
     $q.loading.show();
     const res = await usersStore.updateUserRole(id, role)
     if (res) {
+      fetchUsers()
       $q.notify({
         message: `Роль изменена`,
         color: 'primary',

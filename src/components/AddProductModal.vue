@@ -59,10 +59,45 @@
       </q-form>
       <q-form v-else>
         <q-card-section>
-          <q-img
-            class="q-mt-sm"
-            :src="product?.images" />
-            <div class="text-h6 text-center">{{ product.name }}</div>
+          <div>
+            <q-carousel
+              v-if="product?.images?.length"
+              swipeable
+              animated
+              arrows
+              v-model="slide"
+              v-model:fullscreen="fullscreen"
+              infinite
+              height="250px"
+            >
+              <q-carousel-slide
+                v-for="(image, index) in product.images"
+                :key="index"
+                :name="index"
+                :img-src="image.file_path"
+                class="card-image"
+              />
+              <template v-slot:control>
+                <q-carousel-control
+                  position="bottom-right"
+                  :offset="[18, 18]"
+                >
+                  <q-btn
+                    push round dense color="white" text-color="primary"
+                    :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                    @click="fullscreen = !fullscreen"
+                  />
+                </q-carousel-control>
+              </template>
+            </q-carousel>
+            <div v-else>
+              <q-img
+                class="q-mt-sm"
+                :src="getImage('/card-shop.jpg')" />
+            </div>
+          </div>
+
+            <div class="text-h6 text-center q-mt-sm">{{ product.name }}</div>
             <div>Стоимость товара: {{ product.price }}</div>
             <div>Количество: {{ product.qty }}</div>
             <div>Вес: 11 </div>
@@ -85,11 +120,14 @@
   import { useProductsStore } from 'src/stores/productsStore';
   import { useUnitsStore } from 'src/stores/unitsStore';
   import type { IProduct } from 'src/types/product.interface';
+  import { getImage } from 'src/use/useUtils';
   import { computed, onMounted, ref } from 'vue'
 
   const props = defineProps<{ productData: any; }>();
   const emit = defineEmits(['refresh-data', 'add-product']);
   const $q = useQuasar();
+  const slide = ref(1)
+  const fullscreen = ref(false)
   const productsStore = useProductsStore();
   const categoriesStore = useCategoriesStore();
   const { dialogRef } = useDialogPluginComponent()
@@ -169,5 +207,9 @@
 <style scoped lang="scss">
 .add-product {
   min-width: 90svw;
+}
+.card-image {
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 </style>

@@ -9,12 +9,12 @@
     ></q-btn>
     <div class="product-card row q-col-gutter-xs">
       <div class="col-6" v-for="(item, index) in productsStore.products" :key="index">
-        <q-card class="my-card radius-12 full-height" style="border-radius: 20px" flat bordered>
+        <q-card class="my-card radius-16 full-height"  flat bordered>
           <q-card-section class="q-pa-sm full-height">
             <div @click="productModal(item)">
               <q-img
-                class="cursor-pointer"
-                src="https://media.istockphoto.com/id/1141529240/ru/%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F/%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B5-%D1%8F%D0%B1%D0%BB%D0%BE%D0%BA%D0%BE-%D0%B2-%D0%BF%D0%BB%D0%BE%D1%81%D0%BA%D0%BE%D0%BC-%D1%81%D1%82%D0%B8%D0%BB%D0%B5-%D0%B8%D0%BB%D0%BB%D1%8E%D1%81%D1%82%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80%D0%B0.jpg?s=612x612&w=0&k=20&c=B-KXrA7VTm8E6t4jk9qcuFz8bDFzTJwiIGaYGYUcsZI="
+                class="cursor-pointer radius-8"
+                :src="item?.primary_image ? item.primary_image : getImage('/card-shop.jpg')"
               />
             </div>
             <q-card-section class="q-pa-sm">
@@ -72,7 +72,7 @@
     <AddProductModal
       v-if="showProductModal"
       v-model="showProductModal"
-      :productData="product"
+      :productData="test"
       @refresh-data="refreshData()"
       @add-product="addOrder"
     />
@@ -89,6 +89,7 @@ import { useUnitsStore } from 'src/stores/unitsStore';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
 import { useAuthStore } from 'stores/authStore';
 import type { IProduct } from 'src/types/product.interface';
+import { getImage } from 'src/use/useUtils';
 
 const $q = useQuasar();
 const unitsStore = useUnitsStore();
@@ -99,6 +100,52 @@ const { isManager } = usePermissionVisibility(computed(() => authStore.user?.rol
 const allDataLoaded = ref(false);
 const showProductModal = ref(false);
 const product = ref<IProduct>()
+
+const test = {
+    "id": 1,
+    "name": "Огурцы",
+    "category_id": 1,
+    "unit_symbol": "gr",
+    "price": 0,
+    "old_price": 0,
+    "qty": 10,
+    "primary_image": null,
+    "images": [
+        {
+            "file_path": "https://cdn.quasar.dev/img/mountains.jpg",
+            "is_primary": false,
+            "sort_order": 0,
+            "id": 1,
+            "product_id": 1,
+            "created_at": "2025-11-15T14:00:25.086465Z"
+        },
+        {
+            "file_path": "https://cdn.quasar.dev/img/parallax1.jpg",
+            "is_primary": false,
+            "sort_order": 0,
+            "id": 2,
+            "product_id": 1,
+            "created_at": "2025-11-15T15:31:47.663421Z"
+        },
+        {
+            "file_path": "https://cdn.quasar.dev/img/mountains.jpg",
+            "is_primary": false,
+            "sort_order": 0,
+            "id": 3,
+            "product_id": 1,
+            "created_at": "2025-11-15T15:33:58.119168Z"
+        },
+        {
+            "file_path": "https://cdn.quasar.dev/img/parallax1.jpg",
+            "is_primary": false,
+            "sort_order": 0,
+            "id": 4,
+            "product_id": 1,
+            "created_at": "2025-11-15T15:34:55.047858Z"
+        }
+    ],
+    "origin_country": null
+}
 
 onMounted(async () => {
   try {

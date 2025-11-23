@@ -25,4 +25,8 @@ function accessLevel(data: any) {
   }
 }
 
-export { isActiveMenu, admin, manager, accessLevel };
+const getImage = (path: string) => {
+  return `/images/${path}`;
+};
+
+export { isActiveMenu, admin, manager, accessLevel, getImage };
