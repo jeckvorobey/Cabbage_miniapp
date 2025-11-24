@@ -25,7 +25,9 @@
                   >{{ item.old_price }} ₽</span
                 >
                 / {{ item.unit_symbol }}
+                <div class="text-grey">{{ item.origin_country }}</div>
               </div>
+
               <!-- <div class="q-mt-sm q-mb-xs text-center">
                 Итого:
                 <span class="text-bold">{{ item.price * item.quantity }}</span> ₽

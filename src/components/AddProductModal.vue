@@ -50,6 +50,7 @@
             option-label="name"
             option-value="id"
           />
+          <q-input v-model="product.origin_country" class="q-mb-xs" outlined label="Страна происхождения"/>
           <q-input class="q-mt-sm" v-model="product.description" filled type="textarea" rows="2" label="Описание"/>
         </q-card-section>
         <q-card-actions align="right">
@@ -101,7 +102,8 @@
             <div>Стоимость товара: {{ product.price }}</div>
             <div>Количество: {{ product.qty }}</div>
             <div>Вес: 11 </div>
-            <div>Описание: {{ product.description }} </div>
+            <div>Страна происхождения: {{ product.origin_country }}</div>
+            <div>Описание: {{ product.description }}</div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup color="red" label="Отмена" />
@@ -144,7 +146,8 @@
     unit_id: null,
     qty: null,
     description: "",
-    images: ''
+    images: '',
+    origin_country: ''
   })
 
   onMounted(() => {
@@ -153,11 +156,14 @@
 
   async function addProduct() {
     try {
-      const res = await productsStore.createProduct(product.value);
+      const productMethod = product.value.id
+        ? productsStore.updateProduct
+        : productsStore.createProduct
+      const res = await productMethod(product.value)
       if (res) {
         product.value.id = res.id
         $q.notify({
-          message: `Товар успешно создан, теперь вам необходимо добавить картинку`,
+          message: `Успешно сохранено`,
           color: 'primary',
         });
         emit('refresh-data');
