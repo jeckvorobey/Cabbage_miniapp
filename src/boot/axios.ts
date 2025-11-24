@@ -1,6 +1,6 @@
 import { defineBoot } from '@quasar/app-vite/wrappers';
-import axios from 'axios';
 import type { AxiosInstance } from 'axios';
+import axios from 'axios';
 
 declare module 'vue' {
   interface ComponentCustomProperties {
@@ -16,7 +16,10 @@ const client = axios.create({
 
 client.interceptors.request.use((request) => {
   if (!request.headers.SkipAuth) {
-    request.headers.Authorization = 'X-Telegram-Id ' + localStorage.getItem('token');
+    const token = localStorage.getItem('token');
+    if (token) {
+      request.headers.Authorization = `Bearer ${token}`;
+    }
   }
 
   return request;
