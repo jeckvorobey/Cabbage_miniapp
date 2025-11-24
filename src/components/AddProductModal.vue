@@ -3,9 +3,8 @@
     <q-card class="add-product">
       <q-form v-if="isManager" greedy>
         <q-card-section>
-          <div class="text-h6 q-mb-md">Добавление товара</div>
+          <div class="text-h6 q-mb-md">{{ product.id ? 'Редактирование товара' : 'Добавление товара' }} </div>
           <q-uploader
-            class="q-mt-sm"
             ref="uploaderRef"
             color="primary"
             flat
@@ -22,10 +21,9 @@
               </div>
             </template>
           </q-uploader>
-          <q-img
-            v-if="image"
-            class="q-mt-sm"
-            :src="image" />
+          <div>
+            <ProductImgCarusel @refresh-data="fetchProduct()" v-if="product?.images?.length" :images="product.images"/>
+          </div>
           <q-input v-model="product.name" class="q-mb-xs" outlined label="Наименование товара" />
           <q-input v-model="product.price" class="q-mb-xs" outlined label="Стоимость товара"/>
           <q-input v-model="product.qty" class="q-mb-xs" outlined label="Количество"/>
@@ -61,43 +59,13 @@
       <q-form v-else>
         <q-card-section>
           <div>
-            <q-carousel
-              v-if="product?.images?.length"
-              swipeable
-              animated
-              arrows
-              v-model="slide"
-              v-model:fullscreen="fullscreen"
-              infinite
-              height="250px"
-            >
-              <q-carousel-slide
-                v-for="(image, index) in product.images"
-                :key="index"
-                :name="index"
-                :img-src="image.file_path"
-                class="card-image"
-              />
-              <template v-slot:control>
-                <q-carousel-control
-                  position="bottom-right"
-                  :offset="[18, 18]"
-                >
-                  <q-btn
-                    push round dense color="white" text-color="primary"
-                    :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                    @click="fullscreen = !fullscreen"
-                  />
-                </q-carousel-control>
-              </template>
-            </q-carousel>
+            <ProductImgCarusel v-if="product?.images?.length" :images="product.images"/>
             <div v-else>
               <q-img
                 class="q-mt-sm"
                 :src="getImage('/card-shop.jpg')" />
             </div>
           </div>
-
             <div class="text-h6 text-center q-mt-sm">{{ product.name }}</div>
             <div>Стоимость товара: {{ product.price }}</div>
             <div>Количество: {{ product.qty }}</div>
@@ -117,6 +85,7 @@
 <script lang="ts" setup>
   import { useDialogPluginComponent, useQuasar } from 'quasar';
   import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
+  import ProductImgCarusel from 'components/ProductImgCarusel.vue';
   import { useAuthStore } from 'src/stores/authStore';
   import { useCategoriesStore } from 'src/stores/categoriesStore';
   import { useProductsStore } from 'src/stores/productsStore';
@@ -128,8 +97,6 @@
   const props = defineProps<{ productData: any; }>();
   const emit = defineEmits(['refresh-data', 'add-product']);
   const $q = useQuasar();
-  const slide = ref(1)
-  const fullscreen = ref(false)
   const productsStore = useProductsStore();
   const categoriesStore = useCategoriesStore();
   const { dialogRef } = useDialogPluginComponent()
@@ -137,7 +104,6 @@
   const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
   const unitsStore = useUnitsStore()
   const showDialog = ref(false)
-  const image = ref()
   const product = ref<IProduct>({
     id: null,
     name: "",
@@ -164,10 +130,6 @@
       } else {
         res = productsStore.updateProduct(product.value)
       }
-      // const productMethod = product.value.id
-      //   ? productsStore.updateProduct
-      //   : productsStore.createProduct
-      // const res = await productMethod(product.value)
       if (res) {
         product.value.id = res.id
         $q.notify({
@@ -185,7 +147,6 @@
     emit('add-product', product.value);
   }
 
-
   function generateFormDate() {
     if (product?.value?.id) productFormData.append('id', product.value.id.toString())
     if (product.value?.name) productFormData.append('name', product.value.name)
@@ -197,38 +158,39 @@
     if (product.value?.origin_country) productFormData.append('origin_country', product.value.origin_country)
   }
 
-
   function addFile(files: any) {
     const reader = new FileReader()
     reader.readAsDataURL(files[0])
-    reader.onload = () => {
-      // eslint-disable-next-line
-      if(reader?.result) image.value = String(reader.result)
-    }
+    reader.onload = () => {}
     productFormData.append('images', files[0])
-    // const data = new FormData()
-    // data.append('file', files[0])
-    // product.value.images = data
+    if (product.value?.id) uploadFile(files[0])
   }
 
-  // async function uploadFile(files: any) {
-  //   const data = new FormData()
-  //   data.append('file', files)
-  //   try {
-  //     const res = await productsStore.uploadFile(product.value.id!, data);
-  //     if (res) {
-  //       $q.notify({
-  //         message: `Картинка успешно добавлена`,
-  //         color: 'primary',
-  //       });
-  //       dialogRef.value?.hide()
-  //     }
-  //   } catch (e) {
-  //     console.error(e);
-  //   } finally {
-  //     emit('refresh-data');
-  //   }
-  // }
+  async function uploadFile(files: any) {
+    const data = new FormData()
+    data.append('file', files)
+    try {
+      const res = await productsStore.uploadFile(product.value.id!, data);
+      if (res) {
+        fetchProduct()
+        $q.notify({
+          message: `Картинка успешно добавлена`,
+          color: 'primary',
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function fetchProduct() {
+    try {
+      const data = await productsStore.fetchProductsById(product.value.id!)
+      product.value = data
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
 </script>
 

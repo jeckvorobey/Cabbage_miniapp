@@ -104,7 +104,8 @@ async function fetchProducts(id?: number) {
       limit: productsStore.pagination.limit,
       category_ids: productsStore.pagination.category_ids
     }
-    await productsStore.fetchProducts(params);
+    const res = await productsStore.fetchProducts(params);
+    if (res) productsStore.products = res.items;
   } catch (e: any) {
     console.error(e);
   } finally {

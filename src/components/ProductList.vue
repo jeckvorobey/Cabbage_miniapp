@@ -115,6 +115,7 @@ onMounted(async () => {
 });
 
 function refreshData() {
+  productsStore.pagination.offset = 0
   fetchProducts();
 }
 

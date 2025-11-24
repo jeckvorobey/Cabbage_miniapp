@@ -34,7 +34,7 @@
     <q-dialog v-model="showCategoryModal">
       <q-card style="min-width: 90svw;">
         <q-card-section>
-          <div class="text-h6">Добавить категорию</div>
+          <div class="text-h6">{{ category.id ? 'Редактировать категорию' : 'Добавить категорию' }}</div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
@@ -52,7 +52,7 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Отмена" color="negative" v-close-popup />
-          <q-btn flat label="Добавить" color="primary" v-close-popup @click="addCategory()" />
+          <q-btn flat label="Подтвердить" color="primary" v-close-popup @click="addCategory()" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -78,6 +78,7 @@ const emptyCategory = ref<ICategorie>(
 )
 const category = ref<ICategorie>(
   {
+    id: null,
     name: '',
     parent_id: null,
     description: ''

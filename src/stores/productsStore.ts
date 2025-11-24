@@ -87,6 +87,18 @@ export const useProductsStore = defineStore('Products', () => {
       });
   }
 
+  async function deleteFile(id: number) {
+    return client
+      .delete(`/products/images/${id}`)
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(
+          '[ProductsStore] - An error occurred while createing via deleteFile',
+          err.message,
+        );
+        throw err;
+      });
+  }
 
-  return {pagination, products, createProduct, updateProduct, fetchProducts, deleteProduct, fetchProductsById, uploadFile };
+  return {pagination, products, createProduct, updateProduct, fetchProducts, deleteProduct, fetchProductsById, uploadFile, deleteFile };
 });
