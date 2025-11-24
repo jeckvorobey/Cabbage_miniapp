@@ -25,7 +25,9 @@
                   >{{ item.old_price }} ₽</span
                 >
                 / {{ item.unit_symbol }}
+                <div class="text-grey">{{ item.origin_country }}</div>
               </div>
+
               <!-- <div class="q-mt-sm q-mb-xs text-center">
                 Итого:
                 <span class="text-bold">{{ item.price * item.quantity }}</span> ₽
@@ -72,7 +74,7 @@
     <AddProductModal
       v-if="showProductModal"
       v-model="showProductModal"
-      :productData="test"
+      :productData="product"
       @refresh-data="refreshData()"
       @add-product="addOrder"
     />
@@ -100,52 +102,6 @@ const { isManager } = usePermissionVisibility(computed(() => authStore.user?.rol
 const allDataLoaded = ref(false);
 const showProductModal = ref(false);
 const product = ref<IProduct>()
-
-const test = {
-    "id": 1,
-    "name": "Огурцы",
-    "category_id": 1,
-    "unit_symbol": "gr",
-    "price": 0,
-    "old_price": 0,
-    "qty": 10,
-    "primary_image": null,
-    "images": [
-        {
-            "file_path": "https://cdn.quasar.dev/img/mountains.jpg",
-            "is_primary": false,
-            "sort_order": 0,
-            "id": 1,
-            "product_id": 1,
-            "created_at": "2025-11-15T14:00:25.086465Z"
-        },
-        {
-            "file_path": "https://cdn.quasar.dev/img/parallax1.jpg",
-            "is_primary": false,
-            "sort_order": 0,
-            "id": 2,
-            "product_id": 1,
-            "created_at": "2025-11-15T15:31:47.663421Z"
-        },
-        {
-            "file_path": "https://cdn.quasar.dev/img/mountains.jpg",
-            "is_primary": false,
-            "sort_order": 0,
-            "id": 3,
-            "product_id": 1,
-            "created_at": "2025-11-15T15:33:58.119168Z"
-        },
-        {
-            "file_path": "https://cdn.quasar.dev/img/parallax1.jpg",
-            "is_primary": false,
-            "sort_order": 0,
-            "id": 4,
-            "product_id": 1,
-            "created_at": "2025-11-15T15:34:55.047858Z"
-        }
-    ],
-    "origin_country": null
-}
 
 onMounted(async () => {
   try {

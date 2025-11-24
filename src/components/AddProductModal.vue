@@ -29,6 +29,7 @@
           <q-input v-model="product.name" class="q-mb-xs" outlined label="Наименование товара" />
           <q-input v-model="product.price" class="q-mb-xs" outlined label="Стоимость товара"/>
           <q-input v-model="product.qty" class="q-mb-xs" outlined label="Количество"/>
+          <q-input v-model="product.origin_country" class="q-mb-xs" outlined label="Страна происхождения"/>
           <q-select
             v-model="product.category_id"
             :options="categoriesStore.categories"
@@ -101,7 +102,8 @@
             <div>Стоимость товара: {{ product.price }}</div>
             <div>Количество: {{ product.qty }}</div>
             <div>Вес: 11 </div>
-            <div>Описание: {{ product.description }} </div>
+            <div>Страна происхождения: {{ product.origin_country }}</div>
+            <div>Описание: {{ product.description }}</div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup color="red" label="Отмена" />
@@ -144,8 +146,10 @@
     unit_id: null,
     qty: null,
     description: "",
-    images: ''
+    images: '',
+    origin_country: ''
   })
+  const productFormData = new FormData()
 
   onMounted(() => {
     if (props.productData) product.value = props.productData
@@ -153,11 +157,21 @@
 
   async function addProduct() {
     try {
-      const res = await productsStore.createProduct(product.value);
+      let res = null
+      if (!product.value?.id) {
+        generateFormDate()
+        res = await productsStore.createProduct(productFormData)
+      } else {
+        res = productsStore.updateProduct(product.value)
+      }
+      // const productMethod = product.value.id
+      //   ? productsStore.updateProduct
+      //   : productsStore.createProduct
+      // const res = await productMethod(product.value)
       if (res) {
         product.value.id = res.id
         $q.notify({
-          message: `Товар успешно создан, теперь вам необходимо добавить картинку`,
+          message: `Успешно сохранено`,
           color: 'primary',
         });
         emit('refresh-data');
@@ -171,6 +185,19 @@
     emit('add-product', product.value);
   }
 
+
+  function generateFormDate() {
+    if (product?.value?.id) productFormData.append('id', product.value.id.toString())
+    if (product.value?.name) productFormData.append('name', product.value.name)
+    if (product.value?.price) productFormData.append('price', product.value.price.toString())
+    if (product.value?.category_id) productFormData.append('category_id', product.value.category_id.toString())
+    if (product.value?.unit_id) productFormData.append('unit_id', product.value.unit_id.toString())
+    if (product.value?.qty) productFormData.append('qty', product.value.qty.toString())
+    if (product.value?.description) productFormData.append('description', product.value.description)
+    if (product.value?.origin_country) productFormData.append('origin_country', product.value.origin_country)
+  }
+
+
   function addFile(files: any) {
     const reader = new FileReader()
     reader.readAsDataURL(files[0])
@@ -178,9 +205,10 @@
       // eslint-disable-next-line
       if(reader?.result) image.value = String(reader.result)
     }
-    const data = new FormData()
-    data.append('file', files[0])
-    product.value.images = data
+    productFormData.append('images', files[0])
+    // const data = new FormData()
+    // data.append('file', files[0])
+    // product.value.images = data
   }
 
   // async function uploadFile(files: any) {

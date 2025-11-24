@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { client } from 'src/boot/axios';
+import type { IProduct } from 'src/types/product.interface';
 import { ref } from 'vue';
 
 export const useProductsStore = defineStore('Products', () => {
@@ -22,6 +23,16 @@ export const useProductsStore = defineStore('Products', () => {
         );
         throw err;
       });
+  }
+
+  async function updateProduct( product: IProduct) {
+    return client
+      .patch(`/products/${product.id}`, product )
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error('[ProductsStore] - An error occurred while creating via updateProduct', err.message)
+        throw err
+      })
   }
 
   async function fetchProductsById(id: number) {
@@ -77,5 +88,5 @@ export const useProductsStore = defineStore('Products', () => {
   }
 
 
-  return {pagination, products, createProduct, fetchProducts, deleteProduct, fetchProductsById, uploadFile };
+  return {pagination, products, createProduct, updateProduct, fetchProducts, deleteProduct, fetchProductsById, uploadFile };
 });
