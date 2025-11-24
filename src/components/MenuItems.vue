@@ -99,7 +99,12 @@ async function fetchProducts(id?: number) {
       delete productsStore.pagination.category_ids
       productsStore.pagination.offset = 0
     }
-    await productsStore.fetchProducts(productsStore.pagination);
+    const params = {
+      offset: productsStore.pagination.offset,
+      limit: productsStore.pagination.limit,
+      category_ids: productsStore.pagination.category_ids
+    }
+    await productsStore.fetchProducts(params);
   } catch (e: any) {
     console.error(e);
   } finally {
