@@ -12,7 +12,7 @@ export const useProductsStore = defineStore('Products', () => {
     has_more: true,
   })
 
-  async function createProduct(product: IProduct) {
+  async function createProduct(product: any) {
     return client
       .post<any>('products', product)
       .then((res) => res.data)
