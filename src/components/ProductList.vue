@@ -115,13 +115,18 @@ onMounted(async () => {
 });
 
 function refreshData() {
+  productsStore.pagination.offset = 0
   fetchProducts();
 }
 
 async function fetchProducts() {
   try {
     $q.loading.show();
-    const res = await productsStore.fetchProducts(productsStore.pagination);
+    const params = {
+      offset: productsStore.pagination.offset,
+      limit: productsStore.pagination.limit,
+    }
+    const res = await productsStore.fetchProducts(params);
     if (res) {
       productsStore.pagination.total = res.total;
       productsStore.pagination.has_more = res.has_more;
