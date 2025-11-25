@@ -13,6 +13,14 @@
               <q-item-label>{{ unit.symbol }}</q-item-label>
             </q-item-section>
             <q-item-action>
+              <q-btn
+                v-if="isManager"
+                flat
+                round
+                color="red"
+                icon="delete"
+                @click="RemovaUnit(unit.id!)"
+              />
               <q-btn flat round color="primary" icon="mode_edit" />
             </q-item-action>
           </q-item>
@@ -29,11 +37,15 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { useUnitsStore } from 'src/stores/unitsStore';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import AddUnitModal from 'components/AddUnitModal.vue'
+import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
+import { useAuthStore } from 'src/stores/authStore';
 
-const unitsStore = useUnitsStore()
 const $q = useQuasar();
+const authStore = useAuthStore();
+const unitsStore = useUnitsStore()
+const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
 const showUnitModal = ref(false)
 
 onMounted(() => {
@@ -51,17 +63,25 @@ async function fetchUnits() {
   }
 }
 
-// function deletedUnit(unit: any) {
-//   try {
-//     $q.loading.show();
-//   } catch (e) {
-//     console.error(e);
-//   } finally {
-//     $q.notify({
-//       message: `${unit.name} удален`,
-//       color: 'primary',
-//     });
-//     $q.loading.hide();
-//   }
-// }
+function RemovaUnit(id: number) {
+  $q.dialog({
+    title: 'Удаление единицы измерения',
+    message: 'Вы уверенны что хотите удалить единицу измерения?',
+    cancel: true,
+    persistent: true
+  }).onOk(() => {
+    deleteUnit(id)
+  })
+}
+
+async function deleteUnit(id: number) {
+  try {
+    await unitsStore.deleteUnit(id)
+  } catch (e) {
+    console.error(e);
+  } finally {
+    fetchUnits()
+  }
+}
+
 </script>
