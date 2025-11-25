@@ -172,14 +172,6 @@ const itemMenuManager = ref<IMenuItems[]>([
     icon: 'settings',
     children: [
       {
-        name: 'Пользователи',
-        icon: 'people',
-        hide_buttons: true,
-        pathName: 'users',
-        path: 'users',
-        disabled: !admin.value,
-      },
-      {
         name: 'Единица измерения',
         icon: 'equalizer',
         hide_buttons: true,
