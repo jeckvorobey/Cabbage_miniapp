@@ -67,9 +67,8 @@
             </div>
           </div>
             <div class="text-h6 text-center q-mt-sm">{{ product.name }}</div>
-            <div>Стоимость товара: {{ product.price }}</div>
-            <div>Количество: {{ product.qty }}</div>
-            <div>Вес: 11 </div>
+            <div class="text-bold">Стоимость товара: {{ product.price }}</div>
+            <div>Вес: 11 {{product.unit.name }}.</div>
             <div>Страна происхождения: {{ product.origin_country }}</div>
             <div>Описание: {{ product.description }}</div>
         </q-card-section>
