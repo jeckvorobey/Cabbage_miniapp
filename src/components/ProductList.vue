@@ -5,7 +5,7 @@
       @click="productModal()"
       class="full-width q-mb-sm"
       color="secondary"
-      label="Добавление товара"
+      label="Добавить товар"
     ></q-btn>
     <div class="product-card row q-col-gutter-xs">
       <div class="col-6" v-for="(item, index) in productsStore.products" :key="index">
