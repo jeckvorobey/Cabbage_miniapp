@@ -96,8 +96,8 @@ function categoryModal(cat?: ICategorie) {
 
 function RemovaCategory(id: number) {
   $q.dialog({
-      title: 'Удаление картинки',
-      message: 'Вы уверенны что хотите удалить картинку?',
+      title: 'Удаление категорию',
+      message: 'Вы уверенны что хотите удалить категорию?',
       cancel: true,
       persistent: true
     }).onOk(() => {
