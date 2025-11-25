@@ -45,18 +45,18 @@ export const useCategoriesStore = defineStore('Categories', () => {
       });
   }
 
-  async function deleteCategories(id: number) {
+  async function deleteCategorie(id: number) {
     return client
       .delete(`categories/${id}`)
       .then((res) => res.data)
       .catch((err) => {
         console.error(
-          '[CategoriesStore] - An error occurred while deleting via Categori',
+          '[CategoriesStore] - An error occurred while deleting via deleteCategorie',
           err.message,
         );
         throw err;
       });
   }
 
-  return {categories, createCategories, fetchCategories, updateCategorie, deleteCategories };
+  return {categories, createCategories, fetchCategories, updateCategorie, deleteCategorie };
 });
