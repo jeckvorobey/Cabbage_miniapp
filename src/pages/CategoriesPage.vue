@@ -16,7 +16,7 @@
               round
               color="red"
               icon="delete"
-              @click="deleteCategory(categorie)"
+              @click="RemovaCategory(categorie.id)"
             />
             <q-btn
               v-if="admin"
@@ -39,14 +39,14 @@
 
         <q-card-section class="q-pt-none">
           <q-input v-model="category.name" class="q-mb-xs" outlined label="Наиминование категории" />
-          <q-select
+          <!-- <q-select
             v-model="category.parent_id"
             :options="['1','2']"
             outlined
-            label="Тип тары"
+            label="Родителькая категория"
             emit-value
             map-options
-          />
+          /> -->
           <q-input class="q-mt-sm" v-model="category.description" filled type="textarea" rows="2" label="Описание"/>
         </q-card-section>
 
@@ -94,8 +94,25 @@ function categoryModal(cat?: ICategorie) {
   showCategoryModal.value = !showCategoryModal.value
 }
 
-function deleteCategory(id?: number) {
-  console.log(id);
+function RemovaCategory(id: number) {
+  $q.dialog({
+      title: 'Удаление картинки',
+      message: 'Вы уверенны что хотите удалить картинку?',
+      cancel: true,
+      persistent: true
+    }).onOk(() => {
+      deleteCategory(id)
+    })
+}
+
+async function deleteCategory(id: number) {
+  try {
+      await categoriesStore.deleteCategorie(id)
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await categoriesStore.fetchCategories();
+    }
 }
 
 async function addCategory() {
