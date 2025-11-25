@@ -74,14 +74,14 @@ const onLoad = async (index: number, done: (stop?: boolean) => void) => {
   done();
 };
 
-async function fetchUsers() {
+async function fetchUsers(reset?: boolean) {
   try {
     $q.loading.show();
     const res = await usersStore.fetchUsers(pagination.value);
     if (res) {
       pagination.value.total = res.total
       pagination.value.has_more = res.has_more
-      if(usersStore?.users?.length) {
+      if(usersStore?.users?.length && !reset) {
         usersStore.users.push(res.items)
       } else {
         usersStore.users = res.items;
@@ -110,7 +110,7 @@ async function changeRole(id: number, role: number) {
     $q.loading.show();
     const res = await usersStore.updateUserRole(id, role)
     if (res) {
-      fetchUsers()
+      fetchUsers(true)
       $q.notify({
         message: `Роль изменена`,
         color: 'primary',
