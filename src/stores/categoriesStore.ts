@@ -21,12 +21,15 @@ export const useCategoriesStore = defineStore('Categories', () => {
 
   async function updateCategorie(data: ICategorie) {
     return client
-      .put(`/categories/${data.id}`, { data })
-      .then((res: any) =>  res.data)
+      .put(`/categories/${data.id}`, data)
+      .then((res: any) => res.data)
       .catch((err) => {
-        console.error('[CategoriesStore] - An error occurred while fetching via updateCategorie', err.message)
-        throw err
-      })
+        console.error(
+          '[CategoriesStore] - An error occurred while fetching via updateCategorie',
+          err.message,
+        );
+        throw err;
+      });
   }
 
   async function fetchCategories() {
