@@ -104,7 +104,7 @@ const $q = useQuasar();
 // const authStore = useAuthStore();
 const categoriesStore = useCategoriesStore();
 const authStore = useAuthStore();
-const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
+const { isManager, isAdmin } = usePermissionVisibility(computed(() => authStore.user?.role));
 type Theme = 'dark' | 'light';
 const themeData = ref('dark');
 const showSearch = ref(false);
@@ -123,9 +123,17 @@ const themeToggle = () => {
 };
 const tmpInfo = ref();
 const menu = computed<IMenuItems[]>(() => {
-  if (isManager.value)  return [...menuList.value, ...itemMenuManager.value];
+  if (isAdmin.value) {
+    const settingsWithAdmin = itemMenuManager.value.map((item) => ({
+      ...item,
+      children: [ ...itemMenuAdmin.value, ...(item.children || [])],
+    }));
+    return [...menuList.value, ...settingsWithAdmin];
+  }
+  if (isManager.value) return [...menuList.value, ...itemMenuManager.value];
   return menuList.value;
 });
+
 const menuList = ref<IMenuItems[]>([
   {
     name: 'Главная',
@@ -186,6 +194,17 @@ const itemMenuManager = ref<IMenuItems[]>([
         path: 'categories',
       },
     ],
+  },
+]);
+
+const itemMenuAdmin = ref<IMenuItems[]>([
+  {
+    name: 'Пользователи',
+    icon: 'people',
+    hide_buttons: true,
+    pathName: 'users',
+    path: 'users',
+    disabled: !admin.value,
   },
 ]);
 
