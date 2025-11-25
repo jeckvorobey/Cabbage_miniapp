@@ -72,10 +72,7 @@
             </div>
           </div>
         </q-item-label>
-        <MenuItems
-          v-for="link in menuList" :key="link.name"
-          v-bind="link" />
-
+        <MenuItems v-for="link in menu" :key="link.name" v-bind="link" />
       </q-list>
     </q-drawer>
 
@@ -99,11 +96,15 @@ import BasketItems from 'components/BasketItems.vue';
 import { Dark, useQuasar } from 'quasar';
 import { admin } from 'src/use/useUtils';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
+import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
+import { useAuthStore } from 'stores/authStore';
 
 Dark.set(false);
 const $q = useQuasar();
 // const authStore = useAuthStore();
-const categoriesStore = useCategoriesStore()
+const categoriesStore = useCategoriesStore();
+const authStore = useAuthStore();
+const { isManager, isAdmin } = usePermissionVisibility(computed(() => authStore.user?.role));
 type Theme = 'dark' | 'light';
 const themeData = ref('dark');
 const showSearch = ref(false);
@@ -121,77 +122,93 @@ const themeToggle = () => {
   window.localStorage.setItem('theme', themeStatus.value);
 };
 const tmpInfo = ref();
-const menuList = ref<IMenuItems[]>(
-  [
-    {
-      name: 'Главная',
-      icon: 'home',
-      pathName: '/',
-      path: '/',
-    },
-    {
-      name: 'Каталог',
-      icon: 'reorder',
-      children: [],
-    },
-    {
-      name: 'Доставка и оплата',
-      icon: 'local_shipping',
-      pathName: '',
-      path: '',
-    },
-    {
-      name: 'История заказов',
-      icon: 'history',
-      pathName: 'history',
-      path: 'history',
-    },
-    {
-      name: 'Мой кабинет',
-      icon: 'perm_identity',
-      pathName: 'user',
-      path: 'user',
-    },
-    {
-      name: 'Настройки',
-      icon: 'settings',
-      children: [
-        {
-          name: 'Пользователи',
-          icon: 'people',
-          hide_buttons: true,
-          pathName: 'users',
-          path: 'users',
-          disabled: !admin.value,
-        },
-        {
-          name: 'Единица измерения',
-          icon: 'equalizer',
-          hide_buttons: true,
-          pathName: 'units',
-          path: 'units',
-        },
-        {
-          name: 'Категории',
-          icon: 'reorder',
-          hide_buttons: true,
-          pathName: 'categories',
-          path: 'categories',
-        },
-      ],
-    },
-  ]
-)
+const menu = computed<IMenuItems[]>(() => {
+  if (isAdmin.value) {
+    const settingsWithAdmin = itemMenuManager.value.map((item) => ({
+      ...item,
+      children: [ ...itemMenuAdmin.value, ...(item.children || [])],
+    }));
+    return [...menuList.value, ...settingsWithAdmin];
+  }
+  if (isManager.value) return [...menuList.value, ...itemMenuManager.value];
+  return menuList.value;
+});
+
+const menuList = ref<IMenuItems[]>([
+  {
+    name: 'Главная',
+    icon: 'home',
+    pathName: '/',
+    path: '/',
+  },
+  {
+    name: 'Каталог',
+    icon: 'reorder',
+    children: [],
+  },
+  {
+    name: 'Доставка и оплата',
+    icon: 'local_shipping',
+    pathName: '',
+    path: '',
+  },
+  {
+    name: 'История заказов',
+    icon: 'history',
+    pathName: 'history',
+    path: 'history',
+  },
+  {
+    name: 'Мой кабинет',
+    icon: 'perm_identity',
+    pathName: 'user',
+    path: 'user',
+  },
+]);
+
+const itemMenuManager = ref<IMenuItems[]>([
+  {
+    name: 'Настройки',
+    icon: 'settings',
+    children: [
+      {
+        name: 'Единица измерения',
+        icon: 'equalizer',
+        hide_buttons: true,
+        pathName: 'units',
+        path: 'units',
+      },
+      {
+        name: 'Категории',
+        icon: 'reorder',
+        hide_buttons: true,
+        pathName: 'categories',
+        path: 'categories',
+      },
+    ],
+  },
+]);
+
+const itemMenuAdmin = ref<IMenuItems[]>([
+  {
+    name: 'Пользователи',
+    icon: 'people',
+    hide_buttons: true,
+    pathName: 'users',
+    path: 'users',
+    disabled: !admin.value,
+  },
+]);
 
 onMounted(async () => {
   try {
     const res = await categoriesStore.fetchCategories();
     if (res) {
-      const category = res
+      const category = res;
       category.forEach((el: any) => {
-        el.path = '/'
-      })
-      menuList.value[1]!.children = category as any
+        el.path = '/';
+      });
+      menuList.value[1]!.children = category as any;
     }
     $q.loading.show();
   } catch (e) {

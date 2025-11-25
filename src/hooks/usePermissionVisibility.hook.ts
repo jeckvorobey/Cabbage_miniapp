@@ -42,8 +42,7 @@ export function usePermissionVisibility(source: PermissionSource) {
   const isAdmin = computed(() => permission.value === EPermissionTypes.ADMIN);
 
   const isManager = computed(
-    () =>
-      permission.value === EPermissionTypes.MANAGER || permission.value === EPermissionTypes.ADMIN,
+    () => permission.value ? permission.value <= EPermissionTypes.MANAGER : false,
   );
 
   const isUser = computed(() => {
