@@ -5,7 +5,7 @@
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title>
-          <div v-if="!showSearch">Shop</div>
+          <div v-if="!showSearch">{{ title }}</div>
           <div v-else>
             <q-input dense dark borderless rounded outlined v-model="textSearch">
               <template v-slot:append>
@@ -115,6 +115,8 @@ const themeState = shallowReactive<Record<Theme, Theme>>({
   dark: 'dark',
   light: 'light',
 });
+const title = ref(import.meta.env.VUE_APP_NAME || 'Мой магазин');
+
 const isDark = computed(() => Dark.isActive);
 const themeStatus = computed(() => (isDark.value ? themeState.dark : themeState.light));
 const themeToggle = () => {
