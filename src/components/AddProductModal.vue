@@ -68,7 +68,7 @@
           </div>
             <div class="text-h6 text-center q-mt-sm">{{ product.name }}</div>
             <div class="text-bold">Стоимость товара: {{ product.price }}</div>
-            <div>Вес: 11 {{product.unit.name }}.</div>
+            <div>Вес: 11 {{product?.unit?.name || '' }}.</div>
             <div>Страна происхождения: {{ product.origin_country }}</div>
             <div>Описание: {{ product.description }}</div>
         </q-card-section>
@@ -112,7 +112,8 @@
     qty: null,
     description: "",
     images: '',
-    origin_country: ''
+    origin_country: '',
+    unit: null
   })
   const productFormData = new FormData()
 
