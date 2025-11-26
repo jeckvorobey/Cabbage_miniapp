@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-btn
-      @click="showUnitModal = !showUnitModal"
+      @click="openCreateUnitModal"
       class="full-width q-mb-sm"
       color="secondary"
       label="Добавление единицы измерения"
@@ -33,7 +33,7 @@
         </q-list>
       </q-card>
     </div>
-    <AddUnitModal v-model="showUnitModal" label="test" :unit-data=unitData @update="fetchUnits()"/>
+    <AddUnitModal v-model="showUnitModal" :unit-data="unitData" @update="fetchUnits()" />
   </div>
 </template>
 
@@ -89,9 +89,15 @@ async function deleteUnit(id: number) {
   }
 }
 
+function openCreateUnitModal() {
+  unitData.value = undefined;
+  showUnitModal.value = true;
+}
+
 function updateUnit(id: number) {
-  unitData.value = unitsStore.units.find(unit => unit.id === id)
-  if (!unitData.value) return
-  showUnitModal.value = !showUnitModal.value
+  const selectedUnit = unitsStore.units.find((unit) => unit.id === id);
+  if (!selectedUnit) return;
+  unitData.value = { ...selectedUnit };
+  showUnitModal.value = true;
 }
 </script>

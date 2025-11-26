@@ -31,16 +31,19 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
 import { useUnitsStore } from 'src/stores/unitsStore';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import type { IUnit } from 'src/types/unit.interface';
 
 interface Props {
+  modelValue: boolean;
   unitData: IUnit | undefined;
 }
 interface Emits {
+  (e: 'update:modelValue', value: boolean): void;
   (e: 'update'): void;
 }
 const props = withDefaults(defineProps<Props>(), {
+  modelValue: false,
   unitData: () => ({
     name: '',
     symbol: '',
@@ -48,9 +51,29 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<Emits>();
 const $q = useQuasar();
-const showDialog = ref(false);
 const unitsStore = useUnitsStore();
-const unit = ref<IUnit>(props.unitData);
+const showDialog = ref(props.modelValue);
+const unit = ref<IUnit>({ ...props.unitData });
+
+watch(
+  () => props.unitData,
+  (value) => {
+    unit.value = { ...(value ?? { name: '', symbol: '' }) };
+  },
+  { immediate: true, deep: true },
+);
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    showDialog.value = value;
+  },
+  { immediate: true },
+);
+
+watch(showDialog, (value) => {
+  emit('update:modelValue', value);
+});
 
 async function addProduct() {
   try {
