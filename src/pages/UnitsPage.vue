@@ -26,14 +26,14 @@
                 icon="delete"
                 @click="RemovaUnit(unit.id!)"
               />
-              <q-btn flat round color="primary" icon="mode_edit" @click="update(unit.id!)" />
+              <q-btn flat round color="primary" icon="mode_edit" @click="updateUnit(unit.id!)" />
             </q-item-section>
           </q-item>
           <q-separator />
         </q-list>
       </q-card>
     </div>
-    <AddUnitModal v-model="showUnitModal" label="test" />
+    <AddUnitModal v-model="showUnitModal" label="test" :unit-data=unitData @update="fetchUnits()"/>
   </div>
 </template>
 
@@ -51,6 +51,7 @@ const authStore = useAuthStore();
 const unitsStore = useUnitsStore();
 const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
 const showUnitModal = ref(false);
+const unitData = ref<IUnit|null>(null);
 
 onMounted(() => {
   fetchUnits();
@@ -88,15 +89,8 @@ async function deleteUnit(id: number) {
   }
 }
 
-async function update(id: number) {
-  try {
-    const unit: IUnit | undefined = unitsStore.units?.find((unit) => unit.id === id);
-    if (!unit) return;
-    await unitsStore.updateUnit(id, unit);
-  } catch (e) {
-    console.error(e);
-  } finally {
-    await fetchUnits();
-  }
+function updateUnit(id: number) {
+  unitData.value = unitsStore.units.find(unit => unit.id === id) || null
+  showUnitModal.value = !showUnitModal.value
 }
 </script>

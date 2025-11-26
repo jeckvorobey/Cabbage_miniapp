@@ -35,7 +35,7 @@ import { ref } from 'vue';
 import type { IUnit } from 'src/types/unit.interface';
 
 interface Props {
-  unit?: IUnit;
+  unitData: IUnit | null;
 }
 interface Emits {
   (e: 'update'): void;
@@ -80,7 +80,7 @@ async function addProduct() {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .add-product {
   min-width: 90svw;
 }
