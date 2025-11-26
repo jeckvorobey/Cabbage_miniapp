@@ -51,7 +51,7 @@ const authStore = useAuthStore();
 const unitsStore = useUnitsStore();
 const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
 const showUnitModal = ref(false);
-const unitData = ref<IUnit|null>(null);
+const unitData = ref<IUnit>();
 
 onMounted(() => {
   fetchUnits();
@@ -90,7 +90,7 @@ async function deleteUnit(id: number) {
 }
 
 function updateUnit(id: number) {
-  unitData.value = unitsStore.units.find(unit => unit.id === id) || null
+  unitData.value = unitsStore.units.find(unit => unit.id === id)
   showUnitModal.value = !showUnitModal.value
 }
 </script>

@@ -35,7 +35,7 @@ import { ref } from 'vue';
 import type { IUnit } from 'src/types/unit.interface';
 
 interface Props {
-  unitData: IUnit | null;
+  unitData: IUnit | undefined;
 }
 interface Emits {
   (e: 'update'): void;
