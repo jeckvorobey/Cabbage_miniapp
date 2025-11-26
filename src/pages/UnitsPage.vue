@@ -17,7 +17,7 @@
             <q-item-section>
               <q-item-label>{{ unit.symbol }}</q-item-label>
             </q-item-section>
-            <q-item-section>
+            <q-item-action>
               <q-btn
                 v-if="isManager"
                 flat
@@ -27,7 +27,7 @@
                 @click="RemovaUnit(unit.id!)"
               />
               <q-btn flat round color="primary" icon="mode_edit" @click="updateUnit(unit.id!)" />
-            </q-item-section>
+            </q-item-action>
           </q-item>
           <q-separator />
         </q-list>
