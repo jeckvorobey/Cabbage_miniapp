@@ -26,7 +26,7 @@
                 <span v-if="item?.oldPrice" class="text-grey old-price"
                   >{{ item.old_price }} ₽</span
                 >
-                / {{ item.unit_symbol }}
+                / {{ item.unit_name }}
                 <div class="text-grey">{{ item.origin_country }}</div>
               </div>
 
