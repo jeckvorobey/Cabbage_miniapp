@@ -4,12 +4,12 @@
       <q-form greedy>
         <q-card-section>
           <div class="text-h6 q-mb-md">Добавление единицы измерения</div>
-          <q-input v-model="unit.name" outlined class="q-mb-xs" label="Наименование" />
-          <q-input v-model="unit.symbol" outlined class="q-mb-xs" label="Символ" />
+          <q-input v-model="unit.name" outlined class="q-mb-xs" label="Наименование (пример: кг, гр, шт)" />
+          <q-input v-model="unit.symbol" outlined class="q-mb-xs" label="Символ (пример: kg, gr, sh)" />
         </q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup color="red" label="Отмена" />
-          <q-btn v-close-popup color="primary" label="Подтвердить" @click="addProduct()"/>
+          <q-btn v-close-popup color="primary" label="Сохранить" @click="addProduct()"/>
         </q-card-actions>
       </q-form>
     </q-card>
