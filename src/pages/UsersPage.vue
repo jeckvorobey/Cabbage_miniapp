@@ -16,14 +16,14 @@
             <q-item-label caption>{{ accessLevel(user.role) }}</q-item-label>
           </q-item-section>
           <q-item-action>
-<!--            <q-btn-->
-<!--              v-if="admin"-->
-<!--              flat-->
-<!--              round-->
-<!--              color="red"-->
-<!--              icon="disabled_visible"-->
-<!--              @click="disabledUser(user)"-->
-<!--            />-->
+            <!--            <q-btn-->
+            <!--              v-if="admin"-->
+            <!--              flat-->
+            <!--              round-->
+            <!--              color="red"-->
+            <!--              icon="disabled_visible"-->
+            <!--              @click="disabledUser(user)"-->
+            <!--            />-->
             <q-btn-dropdown dense flat color="primary" dropdown-icon="change_history">
               <q-list>
                 <q-item
@@ -104,8 +104,8 @@ function selectRole(id: number, role: number) {
     message: 'Вы уверенны что хотите изменить права этого пользователя?',
     cancel: true,
     persistent: true,
-  }).onOk(  () => {
-     changeRole(id, role);
+  }).onOk(() => {
+    changeRole(id, role);
   });
 }
 
@@ -115,10 +115,12 @@ async function changeRole(id: number, role: number) {
     const res = await usersStore.updateUserRole(id, role);
     if (res) {
       await fetchUsers(true);
-      $q.notify({
-        message: `Роль изменена`,
-        color: 'primary',
-      });
+      if (res) {
+        $q.notify({
+          message: `Роль изменена`,
+          color: 'primary',
+        });
+      }
     }
   } catch (e) {
     console.error(e);
