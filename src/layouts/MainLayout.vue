@@ -115,7 +115,7 @@ const themeState = shallowReactive<Record<Theme, Theme>>({
   dark: 'dark',
   light: 'light',
 });
-const title = ref(import.meta.env.VUE_APP_NAME || 'Мой магазин');
+const title = ref(import.meta.env.VITE_APP_NAME || 'Мой магазин');
 
 const isDark = computed(() => Dark.isActive);
 const themeStatus = computed(() => (isDark.value ? themeState.dark : themeState.light));
