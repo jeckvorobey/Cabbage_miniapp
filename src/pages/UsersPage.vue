@@ -78,18 +78,14 @@ const onLoad = async (index: number, done: (stop?: boolean) => void) => {
   done();
 };
 
-async function fetchUsers(reset?: boolean) {
+async function fetchUsers() {
   try {
     $q.loading.show();
     const res = await usersStore.fetchUsers(pagination.value);
     if (res) {
       pagination.value.total = res.total;
       pagination.value.has_more = res.has_more;
-      if (usersStore?.users?.length && !reset) {
-        usersStore.users.push(res.items);
-      } else {
-        usersStore.users = res.items;
-      }
+      usersStore.users = res.items;
     }
   } catch (e: any) {
     console.error(e);
