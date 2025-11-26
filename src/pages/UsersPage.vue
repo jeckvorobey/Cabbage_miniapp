@@ -16,17 +16,23 @@
             <q-item-label caption>{{ accessLevel(user.role) }}</q-item-label>
           </q-item-section>
           <q-item-action>
-            <q-btn
-              v-if="admin"
-              flat
-              round
-              color="red"
-              icon="disabled_visible"
-              @click="disabledUser(user)"
-            />
+<!--            <q-btn-->
+<!--              v-if="admin"-->
+<!--              flat-->
+<!--              round-->
+<!--              color="red"-->
+<!--              icon="disabled_visible"-->
+<!--              @click="disabledUser(user)"-->
+<!--            />-->
             <q-btn-dropdown dense flat color="primary" dropdown-icon="change_history">
               <q-list>
-                <q-item v-for="(it, index) in roleData" :key="index" clickable v-close-popup @click="selectRole(user.id, it.value)">
+                <q-item
+                  v-for="(it, index) in roleData"
+                  :key="index"
+                  v-close-popup
+                  clickable
+                  @click="selectRole(user.id, it.value)"
+                >
                   <q-item-section>
                     <q-item-label>{{ it.name }}</q-item-label>
                   </q-item-section>
@@ -39,37 +45,35 @@
       </q-list>
     </q-card>
   </q-infinite-scroll>
-
 </template>
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { ref } from 'vue';
-import { accessLevel, admin } from 'src/use/useUtils';
+import { accessLevel } from 'src/use/useUtils';
 import { useUsersStore } from 'src/stores/usersStore';
 
 const $q = useQuasar();
-const usersStore = useUsersStore()
+const usersStore = useUsersStore();
 const pagination = ref({
   offset: 0,
   limit: 20,
   total: 0,
-  has_more: true
-})
+  has_more: true,
+});
 
 const roleData = ref([
-  {name: 'Администратор', value: 1},
-  {name: 'Менеджер', value: 2},
-  {name: 'Пользователь', value: 9},
-])
+  { name: 'Администратор', value: 1 },
+  { name: 'Менеджер', value: 2 },
+  { name: 'Пользователь', value: 9 },
+]);
 
 const onLoad = async (index: number, done: (stop?: boolean) => void) => {
-  console.log(index)
   if (!pagination.value.has_more) {
     done(true);
     return;
   }
-  await fetchUsers()
+  await fetchUsers();
   pagination.value.offset += pagination.value.limit;
   done();
 };
@@ -79,10 +83,10 @@ async function fetchUsers(reset?: boolean) {
     $q.loading.show();
     const res = await usersStore.fetchUsers(pagination.value);
     if (res) {
-      pagination.value.total = res.total
-      pagination.value.has_more = res.has_more
-      if(usersStore?.users?.length && !reset) {
-        usersStore.users.push(res.items)
+      pagination.value.total = res.total;
+      pagination.value.has_more = res.has_more;
+      if (usersStore?.users?.length && !reset) {
+        usersStore.users.push(res.items);
       } else {
         usersStore.users = res.items;
       }
@@ -99,18 +103,18 @@ function selectRole(id: number, role: number) {
     title: 'Изменение прав пользователя',
     message: 'Вы уверенны что хотите изменить права этого пользователя?',
     cancel: true,
-    persistent: true
-  }).onOk(() => {
-    changeRole(id, role)
-  })
+    persistent: true,
+  }).onOk(  () => {
+     changeRole(id, role);
+  });
 }
 
 async function changeRole(id: number, role: number) {
   try {
     $q.loading.show();
-    const res = await usersStore.updateUserRole(id, role)
+    const res = await usersStore.updateUserRole(id, role);
     if (res) {
-      fetchUsers(true)
+      await fetchUsers(true);
       $q.notify({
         message: `Роль изменена`,
         color: 'primary',
@@ -123,17 +127,17 @@ async function changeRole(id: number, role: number) {
   }
 }
 
-function disabledUser(user: any) {
-  try {
-    $q.loading.show();
-  } catch (e) {
-    console.error(e);
-  } finally {
-    $q.notify({
-      message: `Пользователь ${user.name} заблокирован`,
-      color: 'primary',
-    });
-    $q.loading.hide();
-  }
-}
+// function disabledUser(user: any) {
+//   try {
+//     $q.loading.show();
+//   } catch (e) {
+//     console.error(e);
+//   } finally {
+//     $q.notify({
+//       message: `Пользователь ${user.name} заблокирован`,
+//       color: 'primary',
+//     });
+//     $q.loading.hide();
+//   }
+// }
 </script>
