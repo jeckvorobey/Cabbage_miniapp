@@ -33,7 +33,7 @@
             :options="categoriesStore.categories"
             class="q-mb-xs"
             outlined
-            label="Тип тары"
+            label="Категория"
             emit-value
             map-options
             option-label="name"
@@ -43,7 +43,7 @@
             v-model="product.unit_id"
             :options="unitsStore.units"
             outlined
-            label="Вес"
+            label="Единица измерения"
             emit-value
             map-options
             option-label="name"
