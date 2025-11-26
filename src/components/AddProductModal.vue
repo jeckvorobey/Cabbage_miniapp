@@ -74,7 +74,7 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup color="red" label="Отмена" />
-          <q-btn v-close-popup color="primary" label="Добавить в карзину" @click="addOrder()"/>
+          <q-btn v-close-popup color="primary" label="Добавить в корзину" @click="addOrder()"/>
         </q-card-actions>
       </q-form>
     </q-card>
