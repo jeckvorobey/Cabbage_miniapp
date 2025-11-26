@@ -114,7 +114,7 @@ async function changeRole(id: number, role: number) {
     $q.loading.show();
     const res = await usersStore.updateUserRole(id, role);
     if (res) {
-      await fetchUsers(true);
+      await fetchUsers();
       if (res) {
         $q.notify({
           message: `Роль изменена`,
