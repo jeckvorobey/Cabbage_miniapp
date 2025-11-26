@@ -91,6 +91,7 @@ async function deleteUnit(id: number) {
 
 function updateUnit(id: number) {
   unitData.value = unitsStore.units.find(unit => unit.id === id)
+  if (!unitData.value) return
   showUnitModal.value = !showUnitModal.value
 }
 </script>
