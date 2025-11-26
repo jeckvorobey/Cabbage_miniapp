@@ -33,6 +33,7 @@ jobs:
         env:
           VITE_API_URL: https://mammoth-light-bison.ngrok-free.app/
           VITE_PUBLIC_PATH: /Cabbage_miniapp/
+          VUE_APP_NAME: 'Овощная лавка «Капуста»'
 
       - name: Deploy to test-page branch
         uses: peaceiris/actions-gh-pages@v4

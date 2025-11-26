@@ -49,7 +49,7 @@
             option-label="name"
             option-value="id"
           />
-          <q-input class="q-mt-sm" v-model="product.description" type="textarea" rows="2" label="Описание"/>
+          <q-input class="q-mt-sm" v-model="product.description" outlined type="textarea" rows="2" label="Описание"/>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup color="red" label="Отмена" />
@@ -67,15 +67,14 @@
             </div>
           </div>
             <div class="text-h6 text-center q-mt-sm">{{ product.name }}</div>
-            <div>Стоимость товара: {{ product.price }}</div>
-            <div>Количество: {{ product.qty }}</div>
-            <div>Вес: 11 </div>
+            <div class="text-bold">Стоимость товара: {{ product.price }}</div>
+            <div>Вес: 11 {{product?.unit?.name || '' }}.</div>
             <div>Страна происхождения: {{ product.origin_country }}</div>
             <div>Описание: {{ product.description }}</div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup color="red" label="Отмена" />
-          <q-btn v-close-popup color="primary" label="Добавить в карзину" @click="addOrder()"/>
+          <q-btn v-close-popup color="primary" label="Добавить в корзину" @click="addOrder()"/>
         </q-card-actions>
       </q-form>
     </q-card>
@@ -113,7 +112,8 @@
     qty: null,
     description: "",
     images: '',
-    origin_country: ''
+    origin_country: '',
+    unit: null
   })
   const productFormData = new FormData()
 

@@ -24,9 +24,12 @@ export const useUsersStore = defineStore('Users', () => {
       .patch(`/users/${id}/toggle-role`, { role })
       .then((res) => res.data)
       .catch((err) => {
-        console.error('[UsersStore] - An error occurred while creating via updateUserRole', err.message)
-        throw err
-      })
+        console.error(
+          '[UsersStore] - An error occurred while creating via updateUserRole',
+          err.message,
+        );
+        throw err;
+      });
   }
 
 

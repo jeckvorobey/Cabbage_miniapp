@@ -15,9 +15,11 @@
               <q-img
                 class="cursor-pointer radius-8"
                 :src="item?.primary_image ? item.primary_image : getImage('/card-shop.jpg')"
+                height="160px"
+                fit="cover"
               />
             </div>
-            <q-card-section class="q-pa-sm">
+            <q-card-section class="q-pa-sm card-container">
               <div class="text-center card-title">{{ item.name }}</div>
               <div class="text-center">
                 <span class="text-bold">{{ item.price }}</span> ₽
@@ -192,14 +194,17 @@ function productModal(it?: IProduct) {
 
 <style scoped lang="scss">
 .product-card {
-  .card-title {
-    font-size: 18px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .old-price {
-    text-decoration: line-through;
+  .card-container {
+    min-height: 86px;
+    .card-title {
+      font-size: 18px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .old-price {
+      text-decoration: line-through;
+    }
   }
 }
 </style>

@@ -5,7 +5,7 @@ import { ref } from 'vue';
 
 export const useUnitsStore = defineStore('Units', () => {
 
-  const units = ref<IUnit[]>()
+  const units = ref<IUnit[]>([])
 
   async function createUnit(unit: IUnit) {
     return client
@@ -50,7 +50,7 @@ export const useUnitsStore = defineStore('Units', () => {
 
   async function updateUnit(id: number, data: IUnit) {
     return client
-      .put(`/units/${id}`, { data })
+      .put(`/units/${id}`, data)
       .then((res: any) =>  res.data)
       .catch((err) => {
         console.error('[UnitsStore] - An error occurred while fetching via updateUnit', err.message)

@@ -1,3 +1,5 @@
+import type { IUnit } from 'src/types/unit.interface';
+
 export interface IProduct {
   id?: number | null
   name?: string
@@ -8,4 +10,5 @@ export interface IProduct {
   origin_country?: string
   price?: number | null
   images?: any
+  unit: IUnit | null
 }
