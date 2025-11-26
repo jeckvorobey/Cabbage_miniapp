@@ -76,9 +76,17 @@
       </q-list>
     </q-drawer>
 
-    <q-drawer side="right" v-model="drawerRight" show-if-above bordered>
+    <q-drawer :width="screenWidth"  side="right" v-model="drawerRight" show-if-above bordered>
       <q-list>
-        <q-item-label class="text-h6" header>Kорзина</q-item-label>
+        <q-item-label class="text-h5 flex justify-start items-center" header>
+          <q-icon
+          name="arrow_forward_ios"
+          size="30px"
+          @click="drawerRight = !drawerRight" />
+          <span class="q-mx-auto">
+            Kорзина
+          </span>
+        </q-item-label>
         <BasketItems />
       </q-list>
     </q-drawer>
@@ -105,6 +113,7 @@ const $q = useQuasar();
 const categoriesStore = useCategoriesStore();
 const authStore = useAuthStore();
 const { isManager, isAdmin } = usePermissionVisibility(computed(() => authStore.user?.role));
+const screenWidth = window.screen.width;
 type Theme = 'dark' | 'light';
 const themeData = ref('dark');
 const showSearch = ref(false);

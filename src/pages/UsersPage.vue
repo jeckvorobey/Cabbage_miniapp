@@ -31,7 +31,7 @@
                   :key="index"
                   v-close-popup
                   clickable
-                  @click="selectRole(user.id, it.value)"
+                  @click="selectRole(user, it.value)"
                 >
                   <q-item-section>
                     <q-item-label>{{ it.name }}</q-item-label>
@@ -52,6 +52,7 @@ import { useQuasar } from 'quasar';
 import { ref } from 'vue';
 import { accessLevel } from 'src/use/useUtils';
 import { useUsersStore } from 'src/stores/usersStore';
+import type { IUser } from 'src/types/user.interface';
 
 const $q = useQuasar();
 const usersStore = useUsersStore();
@@ -94,29 +95,27 @@ async function fetchUsers() {
   }
 }
 
-function selectRole(id: number, role: number) {
+function selectRole(user: IUser, role: number) {
   $q.dialog({
     title: 'Изменение прав пользователя',
     message: 'Вы уверенны что хотите изменить права этого пользователя?',
     cancel: true,
     persistent: true,
   }).onOk(() => {
-    changeRole(id, role);
+    changeRole(user, role);
   });
 }
 
-async function changeRole(id: number, role: number) {
+async function changeRole(user: IUser, role: number) {
   try {
     $q.loading.show();
-    const res = await usersStore.updateUserRole(id, role);
+    const res = await usersStore.updateUserRole(user.id!, role);
     if (res) {
-      await fetchUsers();
-      if (res) {
-        $q.notify({
-          message: `Роль изменена`,
-          color: 'primary',
-        });
-      }
+      user.role = role
+      $q.notify({
+        message: `Роль изменена`,
+        color: 'primary',
+      });
     }
   } catch (e) {
     console.error(e);
