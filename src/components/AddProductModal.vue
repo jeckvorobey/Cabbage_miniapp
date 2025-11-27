@@ -169,6 +169,7 @@
   async function uploadFile(files: any) {
     const data = new FormData()
     data.append('file', files)
+    data.append('is_primary', 'true')
     try {
       const res = await productsStore.uploadFile(product.value.id!, data);
       if (res) {

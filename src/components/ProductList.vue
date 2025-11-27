@@ -26,7 +26,7 @@
                 <span v-if="item?.oldPrice" class="text-grey old-price"
                   >{{ item.old_price }} ₽</span
                 >
-                / {{ item.unit_symbol }}
+                / {{ item.unit_name }}
                 <div class="text-grey">{{ item.origin_country }}</div>
               </div>
 
@@ -149,12 +149,15 @@ function addOrder(it: any) {
   try {
     $q.loading.show();
     if (orderStore.basketData?.length) {
-      const coincidences = orderStore.basketData.find((item: any) => item.id === it.id);
-      if (coincidences) {
-        recalculationGoods(coincidences, it);
-      } else {
-        orderStore.basketData.push(structuredClone(toRaw(it)));
-      }
+      orderStore.basketData.push(structuredClone(toRaw(it)));
+      // const coincidences = orderStore.basketData.find((item: any) => item.id === it.id);
+
+      // debugger
+      // if (coincidences) {
+      //   recalculationGoods(coincidences, it);
+      // } else {
+      //   orderStore.basketData.push(structuredClone(toRaw(it)));
+      // }
     } else {
       orderStore.basketData.push(structuredClone(toRaw(it)));
     }
@@ -169,11 +172,11 @@ function addOrder(it: any) {
   }
 }
 
-function recalculationGoods(newGoods: any, oldGoods: any) {
-  if (newGoods.price) newGoods.price += oldGoods.price;
-  if (newGoods.weight) newGoods.weight += oldGoods.weight;
-  if (newGoods.oldPrice) newGoods.oldPrice += oldGoods.oldPrice;
-}
+// function recalculationGoods(newGoods: any, oldGoods: any) {
+//   if (newGoods.price) newGoods.price += oldGoods.price;
+//   if (newGoods.weight) newGoods.weight += oldGoods.weight;
+//   if (newGoods.oldPrice) newGoods.oldPrice += oldGoods.oldPrice;
+// }
 
 const onLoad = async (index: number, done: (stop?: boolean) => void) => {
   if (!productsStore.pagination.has_more) {

@@ -7,8 +7,10 @@ export interface IProduct {
   category_id?: number | null
   unit_id?: number | null
   qty?: number | null
+  old_price?: number | null
   origin_country?: string
   price?: number | null
   images?: any
   unit: IUnit | null
+  unit_name?: string
 }

@@ -78,9 +78,9 @@
 
     <q-drawer :width="screenWidth"  side="right" v-model="drawerRight" show-if-above bordered>
       <q-list>
-        <q-item-label class="text-h5 flex justify-start items-center" header>
+        <q-item-label class="text-h5 flex justify-start items-center text-black" header>
           <q-icon
-          name="arrow_forward_ios"
+          name="close"
           size="30px"
           @click="drawerRight = !drawerRight" />
           <span class="q-mx-auto">
@@ -113,7 +113,7 @@ const $q = useQuasar();
 const categoriesStore = useCategoriesStore();
 const authStore = useAuthStore();
 const { isManager, isAdmin } = usePermissionVisibility(computed(() => authStore.user?.role));
-const screenWidth = window.screen.width;
+const screenWidth = computed(() => $q.platform.is.mobile ? window.screen.width : 370,);
 type Theme = 'dark' | 'light';
 const themeData = ref('dark');
 const showSearch = ref(false);
@@ -160,8 +160,8 @@ const menuList = ref<IMenuItems[]>([
   {
     name: 'Доставка и оплата',
     icon: 'local_shipping',
-    pathName: '',
-    path: '',
+    pathName: 'delivery',
+    path: 'delivery',
   },
   {
     name: 'История заказов',
