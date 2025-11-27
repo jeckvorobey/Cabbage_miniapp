@@ -1,9 +1,29 @@
 body.body--light {
   --subtitle-text: #26a69a;
+  --basic-green: #00a63e;
+  --light-gray: #6a7282;
+  --light-red: #ef7e7ede;
 }
 
 body.body--dark {
   --subtitle-text: #152229;
+  --basic-green: #00a63e;
+  --light-gray: #6a7282;
+  --light-red: #ef7e7ede;
+}
+
+.text-basic-green {
+  color: var(--basic-green);
+}
+.text-light-gray {
+  color: var(--light-gray);
+}
+.text-light-red {
+  color: var(--light-red);
+}
+
+.border-bot {
+  border-bottom: 1px solid var(--light-gray);;
 }
 
 .bg-header {
