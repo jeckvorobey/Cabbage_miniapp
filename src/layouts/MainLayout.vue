@@ -78,9 +78,9 @@
 
     <q-drawer :width="screenWidth"  side="right" v-model="drawerRight" show-if-above bordered>
       <q-list>
-        <q-item-label class="text-h5 flex justify-start items-center" header>
+        <q-item-label class="text-h5 flex justify-start items-center text-black" header>
           <q-icon
-          name="arrow_forward_ios"
+          name="close"
           size="30px"
           @click="drawerRight = !drawerRight" />
           <span class="q-mx-auto">
