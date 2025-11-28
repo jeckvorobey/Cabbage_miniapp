@@ -2,7 +2,11 @@
   <q-layout view="lHh Lpr lFf">
     <q-header class="bg-white">
       <q-toolbar >
-        <q-btn text-color="grey" flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <q-btn v-if="isManager || isAdmin" text-color="grey" flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <div>
+          <q-btn v-if="route.name !== '/'" @click="routerBack()" text-color="grey" flat dense round icon="arrow_back_ios" aria-label="Home" />
+          <q-btn v-else text-color="grey" flat dense round icon="home" aria-label="Home" />
+        </div>
         <q-toolbar-title>
           <q-input  dense borderless rounded outlined v-model="textSearch">
             <template v-slot:append>
@@ -75,7 +79,7 @@
             Kорзина
           </span>
         </q-item-label>
-        <BasketItems />
+        <BasketCompanents />
       </q-list>
     </q-drawer>
     <pre>{{ tmpInfo || '' }}</pre>
@@ -94,15 +98,18 @@
 import { computed, onMounted, ref, shallowReactive } from 'vue';
 import MenuItems, { type IMenuItems } from 'components/MenuItems.vue';
 import BottomMenu from 'components/BottomMenu.vue';
-import BasketItems from 'components/BasketItems.vue';
+import BasketCompanents from 'components/BasketCompanents.vue';
 import { Dark, useQuasar } from 'quasar';
 import { admin } from 'src/use/useUtils';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
 import { useAuthStore } from 'stores/authStore';
+import { useRoute, useRouter } from 'vue-router';
 
 Dark.set(false);
 const $q = useQuasar();
+const router = useRouter()
+const route = useRoute()
 const categoriesStore = useCategoriesStore();
 const authStore = useAuthStore();
 const { isManager, isAdmin } = usePermissionVisibility(computed(() => authStore.user?.role));
@@ -240,5 +247,9 @@ onMounted(async () => {
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
+}
+
+function routerBack() {
+  router.back()
 }
 </script>

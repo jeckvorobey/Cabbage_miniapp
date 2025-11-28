@@ -1,7 +1,7 @@
 <template>
-  <div v-if="orderStore.basketData?.length" class="basket q-px-sm">
+  <div class="basket q-px-sm">
       <div class="containet">
-        <q-list v-for="(item, index) in basketData" :key="index">
+        <q-list v-for="(item, index) in orderStore.previewBasketData" :key="index">
           <q-item class="q-px-xs">
             <q-item-section>
               <div class="row">
@@ -43,11 +43,14 @@
               </div>
             </q-item-section>
             <q-item-action class="column justify-between items-end">
-              <q-icon
-                color="red"
-                name="close"
-                size="22px"
-                @click="removeItem(item)" />
+              <q-btn
+                text-color="red"
+                flat
+                dense
+                round
+                icon="delete"
+                @click="removeItem(item, index)"
+              />
               <div>{{ producTotalPrice(item) }}</div>
             </q-item-action>
           </q-item>
@@ -67,12 +70,8 @@
             <span>{{ totalCost }}₽</span>
           </div>
         </q-list>
-        <div class="q-px-sm">
-          <q-btn color="secondary" class="full-width" label="Оформить заказ" />
-        </div>
       </div>
   </div>
-  <div v-else class="text-h6 text-center text-grey">Корзина пуста</div>
 </template>
 
 <script setup lang="ts">
@@ -80,15 +79,11 @@ import { useOrderStore } from 'src/stores/orderStore';
 import { getImage } from 'src/use/useUtils';
 import { onMounted, ref, watch } from 'vue';
 
-// const $q = useQuasar();
 const orderStore = useOrderStore();
-const basketData = ref();
 const totalCost = ref()
 watch(orderStore.basketData, () => {
-  basketData.value = groupIdenticalProducts(orderStore.basketData);
+  orderStore.previewBasketData = groupIdenticalProducts(orderStore.basketData);
   totalCost.value = orderStore.basketData.reduce((accumulator: any, product: any) => {
-  // accumulator - текущая сумма
-  // product.price - цена текущего элемента
   return accumulator + product.price;
 }, 0)
 });
@@ -97,11 +92,11 @@ onMounted(() => {
   // basketData.value = $q.localStorage.getItem('basket');
 });
 
-function removeItem(it: any) {
-  const order = orderStore.basketData.filter((item: { id: number }) => item.id !== it.id);
-  // const order = basketData.value.filter((item: { id: number }) => item.id !== it.id);
+function removeItem(it: any, index: number) {
+  orderStore.previewBasketData.splice(index, 1);
+  const idsRemove = new Set(it.map((item: any) => item.id));
+  const order = orderStore.basketData.filter((item: any) => !idsRemove.has(item.id));
   orderStore.basketData = order;
-  // $q.localStorage.set('basket', basketData.value);
 }
 
 function changeQuantity(it: boolean) {

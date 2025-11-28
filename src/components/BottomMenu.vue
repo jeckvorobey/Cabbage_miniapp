@@ -31,7 +31,7 @@
     {
       name: 'dashboard',
       label: 'Главная',
-      icon: 'mail',
+      icon: 'home',
       path: '/'
     },
     {
