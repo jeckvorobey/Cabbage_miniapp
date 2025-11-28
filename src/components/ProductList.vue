@@ -7,60 +7,45 @@
       color="secondary"
       label="Добавить товар"
     ></q-btn>
-    <div class="product-card row q-col-gutter-xs">
-      <div class="col-6" v-for="(item, index) in productsStore.products" :key="index">
-        <q-card class="my-card radius-16 full-height"  flat bordered>
-          <q-card-section class="q-pa-sm full-height">
-            <div @click="productModal(item)">
-              <q-img
-                class="cursor-pointer radius-8"
-                :src="item?.primary_image ? item.primary_image : getImage('/card-shop.jpg')"
-                height="160px"
-                fit="cover"
-              />
-            </div>
-            <q-card-section class="q-pa-sm card-container">
-              <div class="text-center card-title">{{ item.name }}</div>
-              <div class="text-center">
-                <span class="text-bold">{{ item.price }}</span> ₽
-                <span v-if="item?.oldPrice" class="text-grey old-price"
-                  >{{ item.old_price }} ₽</span
-                >
-                / {{ item.unit_name }}
-                <div class="text-grey">{{ item.origin_country }}</div>
-              </div>
+    <div class="product-card">
+      <q-list
+        v-for="(item, index) in productsStore.products"
+        :key="index"
+      >
+        <q-item>
+          <q-item-section top avatar @click="productModal(item)">
+            <q-img
+              class="cursor-pointer radius-8"
+              :src="item[0]?.primary_image ? item[0].primary_image : getImage('/card-shop.jpg')"
+              height="80px"
+              width="80px"
+              fit="cover"
+            />
+          </q-item-section>
+          <q-item-section class="column justify-between" @click="productModal(item)">
+            <q-item-label caption class="text-size-16">{{ item.name }}</q-item-label>
+            <q-item-label>
+              <div class="text-grey old-price" v-if="item?.old_price">{{ item.old_price }} ₽</div>
+              <div :class="item?.old_price ? 'text-red' : ''">{{ item.price }} ₽/ {{ item.unit_name }}</div>
+            </q-item-label>
+          </q-item-section>
 
-              <!-- <div class="q-mt-sm q-mb-xs text-center">
-                Итого:
-                <span class="text-bold">{{ item.price * item.quantity }}</span> ₽
-              </div> -->
-            </q-card-section>
-            <q-card-actions class="justify-center">
-              <!-- <q-btn padding="xs" color="secondary" icon="add" @click="item.quantity += 1" />
-              <div class="q-px-md">
-                {{ item.quantity }}
-              </div>
-              <q-btn
-                :disabled="item.quantity === 1"
-                padding="xs"
-                color="secondary"
-                icon="remove"
-                @click="item.quantity -= 1"
-              />
-              <q-space /> -->
+          <q-item-section side top class="column justify-between">
+            <div></div>
+            <div class="row items-end">
+              <q-item-label class="q-mr-xs" caption>{{ item.price }} ₽/ {{ item.unit_name }}</q-item-label>
               <q-btn
                 dense
-                no-caps
-                class="full-width"
-                color="secondary"
-                icon="add_shopping_cart"
-                label="В корзину"
+                round
+                color="green"
+                icon="shopping_cart"
                 @click="addOrder(item)"
               />
-            </q-card-actions>
-          </q-card-section>
-        </q-card>
-      </div>
+            </div>
+          </q-item-section>
+        </q-item>
+        <q-separator spaced inset />
+      </q-list>
     </div>
 
     <!-- <template v-slot:loading>
@@ -197,17 +182,8 @@ function productModal(it?: IProduct) {
 
 <style scoped lang="scss">
 .product-card {
-  .card-container {
-    min-height: 86px;
-    .card-title {
-      font-size: 18px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .old-price {
-      text-decoration: line-through;
-    }
+  .old-price {
+    text-decoration: line-through;
   }
 }
 </style>

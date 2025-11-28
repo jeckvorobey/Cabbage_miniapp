@@ -1,30 +1,18 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar class="bg-header">
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-
+    <q-header class="bg-white">
+      <q-toolbar >
+        <q-btn text-color="grey" flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
-          <div v-if="!showSearch">{{ title }}</div>
-          <div v-else>
-            <q-input dense dark borderless rounded outlined v-model="textSearch">
-              <template v-slot:append>
-                <q-icon name="clear" @click="showSearch = !showSearch" />
-              </template>
-            </q-input>
-          </div>
+          <q-input  dense borderless rounded outlined v-model="textSearch">
+            <template v-slot:append>
+              <q-icon name="search" @click="showSearch = !showSearch" />
+            </template>
+          </q-input>
         </q-toolbar-title>
 
         <q-btn
-          class="q-mr-md"
-          flat
-          dense
-          round
-          icon="search"
-          aria-label="search"
-          @click="showSearch = !showSearch"
-        />
-        <q-btn
+          text-color="grey"
           flat
           dense
           round
@@ -94,12 +82,18 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+    <q-footer elevated>
+      <BottomMenu
+        @open-basket="drawerRight = !drawerRight"
+        />
+    </q-footer>
   </q-layout>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref, shallowReactive } from 'vue';
 import MenuItems, { type IMenuItems } from 'components/MenuItems.vue';
+import BottomMenu from 'components/BottomMenu.vue';
 import BasketItems from 'components/BasketItems.vue';
 import { Dark, useQuasar } from 'quasar';
 import { admin } from 'src/use/useUtils';
@@ -109,7 +103,6 @@ import { useAuthStore } from 'stores/authStore';
 
 Dark.set(false);
 const $q = useQuasar();
-// const authStore = useAuthStore();
 const categoriesStore = useCategoriesStore();
 const authStore = useAuthStore();
 const { isManager, isAdmin } = usePermissionVisibility(computed(() => authStore.user?.role));
@@ -124,7 +117,6 @@ const themeState = shallowReactive<Record<Theme, Theme>>({
   dark: 'dark',
   light: 'light',
 });
-const title = ref(import.meta.env.VITE_APP_NAME || 'Мой магазин');
 
 const isDark = computed(() => Dark.isActive);
 const themeStatus = computed(() => (isDark.value ? themeState.dark : themeState.light));
