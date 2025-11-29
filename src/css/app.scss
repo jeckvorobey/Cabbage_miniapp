@@ -3,7 +3,7 @@ body.body--light {
   --basic-green: #00a63e;
   --light-gray: #6a7282;
   --light-red: #ef7e7ede;
-  --bg-light-gray: #f1ecef;
+  --bg-light-gray: #f2f3f5;
 }
 
 body.body--dark {
@@ -11,7 +11,7 @@ body.body--dark {
   --basic-green: #00a63e;
   --light-gray: #6a7282;
   --light-red: #ef7e7ede;
-  --bg-light-gray: #f1ecef;
+  --bg-light-gray: #f2f3f5;
 }
 
 .text-basic-green {
@@ -26,13 +26,12 @@ body.body--dark {
 .bg-light-gray {
   background: var(--bg-light-gray);
 }
+.text-size-16 {
+  font-size: 16px;
+}
 
 .border-bot {
   border-bottom: 1px solid var(--light-gray);;
-}
-
-.bg-header {
-  background-color: var(--subtitle-text);
 }
 
 .radius-16 {
