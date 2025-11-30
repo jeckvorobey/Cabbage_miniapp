@@ -28,14 +28,14 @@
                         <q-icon
                           name="remove"
                           size="20px"
-                          @click="changeQuantity(false)" />
+                          @click="changeQuantity(item, false)" />
                       </div>
                       <span class="q-mx-sm self-center">{{ item.length }}</span>
                       <div class="bg-light-gray q-pa-xs radius-16">
                         <q-icon
                           name="add"
                           size="20px"
-                          @click="changeQuantity(true)" />
+                          @click="changeQuantity(item, true)" />
                       </div>
                     </div>
                   </q-item-label>
@@ -99,7 +99,17 @@ function removeItem(it: any, index: number) {
   orderStore.basketData = order;
 }
 
-function changeQuantity(it: boolean) {
+function changeQuantity(it: any, flag: boolean) {
+  console.log(orderStore.previewBasketData, 'orderStore.previewBasketData')
+  console.log(it, 'changeQuantity')
+  if (flag) {
+    it.push(it[0]);
+    orderStore.basketData.push(it[0])
+  } else {
+    const indexToRemove = orderStore.basketData.findLastIndex((item: any) => item.id === it[0].id);
+    orderStore.basketData.splice(indexToRemove, 1);
+    it.pop();
+  }
   console.log(it)
 }
 
