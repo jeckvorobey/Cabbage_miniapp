@@ -11,7 +11,27 @@ const routes: RouteRecordRaw[] = [
     redirect: '/dashboard',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', name: '/', component: () => import('pages/DashboardPage.vue') },
+      {
+        path: '/',
+        name: '',
+        children: [
+          {
+            path: '',
+            name: 'dashboard',
+            component: () => import('pages/DashboardPage.vue')
+          },
+          {
+            path: 'create',
+            name: 'products-create',
+            component: () => import('pages/ProductPage.vue'),
+          },
+          {
+            path: ':id/edit',
+            name: 'products-edit',
+            component: () => import('pages/ProductPage.vue'),
+          },
+        ],
+      },
       { path: '/user', name: 'user', component: () => import('pages/UserPage.vue') },
       { path: '/users', name: 'users', component: () => import('pages/UsersPage.vue') },
       { path: '/units', name: 'units', component: () => import('pages/UnitsPage.vue') },

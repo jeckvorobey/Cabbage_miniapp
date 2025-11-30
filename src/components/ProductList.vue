@@ -2,7 +2,7 @@
   <q-infinite-scroll @load="onLoad" :offset="250">
     <q-btn
       v-if="isManager"
-      @click="productModal()"
+      @click="router.push({ name: 'products-create' })"
       class="full-width q-mb-sm"
       color="secondary"
       label="Добавить товар"
@@ -13,7 +13,7 @@
         :key="index"
       >
         <q-item>
-          <q-item-section top avatar @click="productModal(item)">
+          <q-item-section top avatar @click="openProductPage(item)">
             <q-img
               class="cursor-pointer radius-8"
               :src="item[0]?.primary_image ? item[0].primary_image : getImage('/card-shop.jpg')"
@@ -22,7 +22,7 @@
               fit="cover"
             />
           </q-item-section>
-          <q-item-section class="column justify-between" @click="productModal(item)">
+          <q-item-section class="column justify-between" @click="openProductPage(item)">
             <q-item-label caption class="text-size-16">{{ item.name }}</q-item-label>
             <q-item-label>
               <div class="text-grey old-price" v-if="item?.old_price">{{ item.old_price }} ₽</div>
@@ -79,8 +79,10 @@ import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook'
 import { useAuthStore } from 'stores/authStore';
 import type { IProduct } from 'src/types/product.interface';
 import { getImage } from 'src/use/useUtils';
+import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
+const router = useRouter()
 const unitsStore = useUnitsStore();
 const productsStore = useProductsStore();
 const orderStore = useOrderStore();
@@ -160,10 +162,16 @@ const onLoad = async (index: number, done: (stop?: boolean) => void) => {
   done();
 };
 
-function productModal(it?: IProduct) {
-  product.value = it
-  showProductModal.value = !showProductModal.value
+// удалить
+// function productModal(it?: IProduct) {
+//   product.value = it
+//   showProductModal.value = !showProductModal.value
+// }
+
+function openProductPage(it?: IProduct) {
+  router.push({ name: 'products-edit', params: { id: it!.id } })
 }
+
 </script>
 
 <style scoped lang="scss">
