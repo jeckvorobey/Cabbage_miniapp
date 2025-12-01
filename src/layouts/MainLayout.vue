@@ -8,9 +8,17 @@
           <q-btn v-else text-color="grey" flat dense round icon="home" aria-label="Home" />
         </div>
         <q-toolbar-title>
-          <q-input v-if="route.name === 'dashboard'" dense borderless rounded outlined v-model="textSearch">
+          <q-input
+            v-if="route.name === 'dashboard'"
+            v-model="textSearch"
+            debounce="500"
+            dense
+            borderless
+            rounded
+            outlined
+            @update:model-value="fetchProductsSearch()">
             <template v-slot:append>
-              <q-icon name="search" @click="showSearch = !showSearch" />
+              <q-icon name="search" @click="fetchProductsSearch()" />
             </template>
           </q-input>
         </q-toolbar-title>
@@ -105,19 +113,20 @@ import { useCategoriesStore } from 'src/stores/categoriesStore';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
 import { useAuthStore } from 'stores/authStore';
 import { useRoute, useRouter } from 'vue-router';
+import { useProductsStore } from 'src/stores/productsStore';
 
 Dark.set(false);
 const $q = useQuasar();
 const router = useRouter()
 const route = useRoute()
+const productsStore = useProductsStore();
 const categoriesStore = useCategoriesStore();
 const authStore = useAuthStore();
 const { isManager, isAdmin } = usePermissionVisibility(computed(() => authStore.user?.role));
 const screenWidth = computed(() => $q.platform.is.mobile ? window.screen.width : 370,);
 type Theme = 'dark' | 'light';
 const themeData = ref('dark');
-const showSearch = ref(false);
-const textSearch = ref();
+const textSearch = ref('');
 const leftDrawerOpen = ref(false);
 const drawerRight = ref(false);
 const themeState = shallowReactive<Record<Theme, Theme>>({
@@ -251,5 +260,31 @@ function toggleLeftDrawer() {
 
 function routerBack() {
   router.back()
+}
+
+async function fetchProductsSearch() {
+  try {
+    $q.loading.show();
+    let params = {}
+    let res = []
+    if (textSearch.value) {
+      params = {
+        offset: 0,
+        limit: 20,
+        query: textSearch.value ? textSearch.value : '',
+      }
+      res = await productsStore.fetchProductsSearch(params)
+    } else {
+      productsStore.pagination.offset = 0
+      productsStore.pagination.total = 0
+      productsStore.pagination.has_more = true
+      res = await productsStore.fetchProducts(productsStore.pagination);
+    }
+    if (res) productsStore.products = res.items
+  } catch (e: any) {
+    console.error(e);
+  } finally {
+    $q.loading.hide();
+  }
 }
 </script>
