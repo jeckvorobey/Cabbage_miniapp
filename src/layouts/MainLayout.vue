@@ -4,11 +4,11 @@
       <q-toolbar >
         <q-btn v-if="isManager || isAdmin" text-color="grey" flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
         <div>
-          <q-btn v-if="route.name !== '/'" @click="routerBack()" text-color="grey" flat dense round icon="arrow_back_ios" aria-label="Home" />
+          <q-btn v-if="route.name !== 'dashboard'" @click="routerBack()" text-color="grey" flat dense round icon="arrow_back_ios" aria-label="Home" />
           <q-btn v-else text-color="grey" flat dense round icon="home" aria-label="Home" />
         </div>
         <q-toolbar-title>
-          <q-input  dense borderless rounded outlined v-model="textSearch">
+          <q-input v-if="route.name === 'dashboard'" dense borderless rounded outlined v-model="textSearch">
             <template v-slot:append>
               <q-icon name="search" @click="showSearch = !showSearch" />
             </template>

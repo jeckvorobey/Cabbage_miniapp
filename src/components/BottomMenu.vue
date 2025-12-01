@@ -35,10 +35,10 @@
       path: '/'
     },
     {
-      name: 'categories',
+      name: 'catalog',
       label: 'Каталог',
       icon: 'reorder',
-      path: '/categories'
+      path: '/catalog'
     },
     {
       name: '',
