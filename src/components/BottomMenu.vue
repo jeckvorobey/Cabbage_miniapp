@@ -10,6 +10,24 @@
         class="q-pa-none col"
         @click="bottomMenuActions(button.path)"
       />
+      <q-btn flat round icon="more_vert" size="20px" class="q-px-sm">
+        <q-menu auto-close>
+          <q-list dense>
+            <q-item
+              clickable
+              v-for="(rigntButton, index) in buttonsRightMenu"
+              :key="index"
+              @click="router.push(rigntButton.path);"
+            >
+              <q-item-section avatar>
+                <q-icon :name="rigntButton.icon" />
+              </q-item-section>
+              <q-item-section>{{ rigntButton.label }}</q-item-section>
+            </q-item>
+            <q-separator />
+          </q-list>
+        </q-menu>
+      </q-btn>
     </q-tabs>
   </div>
 </template>
@@ -52,11 +70,26 @@
       icon: 'local_shipping',
       path: '/delivery'
     },
+  ])
+
+  const buttonsRightMenu = ref<IBottomMenu[]>([
     {
       name: 'user',
       label: 'Профиль',
       icon: 'perm_identity',
       path: '/user'
+    },
+    {
+      name: 'reviews',
+      label: 'Отзывы',
+      icon: 'rate_review',
+      path: '/reviews'
+    },
+    {
+      name: 'history',
+      label: 'История заказов',
+      icon: 'history',
+      path: '/history'
     }
   ])
 
