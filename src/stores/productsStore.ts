@@ -61,6 +61,19 @@ export const useProductsStore = defineStore('Products', () => {
       });
   }
 
+  async function fetchProductsSearch(params: any) {
+    return client
+      .get('products/search', { params })
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(
+          '[ProductsStore] - An error occurred while fetching via ProductsSearch',
+          err.message,
+        );
+        throw err;
+      });
+  }
+
   async function deleteProduct(id: number) {
     return client
       .delete(`products/${id}`)
@@ -100,5 +113,5 @@ export const useProductsStore = defineStore('Products', () => {
       });
   }
 
-  return {pagination, products, createProduct, updateProduct, fetchProducts, deleteProduct, fetchProductsById, uploadFile, deleteFile };
+  return {pagination, products, createProduct, updateProduct, fetchProducts, fetchProductsSearch, deleteProduct, fetchProductsById, uploadFile, deleteFile };
 });
