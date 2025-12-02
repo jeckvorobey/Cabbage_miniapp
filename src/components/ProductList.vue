@@ -135,18 +135,12 @@ async function fetchProducts() {
 function addOrder(it: any) {
   try {
     $q.loading.show();
-    if (orderStore.basketData?.length) {
-      orderStore.basketData.push(structuredClone(toRaw(it)));
-    } else {
-      orderStore.basketData.push(structuredClone(toRaw(it)));
-    }
+    console.log(orderStore.basketData)
+    orderStore.basketData.push(structuredClone(toRaw(it)));
+    console.log(orderStore.basketData)
   } catch (e) {
     console.error(e);
   } finally {
-    $q.notify({
-      message: `Товар ${it.name} добавлен в корзину`,
-      color: 'primary',
-    });
     $q.loading.hide();
   }
 }

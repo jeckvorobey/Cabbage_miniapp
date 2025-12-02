@@ -63,7 +63,7 @@
       <div class="row justify-end">
         <q-btn v-if="!products?.length" v-close-popup color="green" label="Добавить в корзину" @click="addOrder(product)"/>
         <div v-else class="row">
-          <div class="bg-green q-pa-xs radius-16">
+          <div class="bg-green q-pa-xs radius-100">
             <q-icon
               name="remove"
               color="white"
@@ -71,7 +71,7 @@
               @click="removeProduct(product.id!)"/>
           </div>
           <span class="q-mx-sm self-center">{{ products?.length }}</span>
-          <div class="bg-green q-pa-xs radius-16">
+          <div class="bg-green q-pa-xs radius-100">
             <q-icon
               name="add"
               color="white"
@@ -133,20 +133,16 @@
   }
 
   function addOrder(it: any) {
-  try {
-    $q.loading.show();
-    products.value.push(structuredClone(toRaw(it)))
-    orderStore.basketData.push(structuredClone(toRaw(it)));
-  } catch (e) {
-    console.error(e);
-  } finally {
-    $q.notify({
-      message: `Товар ${it.name} добавлен в корзину`,
-      color: 'primary',
-    });
-    $q.loading.hide();
+    try {
+      $q.loading.show();
+      products.value.push(structuredClone(toRaw(it)))
+      orderStore.basketData.push(structuredClone(toRaw(it)));
+    } catch (e) {
+      console.error(e);
+    } finally {
+      $q.loading.hide();
+    }
   }
-}
 
   async function addProduct() {
     try {

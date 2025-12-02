@@ -4,7 +4,17 @@
       <q-form greedy>
         <q-card-section>
           <div class="text-h6">Создание нового адреса доставки</div>
-          <div class="text-subtitle2">Введите адрес доставки</div>
+          <q-select
+            v-model="address.area_id"
+            :options="addressesStore.deliveryZones"
+            class="q-mb-xs"
+            outlined
+            label="Зона доставки"
+            emit-value
+            map-options
+            option-label="title"
+            option-value="id"
+          />
           <q-input class="q-mb-sm" outlined v-model="address.address_line" label="Адрес" />
           <q-input
             label="Комментарий"
@@ -28,15 +38,31 @@
 </template>
 
 <script lang="ts" setup>
+  import { useQuasar } from 'quasar';
   import { useAddressesStore } from 'src/stores/addressesStore';
-  import { ref } from 'vue';
+  import type { IAddresse } from 'src/types/addresse.interface';
+  import { onMounted, ref } from 'vue';
 
+  const $q = useQuasar();
   const addressesStore = useAddressesStore();
   const showDialog = ref(true);
-  const address = ref({
+  const address = ref<IAddresse>({
+    area_id: null,
     address_line: "",
     comment: "",
     is_default: false
+  })
+
+  onMounted(async () => {
+    try {
+      $q.loading.show();
+      const res = await addressesStore.fetchDeliveryZones()
+      if (res) addressesStore.deliveryZones = res
+    } catch (e) {
+      console.error(e);
+    } finally {
+      $q.loading.hide();
+    }
   })
 
   async function addAddres() {

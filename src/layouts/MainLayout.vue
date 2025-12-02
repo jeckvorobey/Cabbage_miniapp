@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header class="bg-white">
+    <q-header class="bg-light-gray">
       <q-toolbar >
         <q-btn v-if="isManager || isAdmin" text-color="grey" flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
         <div>
@@ -22,7 +22,6 @@
             </template>
           </q-input>
         </q-toolbar-title>
-
         <q-btn
           text-color="grey"
           flat
@@ -31,7 +30,9 @@
           icon="shopping_cart_checkout"
           aria-label="cart"
           @click="drawerRight = !drawerRight"
-        />
+        >
+         <q-badge v-if="orderStore.basketData?.length" color="red" floating>{{ orderStore.basketData?.length }}</q-badge>
+        </q-btn>
         <div></div>
       </q-toolbar>
     </q-header>
@@ -72,13 +73,13 @@
             </div>
           </div>
         </q-item-label>
-        <MenuItems v-for="link in menu" :key="link.name" v-bind="link" />
+        <MenuItems v-for="link in menuList" :key="link.name" v-bind="link" />
       </q-list>
     </q-drawer>
 
     <q-drawer :width="screenWidth"  side="right" v-model="drawerRight" show-if-above bordered>
       <q-list>
-        <q-item-label class="text-h5 flex justify-start items-center text-black" header>
+        <q-item-label class="text-h5 flex justify-start items-center" header>
           <q-icon
           name="close"
           size="30px"
@@ -108,12 +109,12 @@ import MenuItems, { type IMenuItems } from 'components/MenuItems.vue';
 import BottomMenu from 'components/BottomMenu.vue';
 import BasketCompanents from 'components/BasketCompanents.vue';
 import { Dark, useQuasar } from 'quasar';
-import { admin } from 'src/use/useUtils';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
 import { useAuthStore } from 'stores/authStore';
 import { useRoute, useRouter } from 'vue-router';
 import { useProductsStore } from 'src/stores/productsStore';
+import { useOrderStore } from 'src/stores/orderStore';
 
 Dark.set(false);
 const $q = useQuasar();
@@ -121,6 +122,7 @@ const router = useRouter()
 const route = useRoute()
 const productsStore = useProductsStore();
 const categoriesStore = useCategoriesStore();
+const orderStore = useOrderStore();
 const authStore = useAuthStore();
 const { isManager, isAdmin } = usePermissionVisibility(computed(() => authStore.user?.role));
 const screenWidth = computed(() => $q.platform.is.mobile ? window.screen.width : 370,);
@@ -141,17 +143,6 @@ const themeToggle = () => {
   window.localStorage.setItem('theme', themeStatus.value);
 };
 const tmpInfo = ref();
-const menu = computed<IMenuItems[]>(() => {
-  if (isAdmin.value) {
-    const settingsWithAdmin = itemMenuManager.value.map((item) => ({
-      ...item,
-      children: [ ...itemMenuAdmin.value, ...(item.children || [])],
-    }));
-    return [...menuList.value, ...settingsWithAdmin];
-  }
-  if (isManager.value) return [...menuList.value, ...itemMenuManager.value];
-  return menuList.value;
-});
 
 const menuList = ref<IMenuItems[]>([
   {
@@ -161,61 +152,19 @@ const menuList = ref<IMenuItems[]>([
     path: '/',
   },
   {
-    name: 'Каталог',
+    name: 'Категории',
     icon: 'reorder',
-    children: [],
+    hide_buttons: true,
+    pathName: 'categories',
+    path: 'categories',
   },
-  {
-    name: 'Доставка и оплата',
-    icon: 'local_shipping',
-    pathName: 'delivery',
-    path: 'delivery',
-  },
-  {
-    name: 'История заказов',
-    icon: 'history',
-    pathName: 'history',
-    path: 'history',
-  },
-  {
-    name: 'Мой кабинет',
-    icon: 'perm_identity',
-    pathName: 'user',
-    path: 'user',
-  },
-]);
-
-const itemMenuManager = ref<IMenuItems[]>([
-  {
-    name: 'Настройки',
-    icon: 'settings',
-    children: [
-      {
-        name: 'Единица измерения',
-        icon: 'equalizer',
-        hide_buttons: true,
-        pathName: 'units',
-        path: 'units',
-      },
-      {
-        name: 'Категории',
-        icon: 'reorder',
-        hide_buttons: true,
-        pathName: 'categories',
-        path: 'categories',
-      },
-    ],
-  },
-]);
-
-const itemMenuAdmin = ref<IMenuItems[]>([
   {
     name: 'Пользователи',
     icon: 'people',
     hide_buttons: true,
     pathName: 'users',
     path: 'users',
-    disabled: !admin.value,
+    disabled: isAdmin.value || isManager.value,
   },
 ]);
 

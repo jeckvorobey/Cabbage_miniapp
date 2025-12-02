@@ -27,7 +27,7 @@
         :done="step > 2"
       >
         <div class="stepper-container">
-          2 шаг
+          <BasketsSippingCost/>
         </div>
       </q-step>
 
@@ -54,6 +54,7 @@
 
 <script setup lang="ts">
   import BasketItems from 'components/BasketItems.vue';
+  import BasketsSippingCost from 'components/BasketsSippingCost.vue';
   import { useOrderStore } from 'src/stores/orderStore';
   import { ref } from 'vue';
 

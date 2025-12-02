@@ -23,17 +23,19 @@
                       <span>/{{ item[0].qty }}кг</span>
                     </div>
 
-                    <div class="flex">
-                      <div class="bg-light-gray q-pa-xs radius-16">
+                    <div class="flex quantity-goods">
+                      <div class="bg-green q-pa-xs radius-100 remove-icon">
                         <q-icon
                           name="remove"
+                          color="white"
                           size="20px"
                           @click="changeQuantity(item, false)" />
                       </div>
-                      <span class="q-mx-sm self-center">{{ item.length }}</span>
-                      <div class="bg-light-gray q-pa-xs radius-16">
+                      <span class="q-px-md q-py-xs self-center bg-light-gray quantity">{{ item.length }}</span>
+                      <div class="bg-green q-pa-xs radius-100 add-icon">
                         <q-icon
                           name="add"
+                          color="white"
                           size="20px"
                           @click="changeQuantity(item, true)" />
                       </div>
@@ -56,41 +58,32 @@
           </q-item>
           <q-separator />
         </q-list>
-        <q-list class="q-px-md q-py-xs">
-          <div class="flex justify-between">
-            <span>Итого: </span>
-            <span>{{totalCost}}₽</span>
-          </div>
-          <div class="flex justify-between border-bot q-mb-sm">
-            <span>Стоимость доставки: </span>
-            <span>10₽</span>
-          </div>
-          <div class="flex justify-between">
-            <span>Общая: </span>
-            <span>{{ totalCost }}₽</span>
-          </div>
-        </q-list>
+        <BasketsSippingCost/>
       </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import BasketsSippingCost from 'components/BasketsSippingCost.vue';
 import { useOrderStore } from 'src/stores/orderStore';
 import { getImage } from 'src/use/useUtils';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, watch } from 'vue';
 
 const orderStore = useOrderStore();
-const totalCost = ref()
 watch(orderStore.basketData, () => {
-  orderStore.previewBasketData = groupIdenticalProducts(orderStore.basketData);
-  totalCost.value = orderStore.basketData.reduce((accumulator: any, product: any) => {
-  return accumulator + product.price;
-}, 0)
+  paymentsBasket()
 });
 
 onMounted(() => {
-  // basketData.value = $q.localStorage.getItem('basket');
+  paymentsBasket()
 });
+
+function paymentsBasket() {
+  orderStore.previewBasketData = groupIdenticalProducts(orderStore.basketData);
+  orderStore.totalCost = orderStore.basketData.reduce((accumulator: any, product: any) => {
+    return accumulator + product.price;
+  }, 0)
+}
 
 function removeItem(it: any, index: number) {
   orderStore.previewBasketData.splice(index, 1);
@@ -141,6 +134,18 @@ function producTotalPrice(it: any) {
     height: 86svh;
     .old-price {
       text-decoration: line-through;
+    }
+    .quantity-goods {
+      .remove-icon {
+        margin-right: -10px;
+        z-index: 1;
+      }
+      .quantity {
+        height: 28px; width: 40px;
+      }
+      .add-icon {
+        margin-left: -10px;
+      }
     }
   }
 }

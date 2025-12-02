@@ -5,6 +5,7 @@ import { ref } from 'vue';
 export const useOrderStore = defineStore('Order', () => {
   const basketData = ref<any>([]);
   const previewBasketData = ref()
+  const totalCost = ref()
 
   async function createOrder(order: any) {
     return client
@@ -16,5 +17,5 @@ export const useOrderStore = defineStore('Order', () => {
       });
   }
 
-  return { basketData, previewBasketData, createOrder };
+  return { basketData, previewBasketData, totalCost, createOrder };
 });
