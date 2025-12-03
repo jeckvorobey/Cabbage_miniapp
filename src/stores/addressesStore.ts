@@ -5,6 +5,7 @@ import { ref } from 'vue';
 
 export const useAddressesStore = defineStore('Addresses', () => {
   const addresses = ref<IAddresse[]>();
+  const deliveryZones = ref()
 
   async function fetchAddresses() {
     return client
@@ -55,5 +56,18 @@ export const useAddressesStore = defineStore('Addresses', () => {
       });
   }
 
-  return {addresses, fetchAddresses, createAddress, updateAddress, deleteAddress};
+  async function fetchDeliveryZones() {
+    return client
+      .get('delivery-zones')
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(
+          '[AddressesStore] - An error occurred while fetching via fetchAddresses',
+          err.message,
+        );
+        throw err;
+      });
+  }
+
+  return {addresses, deliveryZones, fetchAddresses, createAddress, updateAddress, deleteAddress, fetchDeliveryZones};
 });

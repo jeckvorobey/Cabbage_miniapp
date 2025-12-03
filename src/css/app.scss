@@ -11,7 +11,7 @@ body.body--dark {
   --basic-green: #00a63e;
   --light-gray: #6a7282;
   --light-red: #ef7e7ede;
-  --bg-light-gray: #f2f3f5;
+  --bg-light-gray: #000000;
 }
 
 .text-basic-green {
@@ -40,6 +40,9 @@ body.body--dark {
 
 .radius-16 {
   border-radius: 16px;
+}
+.radius-100 {
+  border-radius: 100%;
 }
 
 .radius-8 {
