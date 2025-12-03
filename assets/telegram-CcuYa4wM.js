@@ -1,0 +1,1 @@
+import{j as r,u as o}from"./index-CagGA-vL.js";const i=r(async()=>{const e=window?.Telegram?.WebApp?.initData;if(!(!e||e.length===0))try{try{window.Telegram?.WebApp?.ready?.(),window.Telegram?.WebApp?.expand?.()}catch(a){console.error(`ready/expand false: ${a}`)}await o().auth(e)}catch(t){console.error("[boot/telegram] auth failed",t)}});export{i as default};
