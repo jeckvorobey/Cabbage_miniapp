@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import BasketsSippingCost from 'components/BasketsSippingCost.vue';
+import BasketsSippingCost from 'components/basket/BasketsSippingCost.vue';
 import { useOrderStore } from 'src/stores/orderStore';
 import { getImage } from 'src/use/useUtils';
 import { onMounted, watch } from 'vue';
@@ -90,6 +90,7 @@ function removeItem(it: any, index: number) {
   const idsRemove = new Set(it.map((item: any) => item.id));
   const order = orderStore.basketData.filter((item: any) => !idsRemove.has(item.id));
   orderStore.basketData = order;
+  window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
 }
 
 function changeQuantity(it: any, flag: boolean) {
@@ -98,6 +99,7 @@ function changeQuantity(it: any, flag: boolean) {
   if (flag) {
     it.push(it[0]);
     orderStore.basketData.push(it[0])
+    window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
   } else {
     const indexToRemove = orderStore.basketData.findLastIndex((item: any) => item.id === it[0].id);
     orderStore.basketData.splice(indexToRemove, 1);

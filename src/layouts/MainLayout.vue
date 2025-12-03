@@ -107,7 +107,7 @@
 import { computed, onMounted, ref, shallowReactive } from 'vue';
 import MenuItems, { type IMenuItems } from 'components/MenuItems.vue';
 import BottomMenu from 'components/BottomMenu.vue';
-import BasketCompanents from 'components/BasketCompanents.vue';
+import BasketCompanents from 'components/basket/BasketCompanents.vue';
 import { Dark, useQuasar } from 'quasar';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';

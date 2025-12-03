@@ -27,6 +27,7 @@
         :done="step > 2"
       >
         <div class="stepper-container">
+          <BasketsDeliveryInformation/>
           <BasketsSippingCost/>
         </div>
       </q-step>
@@ -53,14 +54,20 @@
 </template>
 
 <script setup lang="ts">
-  import BasketItems from 'components/BasketItems.vue';
-  import BasketsSippingCost from 'components/BasketsSippingCost.vue';
+  import BasketItems from 'components/basket/BasketItems.vue';
+  import BasketsSippingCost from 'components/basket/BasketsSippingCost.vue';
+  import BasketsDeliveryInformation from 'components/basket/BasketsDeliveryInformation.vue';
   import { useOrderStore } from 'src/stores/orderStore';
-  import { ref } from 'vue';
+  import { onMounted, ref } from 'vue';
 
   const orderStore = useOrderStore();
   const step = ref(1)
   const stepper = ref()
+
+  onMounted(() => {
+    const data = window.localStorage.getItem('basket')
+    if (data) orderStore.basketData = JSON.parse(data);
+  });
 
   function BasketEvents() {
     if (step.value === 1) {
