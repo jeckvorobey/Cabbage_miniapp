@@ -18,7 +18,7 @@ describe('BottomMenu', () => {
       routes: [
         { path: '/', name: 'dashboard', component: { template: '<div>Home</div>' } },
         { path: '/catalog', name: 'catalog', component: { template: '<div>Catalog</div>' } },
-        { path: '/delivery', name: 'delivery', component: { template: '<div>Delivery</div>' } },
+        { path: '/promotions', name: 'promotions', component: { template: '<div>Promotions</div>' } },
       ],
     });
   });
@@ -33,7 +33,7 @@ describe('BottomMenu', () => {
 
       expect(wrapper.text()).toContain('Главная');
       expect(wrapper.text()).toContain('Каталог');
-      expect(wrapper.text()).toContain('Доставка');
+      expect(wrapper.text()).toContain('Акции');
     });
 
     it('должен отображать кнопку корзины', () => {
@@ -44,7 +44,7 @@ describe('BottomMenu', () => {
       });
 
       // Проверяем наличие иконки корзины
-      expect(wrapper.html()).toContain('shopping_cart_checkout');
+      expect(wrapper.html()).toContain('shopping_cart');
     });
   });
 
@@ -171,7 +171,7 @@ describe('BottomMenu', () => {
       }
     });
 
-    it('должен переходить на страницу доставки при клике на "Доставка"', async () => {
+    it('должен переходить на страницу акций при клике на "Акции"', async () => {
       const pushSpy = vi.spyOn(router, 'push');
       
       const wrapper = mount(BottomMenu, {
@@ -181,11 +181,11 @@ describe('BottomMenu', () => {
       });
 
       const tabs = wrapper.findAllComponents({ name: 'QTab' });
-      const deliveryTab = tabs.find(tab => tab.text().includes('Доставка'));
+      const promotionsTab = tabs.find(tab => tab.text().includes('Акции'));
 
-      if (deliveryTab) {
-        await deliveryTab.trigger('click');
-        expect(pushSpy).toHaveBeenCalledWith('/delivery');
+      if (promotionsTab) {
+        await promotionsTab.trigger('click');
+        expect(pushSpy).toHaveBeenCalledWith('/promotions');
       }
     });
 
@@ -200,44 +200,13 @@ describe('BottomMenu', () => {
       const tabs = wrapper.findAllComponents({ name: 'QTab' });
       const basketTab = tabs.find(tab => {
         const html = tab.html();
-        return html.includes('shopping_cart_checkout');
+        return html.includes('shopping_cart');
       });
 
       if (basketTab) {
         await basketTab.trigger('click');
         expect(wrapper.emitted('open-basket')).toBeTruthy();
       }
-    });
-  });
-
-  describe('Правое меню', () => {
-    it('должен отображать правое меню при клике на кнопку "еще"', async () => {
-      const wrapper = mount(BottomMenu, {
-        global: {
-          plugins: [Quasar, router],
-        },
-      });
-
-      const moreButton = wrapper.find('button[icon="more_vert"]');
-      
-      if (moreButton.exists()) {
-        await moreButton.trigger('click');
-        await wrapper.vm.$nextTick();
-
-        // Проверяем, что меню открылось
-        expect(wrapper.html()).toContain('q-menu');
-      }
-    });
-
-    it('должен содержать пункты "Профиль", "Отзывы", "История заказов"', () => {
-      const wrapper = mount(BottomMenu, {
-        global: {
-          plugins: [Quasar, router],
-        },
-      });
-
-      // Проверяем, что кнопка с иконкой more_vert существует
-      expect(wrapper.html()).toContain('more_vert');
     });
   });
 

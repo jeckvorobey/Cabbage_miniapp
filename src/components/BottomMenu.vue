@@ -1,43 +1,47 @@
 <template>
   <div class="bottom-menu">
-    <q-tabs no-caps active-color="green" indicator-color="transparent" class="bg-light-gray text-light-gray flex row" v-model="tab">
+    <q-tabs 
+      no-caps 
+      active-color="green" 
+      indicator-color="transparent" 
+      class="bg-white text-grey-7 flex row bottom-menu-tabs" 
+      v-model="tab"
+    >
       <q-tab
         v-for="(button, index) in buttonsMenu"
         :key="index"
         :name="button.name"
-        :label="button.name === '' && orderStore.basketData?.length ? `${formatBasketPrice()} ₽` : button.label"
         :icon="button.icon"
-        class="q-pa-none col basket-tab"
+        class="q-pa-sm col menu-tab"
         @click="bottomMenuActions(button.path)"
       >
-        <!-- Бейдж с количеством товаров для корзины -->
-        <q-badge 
-          v-if="button.name === '' && orderStore.basketData?.length" 
-          color="negative" 
-          floating
-          rounded
-        >
-          {{ orderStore.basketData.length }}
-        </q-badge>
+        <!-- Для корзины показываем цену внизу и бейдж сверху -->
+        <template v-if="button.name === ''">
+          <div class="basket-tab-content">
+            <div class="basket-icon-wrapper">
+              <q-icon :name="button.icon" size="24px" />
+              <q-badge 
+                v-if="orderStore.basketData?.length" 
+                color="negative" 
+                floating
+                rounded
+                class="basket-badge"
+              >
+                {{ orderStore.basketData.length }}
+              </q-badge>
+            </div>
+            <div class="basket-price" v-if="orderStore.basketData?.length">
+              {{ formatBasketPrice() }} ₽
+            </div>
+            <div v-else class="tab-label">{{ button.label }}</div>
+          </div>
+        </template>
+        
+        <!-- Для остальных кнопок - стандартный label -->
+        <template v-else>
+          <div class="tab-label">{{ button.label }}</div>
+        </template>
       </q-tab>
-      <q-btn flat round icon="more_vert" size="20px" class="q-px-sm">
-        <q-menu auto-close>
-          <q-list dense>
-            <q-item
-              clickable
-              v-for="(rigntButton, index) in buttonsRightMenu"
-              :key="index"
-              @click="router.push(rigntButton.path);"
-            >
-              <q-item-section avatar>
-                <q-icon :name="rigntButton.icon" />
-              </q-item-section>
-              <q-item-section>{{ rigntButton.label }}</q-item-section>
-            </q-item>
-            <q-separator />
-          </q-list>
-        </q-menu>
-      </q-btn>
     </q-tabs>
   </div>
 </template>
@@ -75,36 +79,21 @@
     {
       name: '',
       label: 'Корзина',
-      icon: 'shopping_cart_checkout',
+      icon: 'shopping_cart',
       path: ''
     },
     {
-      name: 'delivery',
-      label: 'Доставка',
-      icon: 'local_shipping',
-      path: '/delivery'
+      name: 'promotions',
+      label: 'Акции',
+      icon: 'local_offer',
+      path: '/promotions'
     },
-  ]);
-
-  const buttonsRightMenu = ref<IBottomMenu[]>([
     {
       name: 'user',
       label: 'Профиль',
-      icon: 'perm_identity',
+      icon: 'person_outline',
       path: '/user'
     },
-    {
-      name: 'reviews',
-      label: 'Отзывы',
-      icon: 'rate_review',
-      path: '/reviews'
-    },
-    {
-      name: 'history',
-      label: 'История заказов',
-      icon: 'history',
-      path: '/history'
-    }
   ]);
 
   // Форматирование цены корзины
@@ -124,8 +113,48 @@
 
 <style scoped lang="scss">
 .bottom-menu {
-  .basket-tab {
-    position: relative;
+  border-top: 1px solid #E0E0E0;
+  
+  .bottom-menu-tabs {
+    background: white;
+  }
+  
+  .menu-tab {
+    min-height: 56px;
+    padding: 4px 8px;
+    
+    .basket-tab-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      
+      .basket-icon-wrapper {
+        position: relative;
+        
+        .basket-badge {
+          position: absolute;
+          top: -8px;
+          right: -8px;
+          min-width: 18px;
+          height: 18px;
+          font-size: 11px;
+          padding: 2px 4px;
+        }
+      }
+      
+      .basket-price {
+        font-size: 13px;
+        font-weight: 600;
+        color: #4CAF50;
+        margin-top: 2px;
+      }
+    }
+    
+    .tab-label {
+      font-size: 12px;
+      margin-top: 2px;
+    }
   }
 }
 </style>

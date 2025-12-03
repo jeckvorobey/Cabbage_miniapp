@@ -117,8 +117,8 @@ describe('BasketCompanents', () => {
       
       const wrapper = createWrapper();
 
-      // Проверяем наличие бейджа со скидкой внутри компонента изображения
-      const badges = wrapper.findAll('[class*="q-badge"]');
+      // Проверяем наличие бейджа со скидкой (используем обычный div с классом)
+      const badges = wrapper.findAll('.discount-badge');
       expect(badges.length).toBeGreaterThan(0);
       // Проверяем, что в тексте есть скидка
       expect(wrapper.html()).toContain('-10%');
@@ -273,7 +273,9 @@ describe('BasketCompanents', () => {
       
       const wrapper = createWrapper();
       
-      expect(wrapper.text()).toContain('1,00 кг');
+      // Количество и единица измерения в разных div
+      expect(wrapper.text()).toContain('1,00');
+      expect(wrapper.text()).toContain('кг');
     });
 
     it('должен форматировать количество штук без десятичных', () => {
@@ -283,7 +285,9 @@ describe('BasketCompanents', () => {
       
       const wrapper = createWrapper();
       
-      expect(wrapper.text()).toContain('3 шт');
+      // Количество и единица измерения в разных div
+      expect(wrapper.text()).toContain('3');
+      expect(wrapper.text()).toContain('шт');
     });
   });
 
