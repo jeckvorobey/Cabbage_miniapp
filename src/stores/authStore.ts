@@ -13,7 +13,7 @@ interface AuthResponse {
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<IUser | null>(null);
   const toWalletAddress = ref('');
-  const token = ref<string>('');
+  const token = ref<string | null>('');
   const telegramData = ref();
 
   async function auth(initData: any) {
