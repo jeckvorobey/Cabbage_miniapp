@@ -49,7 +49,7 @@ import type { IUnit } from 'src/types/unit.interface';
 const $q = useQuasar();
 const authStore = useAuthStore();
 const unitsStore = useUnitsStore();
-const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
+const { isManager } = usePermissionVisibility(computed(() => authStore.user));
 const showUnitModal = ref(false);
 const unitData = ref<IUnit>();
 

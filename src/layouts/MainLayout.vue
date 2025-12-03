@@ -124,7 +124,7 @@ const productsStore = useProductsStore();
 const categoriesStore = useCategoriesStore();
 const orderStore = useOrderStore();
 const authStore = useAuthStore();
-const { isManager, isAdmin } = usePermissionVisibility(computed(() => authStore.user?.role));
+const { isManager, isAdmin } = usePermissionVisibility(computed(() => authStore.user));
 const screenWidth = computed(() => $q.platform.is.mobile ? window.screen.width : 370,);
 type Theme = 'dark' | 'light';
 const themeData = ref('dark');

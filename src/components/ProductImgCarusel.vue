@@ -56,7 +56,7 @@
   const $q = useQuasar();
   const productsStore = useProductsStore();
   const authStore = useAuthStore();
-  const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
+  const { isManager } = usePermissionVisibility(computed(() => authStore.user));
 
   const slide = ref(0)
   const fullscreen = ref(false)

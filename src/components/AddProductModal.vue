@@ -100,7 +100,7 @@
   const categoriesStore = useCategoriesStore();
   const { dialogRef } = useDialogPluginComponent()
   const authStore = useAuthStore();
-  const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
+  const { isManager } = usePermissionVisibility(computed(() => authStore.user));
   const unitsStore = useUnitsStore()
   const showDialog = ref(false)
   const product = ref<IProduct>({

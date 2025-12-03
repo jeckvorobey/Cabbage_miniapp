@@ -106,7 +106,7 @@
   const categoriesStore = useCategoriesStore();
   const orderStore = useOrderStore();
   const unitsStore = useUnitsStore()
-  const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
+  const { isManager } = usePermissionVisibility(computed(() => authStore.user));
   const product = ref<IProduct>({
     id: null,
     name: "",

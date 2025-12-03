@@ -8,42 +8,74 @@ export type MaybeRef<T> = T | Ref<T>;
 
 export type PermissionSource =
   | MaybeRef<PermissionLike | null | undefined>
-  | { role?: MaybeRef<PermissionLike | null | undefined> }
-  | MaybeRef<{ role?: MaybeRef<PermissionLike | null | undefined> } | null | undefined>;
+  | { role?: MaybeRef<PermissionLike | null | undefined>; is_user?: MaybeRef<boolean | null | undefined> }
+  | MaybeRef<{ role?: MaybeRef<PermissionLike | null | undefined>; is_user?: MaybeRef<boolean | null | undefined> } | null | undefined>;
 
-function extractRawPermission(source: PermissionSource): PermissionLike | null | undefined {
+interface ExtractedPermission {
+  role: PermissionLike | null | undefined;
+  isUserFlag: boolean;
+}
+
+/**
+ * Извлекает роль и флаг is_user из источника данных
+ */
+function extractRawPermission(source: PermissionSource): ExtractedPermission {
   const s = unref(source);
 
   if (s && typeof s === 'object' && 'role' in s) {
-    const r = (s as { role?: MaybeRef<PermissionLike | null | undefined> }).role;
-    return r != null ? unref(r) : null;
+    const obj = s as { 
+      role?: MaybeRef<PermissionLike | null | undefined>; 
+      is_user?: MaybeRef<boolean | null | undefined> 
+    };
+    
+    const role = obj.role != null ? unref(obj.role) : null;
+    const isUserFlag = obj.is_user != null ? unref(obj.is_user) === true : false;
+    
+    return { role, isUserFlag };
   }
 
-  return s as PermissionLike | null | undefined;
+  return { role: s as PermissionLike | null | undefined, isUserFlag: false };
 }
 
 /**
  * Хук для проверки прав доступа по ролям.
  *
- * Правило: ADMIN обладает всеми правами MANAGER и USER.
+ * Правила:
+ * 1. Если is_user === true, пользователь всегда видит интерфейс как USER, независимо от роли
+ * 2. ADMIN обладает всеми правами MANAGER и USER
+ * 3. MANAGER обладает правами USER
  */
 export function usePermissionVisibility(source: PermissionSource) {
-  const permission = computed<EPermissionTypes | undefined>(() => {
-    const raw = extractRawPermission(source);
-    if (raw == null) return undefined;
+  const extractedData = computed<ExtractedPermission>(() => extractRawPermission(source));
 
-    const value = Number(raw) as EPermissionTypes;
+  const permission = computed<EPermissionTypes | undefined>(() => {
+    const { role, isUserFlag } = extractedData.value;
+    
+    // Если is_user === true, принудительно устанавливаем роль USER
+    if (isUserFlag) {
+      return EPermissionTypes.USER;
+    }
+
+    if (role == null) return undefined;
+
+    const value = Number(role) as EPermissionTypes;
 
     if (!Object.values(EPermissionTypes).includes(value)) return undefined;
 
     return value;
   });
 
-  const isAdmin = computed(() => permission.value === EPermissionTypes.ADMIN);
+  const isAdmin = computed(() => {
+    // Если is_user === true, то НЕ админ
+    if (extractedData.value.isUserFlag) return false;
+    return permission.value === EPermissionTypes.ADMIN;
+  });
 
-  const isManager = computed(
-    () => permission.value ? permission.value <= EPermissionTypes.MANAGER : false,
-  );
+  const isManager = computed(() => {
+    // Если is_user === true, то НЕ менеджер
+    if (extractedData.value.isUserFlag) return false;
+    return permission.value ? permission.value <= EPermissionTypes.MANAGER : false;
+  });
 
   const isUser = computed(() => {
     const current = permission.value;
@@ -56,15 +88,21 @@ export function usePermissionVisibility(source: PermissionSource) {
 
   /**
    * Универсальная проверка роли.
-   * Для MANAGER автоматически учитывается ADMIN,
-   * для USER — и MANAGER, и ADMIN.
+   * Учитывает флаг is_user - если он true, доступны только права USER.
    */
   const hasPermission = (target: PermissionLike) =>
     computed(() => {
+      const { isUserFlag } = extractedData.value;
       const current = permission.value;
+      
       if (current == null) return false;
 
       const targetValue = Number(target) as EPermissionTypes;
+
+      // Если is_user === true, доступны только права USER
+      if (isUserFlag) {
+        return targetValue === EPermissionTypes.USER;
+      }
 
       switch (targetValue) {
         case EPermissionTypes.ADMIN:

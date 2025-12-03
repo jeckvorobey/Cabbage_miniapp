@@ -87,7 +87,7 @@ const unitsStore = useUnitsStore();
 const productsStore = useProductsStore();
 const orderStore = useOrderStore();
 const authStore = useAuthStore();
-const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
+const { isManager } = usePermissionVisibility(computed(() => authStore.user));
 const allDataLoaded = ref(false);
 const showProductModal = ref(false);
 const product = ref<IProduct>()
