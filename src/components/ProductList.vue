@@ -135,9 +135,8 @@ async function fetchProducts() {
 function addOrder(it: any) {
   try {
     $q.loading.show();
-    console.log(orderStore.basketData)
     orderStore.basketData.push(structuredClone(toRaw(it)));
-    console.log(orderStore.basketData)
+    window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
   } catch (e) {
     console.error(e);
   } finally {

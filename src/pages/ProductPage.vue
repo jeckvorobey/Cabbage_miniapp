@@ -137,6 +137,7 @@
       $q.loading.show();
       products.value.push(structuredClone(toRaw(it)))
       orderStore.basketData.push(structuredClone(toRaw(it)));
+      window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
     } catch (e) {
       console.error(e);
     } finally {

@@ -1,5 +1,5 @@
 <template>
-  <q-list class="q-pa-md">
+  <q-list>
     <div class="flex justify-between">
       <span>Итого: </span>
       <span>{{orderStore.totalCost}}₽</span>
