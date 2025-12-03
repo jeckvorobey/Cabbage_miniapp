@@ -145,7 +145,7 @@ describe('BasketCompanents', () => {
       orderStore.totalCost = 100;
       
       const wrapper = createWrapper();
-      const addBtn = wrapper.findAll('.q-btn').find(btn => btn.text().includes('add'));
+      const addBtn = wrapper.find('[data-testid="increase-btn"]');
       
       await addBtn?.trigger('click');
       
@@ -161,7 +161,7 @@ describe('BasketCompanents', () => {
       orderStore.totalCost = 200;
       
       const wrapper = createWrapper();
-      const removeBtn = wrapper.findAll('.q-btn').find(btn => btn.text().includes('remove'));
+      const removeBtn = wrapper.find('[data-testid="decrease-btn"]');
       
       await removeBtn?.trigger('click');
       
@@ -176,7 +176,7 @@ describe('BasketCompanents', () => {
       orderStore.previewBasketData = [[mockProduct]];
       
       const wrapper = createWrapper();
-      const removeBtn = wrapper.findAll('.q-btn').find(btn => btn.text().includes('remove'));
+      const removeBtn = wrapper.find('[data-testid="decrease-btn"]');
       
       expect(removeBtn?.attributes('disabled')).toBeDefined();
     });
@@ -400,7 +400,7 @@ describe('BasketCompanents', () => {
       orderStore.previewBasketData = [[mockProduct]];
       
       const wrapper = createWrapper();
-      const addBtn = wrapper.findAll('.q-btn').find(btn => btn.text().includes('add'));
+      const addBtn = wrapper.find('[data-testid="increase-btn"]');
       
       await addBtn?.trigger('click');
       

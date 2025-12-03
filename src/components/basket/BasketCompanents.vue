@@ -70,6 +70,7 @@
                   icon="remove"
                   size="md"
                   class="quantity-btn"
+                  data-testid="decrease-btn" 
                   @click="changeQuantity(item, false)"
                   :disable="item.length <= 1"
                 />
@@ -84,6 +85,7 @@
                   icon="add"
                   size="md"
                   class="quantity-btn"
+                  data-testid="increase-btn"
                   @click="changeQuantity(item, true)"
                 />
               </div>
