@@ -53,3 +53,14 @@ h6 {
   margin: 0;
   padding: 0;
 }
+
+.basket-drawer {
+  .q-scrollarea__content {
+    max-width: 100%;
+  }
+}
+
+// Цвет для warning (желтый баннер)
+.bg-warning {
+  background-color: #FFF3CD !important;
+}

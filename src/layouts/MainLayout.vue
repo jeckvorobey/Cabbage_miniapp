@@ -77,19 +77,46 @@
       </q-list>
     </q-drawer>
 
-    <q-drawer :width="screenWidth"  side="right" v-model="drawerRight" show-if-above bordered>
-      <q-list>
-        <q-item-label class="text-h5 flex justify-start items-center" header>
-          <q-icon
-          name="close"
-          size="30px"
-          @click="drawerRight = !drawerRight" />
-          <span class="q-mx-auto">
-            Kорзина
-          </span>
-        </q-item-label>
-        <BasketCompanents />
-      </q-list>
+    <q-drawer :width="screenWidth" side="right" v-model="drawerRight" bordered class="basket-drawer">
+      <!-- Заголовок корзины -->
+      <q-toolbar class="bg-white text-dark">
+        <q-toolbar-title class="text-h5 text-weight-bold">
+          Корзина
+        </q-toolbar-title>
+        <q-btn 
+          flat 
+          dense 
+          round 
+          icon="search" 
+          @click="showBasketSearch = !showBasketSearch"
+        />
+        <q-btn 
+          flat 
+          dense 
+          round 
+          icon="delete_outline"
+          @click="clearBasket"
+        />
+      </q-toolbar>
+      
+      <!-- Поисковая строка (опционально) -->
+      <q-slide-transition>
+        <div v-show="showBasketSearch" class="q-pa-md bg-grey-2">
+          <q-input
+            v-model="basketSearch"
+            dense
+            outlined
+            placeholder="Поиск по корзине..."
+            bg-color="white"
+          >
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </div>
+      </q-slide-transition>
+      
+      <BasketCompanents />
     </q-drawer>
     <pre>{{ tmpInfo || '' }}</pre>
     <q-page-container>
@@ -143,6 +170,33 @@ const themeToggle = () => {
   window.localStorage.setItem('theme', themeStatus.value);
 };
 const tmpInfo = ref();
+const showBasketSearch = ref(false);
+const basketSearch = ref('');
+
+// Очистка корзины
+function clearBasket() {
+  $q.dialog({
+    title: 'Очистить корзину',
+    message: 'Вы уверены, что хотите удалить все товары из корзины?',
+    cancel: {
+      label: 'Отмена',
+      flat: true,
+      color: 'grey'
+    },
+    ok: {
+      label: 'Очистить',
+      color: 'negative'
+    }
+  }).onOk(() => {
+    orderStore.basketData = [];
+    window.localStorage.removeItem('basket');
+    $q.notify({
+      message: 'Корзина очищена',
+      color: 'positive',
+      icon: 'check_circle'
+    });
+  });
+}
 
 const menuList = ref<IMenuItems[]>([
   {
