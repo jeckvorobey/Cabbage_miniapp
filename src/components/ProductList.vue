@@ -4,7 +4,7 @@
       v-if="isManager"
       @click="router.push({ name: 'products-create' })"
       class="full-width q-mb-sm"
-      color="secondary"
+      color="green"
       label="Добавить товар"
     ></q-btn>
     <div class="product-card">

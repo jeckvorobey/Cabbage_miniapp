@@ -33,58 +33,60 @@
         <q-separator />
       </q-list>
     </q-card>
-    <q-dialog v-model="showCategoryModal">
-      <q-card style="min-width: 90svw;">
-        <q-card-section>
-          <div class="text-h6">{{ category.id ? 'Редактировать категорию' : 'Добавить категорию' }}</div>
-        </q-card-section>
+    <q-dialog ref="dialogRef" v-model="showCategoryModal">
+      <q-card style="min-width: 90svw;" >
+        <q-form greedy @submit="addCategory()">
+          <q-card-section>
+            <div class="text-h6">{{ category.id ? 'Редактировать категорию' : 'Добавить категорию' }}</div>
+          </q-card-section>
 
-        <q-card-section class="q-pt-none">
-          <q-uploader
-            ref="uploaderRef"
-            color="primary"
-            flat
-            max-file-size="15728640"
-            @added="addFile"
-            @rejected="fileLimitValidation($q)">
-            <template #header=""/>
-            <template #list="">
-              <q-uploader-add-trigger />
-              <div class="text-center upload-title">
-                <q-icon
-                  class="q-mr-sm"
-                  name="note_add"
-                  size="24px" />
-                <span>Загрузить картинку</span>
-              </div>
-            </template>
-          </q-uploader>
-          <div v-if="category.image" class="flex justify-center q-mb-md">
-            <q-img
-              class="cursor-pointer radius-8"
-              :src="category.image"
-              height="120px"
-              width="120px"
-              fit="cover"
-            />
-          </div>
+          <q-card-section class="q-pt-none">
+            <q-uploader
+              ref="uploaderRef"
+              color="primary"
+              flat
+              max-file-size="15728640"
+              @added="addFile"
+              @rejected="fileLimitValidation($q)">
+              <template #header=""/>
+              <template #list="">
+                <q-uploader-add-trigger />
+                <div class="text-center upload-title">
+                  <q-icon
+                    class="q-mr-sm"
+                    name="note_add"
+                    size="24px" />
+                  <span>Загрузить картинку</span>
+                </div>
+              </template>
+            </q-uploader>
+            <div v-if="category.image" class="flex justify-center q-mb-md">
+              <q-img
+                class="cursor-pointer radius-8"
+                :src="category.image"
+                height="120px"
+                width="120px"
+                fit="cover"
+              />
+            </div>
 
-          <q-input v-model="category.name" class="q-mb-xs" outlined label="Наиминование категории" />
-          <!-- <q-select
-            v-model="category.parent_id"
-            :options="['1','2']"
-            outlined
-            label="Родителькая категория"
-            emit-value
-            map-options
-          /> -->
-          <q-input class="q-mt-sm" v-model="category.description" filled type="textarea" rows="2" label="Описание"/>
-        </q-card-section>
+            <q-input :rules="[required]" v-model="category.name" class="q-mb-xs" outlined label="Наиминование категории *" />
+            <!-- <q-select
+              v-model="category.parent_id"
+              :options="['1','2']"
+              outlined
+              label="Родителькая категория"
+              emit-value
+              map-options
+            /> -->
+            <q-input class="q-mt-sm" v-model="category.description" filled type="textarea" rows="2" label="Описание"/>
+          </q-card-section>
 
-        <q-card-actions align="right">
-          <q-btn flat label="Отмена" color="negative" v-close-popup />
-          <q-btn flat label="Подтвердить" color="primary" v-close-popup @click="addCategory()" />
-        </q-card-actions>
+          <q-card-actions align="right">
+            <q-btn flat label="Отмена" color="negative" v-close-popup />
+            <q-btn flat label="Подтвердить" color="primary" type="submit" />
+          </q-card-actions>
+        </q-form>
       </q-card>
     </q-dialog>
   </div>
@@ -92,7 +94,7 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { fileLimitValidation } from 'src/use/useUtils';
+import { fileLimitValidation, required } from 'src/use/useUtils';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
 import { computed, ref } from 'vue';
 import type { ICategorie } from 'src/types/categorie.interface';
@@ -103,6 +105,7 @@ const $q = useQuasar();
 const authStore = useAuthStore();
 const categoriesStore = useCategoriesStore();
 const { isManager, isAdmin } = usePermissionVisibility(computed(() => authStore.user));
+const dialogRef = ref()
 const showCategoryModal = ref(false);
 const emptyCategory = ref<ICategorie>(
   {
@@ -162,12 +165,14 @@ function RemovaCategory(id: number) {
 
 async function deleteCategory(id: number) {
   try {
-      await categoriesStore.deleteCategorie(id)
-    } catch (e) {
-      console.error(e);
-    } finally {
-      await categoriesStore.fetchCategories();
-    }
+    $q.loading.show();
+    await categoriesStore.deleteCategorie(id)
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await categoriesStore.fetchCategories();
+    $q.loading.hide();
+  }
 }
 
 async function addCategory() {
@@ -189,6 +194,7 @@ async function addCategory() {
   } catch (e: any) {
     console.error(e);
   } finally {
+    dialogRef.value.hide()
     $q.loading.hide();
   }
 }

@@ -9,7 +9,7 @@
             :options="addressesStore.deliveryZones"
             class="q-mb-xs"
             outlined
-            label="Зона доставки"
+            label="Зона доставки *"
             emit-value
             map-options
             option-label="title"
@@ -20,7 +20,7 @@
             class="q-mb-sm"
             outlined
             v-model="address.address_line"
-            label="Адрес"
+            label="Адрес *"
             :rules="[required]"
           />
           <q-input
