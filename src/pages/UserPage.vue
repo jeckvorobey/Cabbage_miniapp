@@ -46,7 +46,14 @@
             </div>
 
           </div>
-          <q-input class="q-mb-sm" outlined v-model="userData.phone" label="Телефон" />
+          <q-input
+            class="q-mb-sm"
+            outlined
+            v-model="userData.phone"
+            label="Телефон"
+            mask="+# (###) ###-##-##"
+            type="tel"
+            />
           <div class="row items-center q-mb-sm">
             <q-select
               v-model="userData.addres"
