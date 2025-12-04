@@ -8,7 +8,9 @@
             ref="uploaderRef"
             color="primary"
             flat
-            @added="addFile">
+            max-file-size="15728640"
+            @added="addFile"
+            @rejected="fileLimitValidation($q)">
             <template #header=""/>
             <template #list="">
               <q-uploader-add-trigger />
@@ -90,7 +92,7 @@
   import { useProductsStore } from 'src/stores/productsStore';
   import { useUnitsStore } from 'src/stores/unitsStore';
   import type { IProduct } from 'src/types/product.interface';
-  import { getImage } from 'src/use/useUtils';
+  import { getImage, fileLimitValidation } from 'src/use/useUtils';
   import { computed, onMounted, ref } from 'vue'
 
   const props = defineProps<{ productData: any; }>();
@@ -103,6 +105,7 @@
   const { isManager } = usePermissionVisibility(computed(() => authStore.user));
   const unitsStore = useUnitsStore()
   const showDialog = ref(false)
+  const uploaderRef = ref()
   const product = ref<IProduct>({
     id: null,
     name: "",
@@ -181,6 +184,8 @@
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      if (uploaderRef.value) uploaderRef.value.reset();
     }
   }
 

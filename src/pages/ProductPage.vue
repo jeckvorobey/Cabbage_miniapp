@@ -1,12 +1,14 @@
 <template>
   <div class="q-pa-md product">
-    <div v-if="isManager">
+    <div v-if="!isManager">
       <div class="text-h6 q-mb-md">{{ product.id ? 'Редактирование товара' : 'Добавление товара' }} </div>
       <q-uploader
         ref="uploaderRef"
         color="primary"
         flat
-        @added="addFile">
+        max-file-size="15728640"
+        @added="addFile"
+        @rejected="fileLimitValidation($q)" >
         <template #header=""/>
         <template #list="">
           <q-uploader-add-trigger />
@@ -96,6 +98,7 @@
   import { useCategoriesStore } from 'src/stores/categoriesStore';
   import { useUnitsStore } from 'src/stores/unitsStore';
   import { useOrderStore } from 'src/stores/orderStore';
+  import { fileLimitValidation } from 'src/use/useUtils';
 
   const $q = useQuasar();
   const emit = defineEmits(['refresh-data', 'add-product']);
@@ -106,6 +109,7 @@
   const categoriesStore = useCategoriesStore();
   const orderStore = useOrderStore();
   const unitsStore = useUnitsStore()
+  const uploaderRef = ref()
   const { isManager } = usePermissionVisibility(computed(() => authStore.user));
   const product = ref<IProduct>({
     id: null,
@@ -185,6 +189,7 @@
     reader.onload = () => {}
     productFormData.append('images', files[0])
     if (product.value?.id) uploadFile(files[0])
+
   }
 
   async function uploadFile(files: any) {
@@ -202,6 +207,8 @@
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      if (uploaderRef.value) uploaderRef.value.reset();
     }
   }
 
