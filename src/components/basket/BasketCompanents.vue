@@ -45,7 +45,7 @@
       <template v-slot:navigation>
         <q-stepper-navigation class="row">
           <q-btn v-if="step > 1" @click="stepper.previous()" color="red" label="Назад" class="q-mr-sm" />
-          <q-btn @click="BasketEvents()" color="green" class="col" label="Оформить заказ" />
+          <q-btn @click="BasketEvents()" :disable="!orderStore.basketData?.length" color="green" class="col" label="Оформить заказ" />
         </q-stepper-navigation>
       </template>
     </q-stepper>

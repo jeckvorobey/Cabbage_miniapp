@@ -3,4 +3,5 @@ export interface ICategorie {
   name?: string
   description?: string
   parent_id?: number | null
+  image?: any
 }
