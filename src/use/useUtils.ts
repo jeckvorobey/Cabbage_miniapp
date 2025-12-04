@@ -27,6 +27,13 @@ function accessLevel(data: any) {
   }
 }
 
+function required(val: unknown): boolean | string {
+  if (typeof val === 'string' || Array.isArray(val)) {
+    return val.length > 0 || 'Обязательное поле';
+  }
+  return (val !== null && val !== undefined) || 'Обязательное поле';
+}
+
 const getImage = (path: string) => {
   return `/images/${path}`;
 };
@@ -40,4 +47,5 @@ const fileLimitValidation = ($q: any) => {
   });
 };
 
-export { isActiveMenu, admin, manager, accessLevel, getImage, fileLimitValidation };
+
+export { isActiveMenu, admin, manager, accessLevel, getImage, fileLimitValidation, required };
