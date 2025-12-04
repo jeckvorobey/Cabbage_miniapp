@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md product">
-    <div v-if="!isManager">
+    <div v-if="isManager">
       <div class="text-h6 q-mb-md">{{ product.id ? 'Редактирование товара' : 'Добавление товара' }} </div>
       <q-uploader
         ref="uploaderRef"
