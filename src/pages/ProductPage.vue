@@ -1,58 +1,62 @@
 <template>
   <div class="q-pa-md product">
     <div v-if="isManager">
-      <div class="text-h6 q-mb-md">{{ product.id ? 'Редактирование товара' : 'Добавление товара' }} </div>
-      <q-uploader
-        ref="uploaderRef"
-        color="primary"
-        flat
-        max-file-size="15728640"
-        @added="addFile"
-        @rejected="fileLimitValidation($q)" >
-        <template #header=""/>
-        <template #list="">
-          <q-uploader-add-trigger />
-          <div class="text-center upload-title">
-            <q-icon
-              class="q-mr-sm"
-              name="note_add"
-              size="24px" />
-            <span>Загрузить картинку</span>
-          </div>
-        </template>
-      </q-uploader>
-      <div>
-        <ProductImgCarusel @refresh-data="fetchProduct()" v-if="product?.images?.length" :images="product.images"/>
-      </div>
-        <q-input v-model="product.name" class="q-mb-xs" outlined label="Наименование товара" />
-        <q-input v-model="product.price" class="q-mb-xs" outlined label="Стоимость товара"/>
-        <q-input v-model="product.qty" class="q-mb-xs" outlined label="Количество"/>
-        <q-input v-model="product.origin_country" class="q-mb-xs" outlined label="Страна происхождения"/>
-        <q-select
-          v-model="product.category_id"
-          :options="categoriesStore.categories"
-          class="q-mb-xs"
-          outlined
-          label="Категория"
-          emit-value
-          map-options
-          option-label="name"
-          option-value="id"
-        />
-        <q-select
-          v-model="product.unit_id"
-          :options="unitsStore.units"
-          outlined
-          label="Единица измерения"
-          emit-value
-          map-options
-          option-label="name"
-          option-value="id"
-        />
-        <q-input class="q-mt-sm q-mb-sm" v-model="product.description" outlined type="textarea" rows="2" label="Описание"/>
-        <div class="row justify-end">
-          <q-btn v-close-popup color="green" label="Подтвердить" @click="addProduct()"/>
+      <q-form greedy @submit="addProduct()">
+        <div class="text-h6 q-mb-md">{{ product.id ? 'Редактирование товара' : 'Добавление товара' }} </div>
+        <q-uploader
+          ref="uploaderRef"
+          color="primary"
+          flat
+          max-file-size="15728640"
+          @added="addFile"
+          @rejected="fileLimitValidation($q)" >
+          <template #header=""/>
+          <template #list="">
+            <q-uploader-add-trigger />
+            <div class="text-center upload-title">
+              <q-icon
+                class="q-mr-sm"
+                name="note_add"
+                size="24px" />
+              <span>Загрузить картинку</span>
+            </div>
+          </template>
+        </q-uploader>
+        <div>
+          <ProductImgCarusel @refresh-data="fetchProduct()" v-if="product?.images?.length" :images="product.images"/>
         </div>
+          <q-input :rules="[required]" v-model="product.name" class="q-mb-xs" outlined label="Наименование товара *" />
+          <q-input :rules="[required]" v-model="product.price" class="q-mb-xs" outlined label="Стоимость товара *"/>
+          <q-input :rules="[required]" v-model="product.qty" class="q-mb-xs" outlined label="Количество *"/>
+          <q-input v-model="product.origin_country" class="q-mb-xs" outlined label="Страна происхождения"/>
+          <q-select
+            :rules="[required]"
+            v-model="product.category_id"
+            :options="categoriesStore.categories"
+            class="q-mb-xs"
+            outlined
+            label="Категория *"
+            emit-value
+            map-options
+            option-label="name"
+            option-value="id"
+          />
+          <q-select
+            :rules="[required]"
+            v-model="product.unit_id"
+            :options="unitsStore.units"
+            outlined
+            label="Единица измерения *"
+            emit-value
+            map-options
+            option-label="name"
+            option-value="id"
+          />
+          <q-input class="q-mt-sm q-mb-sm" v-model="product.description" outlined type="textarea" rows="2" label="Описание"/>
+          <div class="row justify-end">
+            <q-btn v-close-popup color="green" label="Подтвердить" type="submit"/>
+          </div>
+        </q-form>
     </div>
     <div v-else>
       <ProductImgCarusel v-if="product?.images?.length" :images="product.images"/>
@@ -98,7 +102,7 @@
   import { useCategoriesStore } from 'src/stores/categoriesStore';
   import { useUnitsStore } from 'src/stores/unitsStore';
   import { useOrderStore } from 'src/stores/orderStore';
-  import { fileLimitValidation } from 'src/use/useUtils';
+  import { fileLimitValidation, required } from 'src/use/useUtils';
 
   const $q = useQuasar();
   const emit = defineEmits(['refresh-data', 'add-product']);
