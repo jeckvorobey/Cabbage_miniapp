@@ -6,7 +6,7 @@ import { ref } from 'vue';
 export const useCategoriesStore = defineStore('Categories', () => {
   const categories = ref<any[]>()
 
-  async function createCategories(categori: ICategorie) {
+  async function createCategories(categori: any) {
     return client
       .post<ICategorie>('/categories', categori)
       .then((res) => res.data)
@@ -19,9 +19,10 @@ export const useCategoriesStore = defineStore('Categories', () => {
       });
   }
 
-  async function updateCategorie(data: ICategorie) {
+  async function updateCategorie(data: any,) {
+    const id = data.get('id');
     return client
-      .put(`/categories/${data.id}`, data)
+      .put(`/categories/${id}`, data)
       .then((res: any) => res.data)
       .catch((err) => {
         console.error(

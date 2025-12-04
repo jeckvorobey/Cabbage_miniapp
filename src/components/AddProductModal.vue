@@ -165,6 +165,7 @@
     const reader = new FileReader()
     reader.readAsDataURL(files[0])
     reader.onload = () => {}
+    productFormData.delete('images');
     productFormData.append('images', files[0])
     if (product.value?.id) uploadFile(files[0])
   }

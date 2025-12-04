@@ -170,14 +170,7 @@ const menuList = ref<IMenuItems[]>([
 
 onMounted(async () => {
   try {
-    const res = await categoriesStore.fetchCategories();
-    if (res) {
-      const category = res;
-      category.forEach((el: any) => {
-        el.path = '/';
-      });
-      menuList.value[1]!.children = category as any;
-    }
+    await categoriesStore.fetchCategories();
     $q.loading.show();
   } catch (e) {
     console.error(e);

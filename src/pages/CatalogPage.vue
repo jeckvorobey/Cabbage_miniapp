@@ -16,7 +16,7 @@
             <div class="q-mr-sm">
               <q-img
                 class="cursor-pointer radius-8"
-                :src="getImage('/card-shop.jpg')"
+                :src="category?.image ? category.image : getImage('/card-shop.jpg')"
                 height="60px"
                 width="60px"
                 fit="cover"
