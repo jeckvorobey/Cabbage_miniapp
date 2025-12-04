@@ -1,4 +1,6 @@
 import { ref } from 'vue';
+
+
 export enum EPermissionTypes {
   ADMIN = 1,
   MANAGER = 2,
@@ -29,4 +31,13 @@ const getImage = (path: string) => {
   return `/images/${path}`;
 };
 
-export { isActiveMenu, admin, manager, accessLevel, getImage };
+const fileLimitValidation = ($q: any) => {
+  $q.notify({
+    type: 'negative',
+    message: 'Ошибка: Файл слишком большой!',
+    caption: `Максимальный размер файла — 15 МБ.`,
+    icon: 'warning'
+  });
+};
+
+export { isActiveMenu, admin, manager, accessLevel, getImage, fileLimitValidation };
