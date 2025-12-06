@@ -28,6 +28,15 @@
       >
         <div class="stepper-container">
           <BasketsDeliveryInformation/>
+          <div class="q-mb-sm">
+            <q-input
+            label="Коментарий к заказу"
+            v-model="comment"
+            outlined
+            type="textarea"
+            rows="3"
+          />
+          </div>
           <BasketsSippingCost/>
         </div>
       </q-step>
@@ -63,6 +72,7 @@
   const orderStore = useOrderStore();
   const step = ref(1)
   const stepper = ref()
+  const comment = ref()
 
   onMounted(() => {
     const data = window.localStorage.getItem('basket')
