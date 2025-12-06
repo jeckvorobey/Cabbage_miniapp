@@ -1,10 +1,8 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <pre>Manager[{{ isManager.toString() }}]</pre>
     <q-header class="bg-light-gray">
       <q-toolbar>
         <q-btn
-          v-if="isManager"
           text-color="grey"
           flat
           dense
