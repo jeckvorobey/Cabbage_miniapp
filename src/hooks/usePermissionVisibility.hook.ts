@@ -12,16 +12,15 @@ import { useAuthStore } from 'src/stores/authStore';
  */
 export function usePermissionVisibility() {
   const authStore = useAuthStore();
-  if (!authStore.user) throw new Error('User not found');
+  const user = authStore.user;
+  if (!user) throw new Error('User not found');
   
   const isAdmin = computed(() => {
-    const user = authStore.user;
     if (user?.is_user === true) return false;
     return user?.role === +EPermissionTypes.ADMIN;
   });
 
   const isManager = computed(() => {
-    const user = authStore.user;
     if (user?.is_user === true) return false;
     return !!user && user.role <= +EPermissionTypes.MANAGER;
   });

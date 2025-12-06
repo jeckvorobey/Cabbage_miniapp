@@ -1,10 +1,29 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header class="bg-light-gray">
-      <q-toolbar >
-        <q-btn v-if="isManager || isAdmin" text-color="grey" flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+      <q-toolbar>
+        <pre>{{ isManager }}</pre>
+        <q-btn
+          v-if="isManager"
+          text-color="grey"
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          @click="toggleLeftDrawer"
+        />
         <div>
-          <q-btn v-if="route.name !== 'dashboard'" @click="routerBack()" text-color="grey" flat dense round icon="arrow_back_ios" aria-label="Home" />
+          <q-btn
+            v-if="route.name !== 'dashboard'"
+            @click="routerBack()"
+            text-color="grey"
+            flat
+            dense
+            round
+            icon="arrow_back_ios"
+            aria-label="Home"
+          />
           <q-btn v-else text-color="grey" flat dense round icon="home" aria-label="Home" />
         </div>
         <q-toolbar-title>
@@ -16,7 +35,8 @@
             borderless
             rounded
             outlined
-            @update:model-value="fetchProductsSearch()">
+            @update:model-value="fetchProductsSearch()"
+          >
             <template v-slot:append>
               <q-icon name="search" @click="fetchProductsSearch()" />
             </template>
@@ -31,7 +51,9 @@
           aria-label="cart"
           @click="drawerRight = !drawerRight"
         >
-         <q-badge v-if="orderStore.basketData?.length" color="red" floating>{{ orderStore.basketData?.length }}</q-badge>
+          <q-badge v-if="orderStore.basketData?.length" color="red" floating>{{
+            orderStore.basketData?.length
+          }}</q-badge>
         </q-btn>
         <div></div>
       </q-toolbar>
@@ -77,16 +99,11 @@
       </q-list>
     </q-drawer>
 
-    <q-drawer :width="screenWidth"  side="right" v-model="drawerRight" show-if-above bordered>
+    <q-drawer :width="screenWidth" side="right" v-model="drawerRight" show-if-above bordered>
       <q-list>
         <q-item-label class="text-h5 flex justify-start items-center" header>
-          <q-icon
-          name="close"
-          size="30px"
-          @click="drawerRight = !drawerRight" />
-          <span class="q-mx-auto">
-            Kорзина
-          </span>
+          <q-icon name="close" size="30px" @click="drawerRight = !drawerRight" />
+          <span class="q-mx-auto"> Kорзина </span>
         </q-item-label>
         <BasketCompanents />
       </q-list>
@@ -96,18 +113,16 @@
       <router-view />
     </q-page-container>
     <q-footer elevated>
-      <BottomMenu
-        @open-basket="drawerRight = !drawerRight"
-        />
+      <BottomMenu @open-basket="drawerRight = !drawerRight" />
     </q-footer>
   </q-layout>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, shallowReactive } from 'vue';
-import MenuItems, { type IMenuItems } from 'components/MenuItems.vue';
 import BottomMenu from 'components/BottomMenu.vue';
 import BasketCompanents from 'components/basket/BasketCompanents.vue';
+import MenuItems, { type IMenuItems } from 'components/MenuItems.vue';
+import { computed, onMounted, ref, shallowReactive } from 'vue';
 import { Dark, useQuasar } from 'quasar';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
@@ -117,13 +132,13 @@ import { useOrderStore } from 'src/stores/orderStore';
 
 Dark.set(false);
 const $q = useQuasar();
-const router = useRouter()
-const route = useRoute()
+const router = useRouter();
+const route = useRoute();
 const productsStore = useProductsStore();
 const categoriesStore = useCategoriesStore();
 const orderStore = useOrderStore();
 const { isManager, isAdmin } = usePermissionVisibility();
-const screenWidth = computed(() => $q.platform.is.mobile ? window.screen.width : 370,);
+const screenWidth = computed(() => ($q.platform.is.mobile ? window.screen.width : 370));
 type Theme = 'dark' | 'light';
 const themeData = ref('dark');
 const textSearch = ref('');
@@ -162,7 +177,7 @@ const menuList = ref<IMenuItems[]>([
     hide_buttons: true,
     pathName: 'users',
     path: 'users',
-    disabled: isAdmin.value || isManager.value,
+    disabled: !isAdmin.value,
   },
 ]);
 
@@ -199,28 +214,28 @@ function toggleLeftDrawer() {
 }
 
 function routerBack() {
-  router.back()
+  router.back();
 }
 
 async function fetchProductsSearch() {
   try {
     $q.loading.show();
-    let params = {}
-    let res = []
+    let params = {};
+    let res = [];
     if (textSearch.value) {
       params = {
         offset: 0,
         limit: 20,
         query: textSearch.value ? textSearch.value : '',
-      }
-      res = await productsStore.fetchProductsSearch(params)
+      };
+      res = await productsStore.fetchProductsSearch(params);
     } else {
-      productsStore.pagination.offset = 0
-      productsStore.pagination.total = 0
-      productsStore.pagination.has_more = true
+      productsStore.pagination.offset = 0;
+      productsStore.pagination.total = 0;
+      productsStore.pagination.has_more = true;
       res = await productsStore.fetchProducts(productsStore.pagination);
     }
-    if (res) productsStore.products = res.items
+    if (res) productsStore.products = res.items;
   } catch (e: any) {
     console.error(e);
   } finally {
