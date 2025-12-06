@@ -111,7 +111,6 @@ import BasketCompanents from 'components/basket/BasketCompanents.vue';
 import { Dark, useQuasar } from 'quasar';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
-import { useAuthStore } from 'stores/authStore';
 import { useRoute, useRouter } from 'vue-router';
 import { useProductsStore } from 'src/stores/productsStore';
 import { useOrderStore } from 'src/stores/orderStore';
@@ -123,8 +122,7 @@ const route = useRoute()
 const productsStore = useProductsStore();
 const categoriesStore = useCategoriesStore();
 const orderStore = useOrderStore();
-const authStore = useAuthStore();
-const { isManager, isAdmin } = usePermissionVisibility(computed(() => authStore.user));
+const { isManager, isAdmin } = usePermissionVisibility();
 const screenWidth = computed(() => $q.platform.is.mobile ? window.screen.width : 370,);
 type Theme = 'dark' | 'light';
 const themeData = ref('dark');

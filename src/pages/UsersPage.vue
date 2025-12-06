@@ -109,7 +109,7 @@ function selectRole(user: IUser, role: number) {
 async function changeRole(user: IUser, role: number) {
   try {
     $q.loading.show();
-    const res = await usersStore.updateUserRole(user.id!, role);
+    const res = await usersStore.updateUserRole(user.id, role);
     if (res) {
       user.role = role
       $q.notify({
