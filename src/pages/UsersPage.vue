@@ -9,8 +9,7 @@
           </q-item-section>
 
           <q-item-section>
-            <q-item-label>{{ user.name }}</q-item-label>
-            <q-item-label caption>{{ user.telegram_id }}</q-item-label>
+            <q-item-label>{{ user.full_name }}</q-item-label>
           </q-item-section>
           <q-item-section>
             <q-item-label caption>{{ accessLevel(user.role) }}</q-item-label>
@@ -109,7 +108,7 @@ function selectRole(user: IUser, role: number) {
 async function changeRole(user: IUser, role: number) {
   try {
     $q.loading.show();
-    const res = await usersStore.updateUserRole(user.id!, role);
+    const res = await usersStore.updateUserRole(user.id, role);
     if (res) {
       user.role = role
       $q.notify({

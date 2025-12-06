@@ -23,7 +23,7 @@
 - If adding tests, mirror page names and prefer `*.spec.ts` colocated with code or under `tests/`; prioritize coverage for routing guards and Pinia store actions.
 
 ## Commit & Pull Request Guidelines
-- Use concise, imperative commit messages in English (e.g., `Add units filtering`). Squash local noise before pushing.
+- Используй формат коммитов: `<type>(core): <короткое действие в повелительном наклонении>` на русском языке (например, `feat(core): добавить фильтрацию единиц`, `fix(core): исправить ошибку корзины`). Сообщения должны быть краткими, максимум ~50 символов после двоеточия. Squash local noise before pushing.
 - Branch naming: `feature/<topic>` or `fix/<issue>`.
 - PRs should include intent summary, linked issue/Telegram task when relevant, screenshots/GIFs for UI changes, and the commands you ran (lint/build).
 - Do not commit secrets; keep credentials in `.env` (not versioned) and note new env vars in the PR description.

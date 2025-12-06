@@ -69,14 +69,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRaw } from 'vue';
+import { onMounted, ref, toRaw } from 'vue';
 import { useProductsStore } from 'stores/productsStore.js';
 import { useOrderStore } from 'src/stores/orderStore';
 import { useQuasar } from 'quasar';
 import AddProductModal from 'components/AddProductModal.vue';
 import { useUnitsStore } from 'src/stores/unitsStore';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
-import { useAuthStore } from 'stores/authStore';
 import type { IProduct } from 'src/types/product.interface';
 import { getImage } from 'src/use/useUtils';
 import { useRouter } from 'vue-router';
@@ -86,8 +85,7 @@ const router = useRouter()
 const unitsStore = useUnitsStore();
 const productsStore = useProductsStore();
 const orderStore = useOrderStore();
-const authStore = useAuthStore();
-const { isManager } = usePermissionVisibility(computed(() => authStore.user));
+const { isManager } = usePermissionVisibility();
 const allDataLoaded = ref(false);
 const showProductModal = ref(false);
 const product = ref<IProduct>()

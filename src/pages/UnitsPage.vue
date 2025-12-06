@@ -40,16 +40,14 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { useUnitsStore } from 'src/stores/unitsStore';
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import AddUnitModal from 'components/AddUnitModal.vue';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
-import { useAuthStore } from 'src/stores/authStore';
 import type { IUnit } from 'src/types/unit.interface';
 
 const $q = useQuasar();
-const authStore = useAuthStore();
 const unitsStore = useUnitsStore();
-const { isManager } = usePermissionVisibility(computed(() => authStore.user));
+const { isManager } = usePermissionVisibility();
 const showUnitModal = ref(false);
 const unitData = ref<IUnit>();
 

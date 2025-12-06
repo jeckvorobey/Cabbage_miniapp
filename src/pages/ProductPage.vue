@@ -94,11 +94,10 @@
   import { useQuasar } from 'quasar';
   import { useProductsStore } from 'src/stores/productsStore';
   import type { IProduct } from 'src/types/product.interface';
-  import { computed, onMounted, ref, toRaw } from 'vue';
+  import { onMounted, ref, toRaw } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import ProductImgCarusel from 'components/ProductImgCarusel.vue';
   import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
-  import { useAuthStore } from 'src/stores/authStore';
   import { useCategoriesStore } from 'src/stores/categoriesStore';
   import { useUnitsStore } from 'src/stores/unitsStore';
   import { useOrderStore } from 'src/stores/orderStore';
@@ -109,12 +108,11 @@
   const route = useRoute()
   const router = useRouter()
   const productsStore = useProductsStore();
-  const authStore = useAuthStore();
   const categoriesStore = useCategoriesStore();
   const orderStore = useOrderStore();
   const unitsStore = useUnitsStore()
   const uploaderRef = ref()
-  const { isManager } = usePermissionVisibility(computed(() => authStore.user));
+  const { isManager } = usePermissionVisibility();
   const product = ref<IProduct>({
     id: null,
     name: "",
