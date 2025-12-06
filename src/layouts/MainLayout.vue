@@ -2,7 +2,7 @@
   <q-layout view="lHh Lpr lFf">
     <q-header class="bg-light-gray">
       <q-toolbar>
-        <pre>{{ isManager }}</pre>
+        <pre>Meneger[{{ isManager.toString() }}]</pre>
         <q-btn
           v-if="isManager"
           text-color="grey"

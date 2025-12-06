@@ -11,18 +11,25 @@ import { useAuthStore } from 'src/stores/authStore';
  * 3. MANAGER обладает правами USER
  */
 export function usePermissionVisibility() {
+  console.log('usePermissionVisibility');
   const authStore = useAuthStore();
   const user = authStore.user;
+  console.log('user', user);
   if (!user) throw new Error('User not found');
   
   const isAdmin = computed(() => {
+    console.log('isAdmin', user?.is_user === true);
     if (user?.is_user === true) return false;
+    console.log('return', user?.role === +EPermissionTypes.ADMIN);
     return user?.role === +EPermissionTypes.ADMIN;
   });
 
   const isManager = computed(() => {
-    if (user?.is_user === true) return false;
-    return !!user && user.role <= +EPermissionTypes.MANAGER;
+    console.log('isManager', user?.is_user === true);
+    if (!user || user?.is_user === true) return false;
+    console.log('return', user.role <= +EPermissionTypes.MANAGER)
+    return user.role <= +EPermissionTypes.MANAGER;
+ ;
   });
   
   return {
