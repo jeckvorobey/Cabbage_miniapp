@@ -9,8 +9,7 @@
           </q-item-section>
 
           <q-item-section>
-            <q-item-label>{{ user.name }}</q-item-label>
-            <q-item-label caption>{{ user.telegram_id }}</q-item-label>
+            <q-item-label>{{ user.full_name }}</q-item-label>
           </q-item-section>
           <q-item-section>
             <q-item-label caption>{{ accessLevel(user.role) }}</q-item-label>
