@@ -47,16 +47,14 @@
 <script setup lang="ts">
   import { useQuasar } from 'quasar';
   import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
-  import { useAuthStore } from 'src/stores/authStore';
   import { useProductsStore } from 'src/stores/productsStore';
-  import { computed, ref } from 'vue';
+  import { ref } from 'vue';
 
   const props = defineProps<{ images: any; }>();
   const emit = defineEmits(['refresh-data']);
   const $q = useQuasar();
   const productsStore = useProductsStore();
-  const authStore = useAuthStore();
-  const { isManager } = usePermissionVisibility(computed(() => authStore.user));
+  const { isManager } = usePermissionVisibility();
 
   const slide = ref(0)
   const fullscreen = ref(false)

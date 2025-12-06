@@ -96,15 +96,13 @@
 import { useQuasar } from 'quasar';
 import { fileLimitValidation, required } from 'src/use/useUtils';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import type { ICategorie } from 'src/types/categorie.interface';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
-import { useAuthStore } from 'src/stores/authStore';
 
 const $q = useQuasar();
-const authStore = useAuthStore();
 const categoriesStore = useCategoriesStore();
-const { isManager, isAdmin } = usePermissionVisibility(computed(() => authStore.user));
+const { isManager, isAdmin } = usePermissionVisibility();
 const dialogRef = ref()
 const showCategoryModal = ref(false);
 const emptyCategory = ref<ICategorie>(
