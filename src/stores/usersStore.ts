@@ -32,6 +32,19 @@ export const useUsersStore = defineStore('Users', () => {
       });
   }
 
+  async function updateMyPhone( phone: number) {
+    return client
+      .patch('/users/me/phone', { phone })
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(
+          '[UsersStore] - An error occurred while creating via updateMyPhone',
+          err.message,
+        );
+        throw err;
+      });
+  }
 
-  return {users, fetchUsers, updateUserRole};
+
+  return {users, fetchUsers, updateUserRole, updateMyPhone};
 });
