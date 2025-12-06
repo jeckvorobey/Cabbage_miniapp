@@ -135,7 +135,7 @@ const route = useRoute();
 const productsStore = useProductsStore();
 const categoriesStore = useCategoriesStore();
 const orderStore = useOrderStore();
-const { isManager, isAdmin } = usePermissionVisibility();
+const { isAdmin } = usePermissionVisibility();
 const screenWidth = computed(() => ($q.platform.is.mobile ? window.screen.width : 370));
 type Theme = 'dark' | 'light';
 const themeData = ref('dark');
