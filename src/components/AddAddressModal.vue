@@ -2,7 +2,7 @@
   <q-dialog ref="dialogRef" v-model="showDialog" persistent>
     <q-card class="">
       <q-form greedy @submit="addAddres()">
-        <q-card-section>
+        <q-card-section v-if="address">
           <div class="text-h6">Создание нового адреса доставки</div>
           <q-select
             v-model="address.area_id"
@@ -51,19 +51,26 @@
   import { onMounted, ref } from 'vue';
   import { required } from 'src/use/useUtils';
 
+  const props = defineProps<{ newAddress: any; }>();
   const $q = useQuasar();
   const addressesStore = useAddressesStore();
   const showDialog = ref(true);
   const dialogRef = ref()
-  const address = ref<IAddresse>({
-    area_id: null,
-    address_line: "",
-    comment: "",
-    is_default: false
-  })
+  const address = ref<IAddresse>()
 
   onMounted(async () => {
     try {
+      const item = {
+        area_id: null,
+        address_line: "",
+        comment: "",
+        is_default: false
+      }
+      if (props.newAddress) {
+        address.value = props.newAddress;
+      } else {
+        address.value = item;
+      }
       $q.loading.show();
       const res = await addressesStore.fetchDeliveryZones()
       if (res) addressesStore.deliveryZones = res
@@ -75,8 +82,11 @@
   })
 
   async function addAddres() {
-    try {;
-      await addressesStore.createAddress(address.value)
+    try {
+      const addressMethod = address?.value?.id
+      ? addressesStore.updateAddress
+      : addressesStore.createAddress
+      await addressMethod(address.value!)
     } catch (e) {
       console.error(e);
     } finally {
