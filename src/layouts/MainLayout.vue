@@ -3,6 +3,7 @@
     <q-header class="bg-light-gray">
       <q-toolbar>
         <q-btn
+          v-if="isManager"
           text-color="grey"
           flat
           dense
@@ -135,7 +136,7 @@ const route = useRoute();
 const productsStore = useProductsStore();
 const categoriesStore = useCategoriesStore();
 const orderStore = useOrderStore();
-const { isAdmin } = usePermissionVisibility();
+const { isAdmin, isManager } = usePermissionVisibility();
 const screenWidth = computed(() => ($q.platform.is.mobile ? window.screen.width : 370));
 type Theme = 'dark' | 'light';
 const themeData = ref('dark');
