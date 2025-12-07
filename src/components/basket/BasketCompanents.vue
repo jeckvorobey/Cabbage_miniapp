@@ -80,6 +80,7 @@
   const step = ref(1)
   const stepper = ref()
   const comment = ref()
+  const order = ref()
 
   onMounted(() => {
     const data = window.localStorage.getItem('basket')
@@ -91,16 +92,33 @@
       stepper?.value.next()
       return
     } else if (step.value === 2) {
-        if (!addressesStore.addresses?.length) {
-          $q.notify({
-            type: 'negative',
-            message: 'Добавьте адрес доставки в личном кабинете',
-            icon: 'warning'
-          });
-          router.push('/user');
-          emit('close-basket');
-          return
-        }
+      if (!addressesStore.addresses?.length) {
+        $q.notify({
+          type: 'negative',
+          message: 'Добавьте адрес доставки в личном кабинете',
+          icon: 'warning'
+        });
+        router.push('/user');
+        emit('close-basket');
+        return
+      }
+      createOrder()
+    }
+  }
+
+  async function createOrder() {
+    try {
+      order.value = {
+        items: orderStore.basketData,
+        comment: comment.value ?? '',
+        address_id: 1
+      }
+      $q.loading.show();
+      await orderStore.createOrder(order.value)
+    } catch (e) {
+      console.error(e);
+    } finally {
+      $q.loading.hide();
     }
   }
 </script>

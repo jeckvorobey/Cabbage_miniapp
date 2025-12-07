@@ -67,22 +67,22 @@
         <div v-if="product.description" class="q-pa-md bg-light-gray radius-16">{{ product.description }}</div>
       </div>
       <div class="row justify-end">
-        <q-btn v-if="!products?.length" v-close-popup color="green" label="Добавить в корзину" @click="addOrder(product)"/>
+        <q-btn v-if="!productsInBasket?.id" v-close-popup color="green" label="Добавить в корзину" @click="addOrder(product)"/>
         <div v-else class="row">
           <div class="bg-green q-pa-xs radius-100">
             <q-icon
               name="remove"
               color="white"
               size="30px"
-              @click="removeProduct(product.id!)"/>
+              @click="changeQuantity(productsInBasket, false)"/>
           </div>
-          <span class="q-mx-sm self-center">{{ products?.length }}</span>
+          <span class="q-mx-sm self-center">{{ productsInBasket.quantity}}</span>
           <div class="bg-green q-pa-xs radius-100">
             <q-icon
               name="add"
               color="white"
               size="30px"
-              @click="addOrder(product)" />
+              @click="changeQuantity(productsInBasket, true)" />
           </div>
         </div>
       </div>
@@ -124,24 +124,48 @@
     origin_country: '',
     unit: null
   })
-  const products = ref<any>([])
+  const productsInBasket = ref<any>([])
   const productFormData = new FormData()
 
   onMounted(() => {
     fetchProduct()
   })
 
-  function removeProduct(id: number) {
-    const index = products.value.findIndex((item: any) => item.id === id);
-    products.value.splice(index, 1);
-    orderStore.basketData.splice(index, 1);
+
+  function changeQuantity(order: any, flag: boolean) {
+    if (flag) {
+      order.quantity += 1
+      window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
+    } else {
+      if ( order.quantity === 1 ) {
+        const foundItem = orderStore.basketData.find((it: any) => it.id === order.id);
+        orderStore.basketData.splice(foundItem, 1);
+        productsInBasket.value = []
+        window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
+        return
+      }
+      order.quantity -= 1
+      window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
+    }
   }
 
-  function addOrder(it: any) {
+  function addOrder(order: any) {
     try {
       $q.loading.show();
-      products.value.push(structuredClone(toRaw(it)))
-      orderStore.basketData.push(structuredClone(toRaw(it)));
+      order.quantity = 1
+      order.product_id = order.id
+      $q.loading.show();
+      if (!orderStore.basketData.length) {
+        orderStore.basketData.push(structuredClone(toRaw(order)));
+        productsInBasket.value = orderStore.basketData.find((it: any) => it.id === order.id);
+      } else {
+        const foundItem = orderStore.basketData.find((it: any) => it.id === order.id);
+        if (foundItem) {
+          foundItem.quantity += 1
+        } else {
+          orderStore.basketData.push(structuredClone(toRaw(order)));
+        }
+      }
       window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
     } catch (e) {
       console.error(e);
@@ -218,7 +242,12 @@
       try {
         $q.loading.show()
         const res = await productsStore.fetchProductsById(+route.params.id)
-        if (res) product.value = res
+        if (res) {
+          product.value = res
+          if (product.value.id){
+            productsInBasket.value = orderStore.basketData.find((it: any) => it.id === product.value.id);
+          }
+        }
       } catch (e) {
         console.error(e);
       } finally {

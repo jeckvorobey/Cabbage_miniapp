@@ -130,10 +130,21 @@ async function fetchProducts() {
   }
 }
 
-function addOrder(it: any) {
+function addOrder(order: any) {
   try {
+    order.quantity = 1
+    order.product_id = order.id
     $q.loading.show();
-    orderStore.basketData.push(structuredClone(toRaw(it)));
+    if (!orderStore.basketData.length) {
+      orderStore.basketData.push(structuredClone(toRaw(order)));
+    } else {
+      const foundItem = orderStore.basketData.find((it: any) => it.id === order.id);
+      if (foundItem) {
+        foundItem.quantity += 1
+      } else {
+        orderStore.basketData.push(structuredClone(toRaw(order)));
+      }
+    }
     window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
   } catch (e) {
     console.error(e);
@@ -141,6 +152,7 @@ function addOrder(it: any) {
     $q.loading.hide();
   }
 }
+
 
 const onLoad = async (index: number, done: (stop?: boolean) => void) => {
   if (!productsStore.pagination.has_more) {

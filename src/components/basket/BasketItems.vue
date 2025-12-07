@@ -1,26 +1,26 @@
 <template>
   <div class="basket q-px-sm">
       <div class="containet">
-        <q-list v-for="(item, index) in orderStore.previewBasketData" :key="index">
+        <q-list v-for="(item, index) in orderStore.basketData" :key="index">
           <q-item class="q-px-xs">
             <q-item-section>
               <div class="row">
                 <q-img
                   class="cursor-pointer radius-8 q-mr-md"
-                  :src="item[0]?.primary_image ? item[0].primary_image : getImage('/card-shop.jpg')"
+                  :src="item?.primary_image ? item.primary_image : getImage('/card-shop.jpg')"
                   height="80px"
                   width="80px"
                   fit="cover"
                 />
                 <div class="column justify-between">
                   <q-item-label>
-                    <div class="text-bold">{{ item[0].name }}</div>
+                    <div class="text-bold">{{ item.name }}</div>
                   </q-item-label>
                   <q-item-label >
                     <div class="q-mb-md">
-                      <span class="text-bold text-basic-green">{{ item[0].price }}</span> ₽
-                      <span v-if="item[0]?.oldPrice" class="old-price">{{ item[0].oldPrice }} ₽</span>
-                      <span>/{{ item[0].qty }}кг</span>
+                      <span class="text-bold text-basic-green">{{ item.price }}</span> ₽
+                      <span v-if="item?.oldPrice" class="old-price">{{ item.oldPrice }} ₽</span>
+                      <span>/{{ item.qty }}кг</span>
                     </div>
 
                     <div class="flex quantity-goods">
@@ -29,15 +29,15 @@
                           name="remove"
                           color="white"
                           size="20px"
-                          @click="changeQuantity(item, false)" />
+                          @click="changeQuantity(item, false, index)" />
                       </div>
-                      <span class="q-px-md q-py-xs self-center bg-light-gray quantity">{{ item.length }}</span>
+                      <span class="q-px-md q-py-xs self-center bg-light-gray quantity">{{ item.quantity }}</span>
                       <div class="bg-green q-pa-xs radius-100 add-icon">
                         <q-icon
                           name="add"
                           color="white"
                           size="20px"
-                          @click="changeQuantity(item, true)" />
+                          @click="changeQuantity(item, true, index)" />
                       </div>
                     </div>
                   </q-item-label>
@@ -51,9 +51,9 @@
                 dense
                 round
                 icon="delete"
-                @click="removeItem(item, index)"
+                @click="removeItem(index)"
               />
-              <div>{{ producTotalPrice(item) }}</div>
+              <div>{{ item.price * item.quantity }}</div>
             </q-item-action>
           </q-item>
           <q-separator />
@@ -67,65 +67,25 @@
 import BasketsSippingCost from 'components/basket/BasketsSippingCost.vue';
 import { useOrderStore } from 'src/stores/orderStore';
 import { getImage } from 'src/use/useUtils';
-import { onMounted, watch } from 'vue';
 
 const orderStore = useOrderStore();
-watch(orderStore.basketData, () => {
-  paymentsBasket()
-});
 
-onMounted(() => {
-  paymentsBasket()
-});
-
-function paymentsBasket() {
-  orderStore.previewBasketData = groupIdenticalProducts(orderStore.basketData);
-  orderStore.totalCost = orderStore.basketData.reduce((accumulator: any, product: any) => {
-    return accumulator + product.price;
-  }, 0)
-}
-
-function removeItem(it: any, index: number) {
-  orderStore.previewBasketData.splice(index, 1);
-  const idsRemove = new Set(it.map((item: any) => item.id));
-  const order = orderStore.basketData.filter((item: any) => !idsRemove.has(item.id));
-  orderStore.basketData = order;
+function removeItem(index: number) {
+  orderStore.basketData.splice(index, 1);
   window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
 }
 
-function changeQuantity(it: any, flag: boolean) {
-  console.log(orderStore.previewBasketData, 'orderStore.previewBasketData')
-  console.log(it, 'changeQuantity')
+function changeQuantity(it: any, flag: boolean, index: number) {
   if (flag) {
-    it.push(it[0]);
-    orderStore.basketData.push(it[0])
-    window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
+    it.quantity += 1
   } else {
-    const indexToRemove = orderStore.basketData.findLastIndex((item: any) => item.id === it[0].id);
-    orderStore.basketData.splice(indexToRemove, 1);
-    it.pop();
-  }
-  console.log(it)
-}
-
-function groupIdenticalProducts(array: any[]): any[][] {
-  const basketGroups = new Map<string, any[]>();
-  for (const item of array) {
-    const key = item.id;
-
-    if (!basketGroups.has(key)) {
-      basketGroups.set(key, []);
+    if ( it.quantity === 1 ) {
+      removeItem(index)
+      return
     }
-    basketGroups.get(key)!.push(item);
+    it.quantity -= 1
   }
-  return Array.from(basketGroups.values());
-}
-
-function producTotalPrice(it: any) {
-  return it.reduce((acc: any, item: any) => {
-    const price = typeof item.price === 'number' ? item.price : 0;
-    return acc + price;
-  }, 0);
+  window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
 }
 
 </script>

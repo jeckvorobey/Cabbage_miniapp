@@ -34,6 +34,10 @@ body.body--dark {
   font-size: 18px;
 }
 
+.border-top {
+  border-top: 1px solid var(--light-gray);;
+}
+
 .border-bot {
   border-bottom: 1px solid var(--light-gray);;
 }
