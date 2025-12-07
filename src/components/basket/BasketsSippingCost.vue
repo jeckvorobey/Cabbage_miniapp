@@ -1,6 +1,6 @@
 <template>
   <q-list>
-    <div class="flex justify-between">
+    <!-- <div class="flex justify-between">
       <span>Итого: </span>
       <span>{{orderStore.totalCost}}₽</span>
     </div>
@@ -11,20 +11,25 @@
     <div class="flex justify-between">
       <span>Общая: </span>
       <span>{{ orderStore.totalCost }}₽</span>
+    </div> -->
+    <div class="flex justify-between border-top q-mt-lg">
+      <span>Стоимость: </span>
+      <span>{{ producTotalPrice }}₽</span>
     </div>
   </q-list>
 </template>
 
 <script setup lang="ts">
 import { useOrderStore } from 'src/stores/orderStore';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
-const addres = ref(true)
 const orderStore = useOrderStore();
-const deliveryCost = computed(() => {
-  const cost = orderStore.totalCost >= 1500 ? 0 : 500
-  return cost
-});
+const producTotalPrice = computed(() => (
+  orderStore.basketData.reduce((accumulator: any, item: any) => {
+    const itemCost = item.price * item.quantity;
+    return accumulator + itemCost;
+  }, 0)
+));
 
 </script>
 

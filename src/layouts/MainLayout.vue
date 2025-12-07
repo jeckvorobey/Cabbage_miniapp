@@ -104,7 +104,9 @@
           <q-icon name="close" size="30px" @click="drawerRight = !drawerRight" />
           <span class="q-mx-auto"> Kорзина </span>
         </q-item-label>
-        <BasketCompanents />
+        <BasketCompanents
+          @close-basket="drawerRight = !drawerRight"
+        />
       </q-list>
     </q-drawer>
     <pre>{{ tmpInfo || '' }}</pre>

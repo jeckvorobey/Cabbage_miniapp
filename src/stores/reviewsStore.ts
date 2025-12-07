@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { client } from 'src/boot/axios';
-import type { IReviews } from 'src/types/addresse.interface copy';
+import type { IReviews } from 'src/types/reviews.interface';
 import { ref } from 'vue';
 
 export const useReviewsStore = defineStore('Reviews', () => {
