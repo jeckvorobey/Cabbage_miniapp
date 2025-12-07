@@ -20,7 +20,7 @@
           </div>
           <q-input v-model="product.name" class="q-mb-xs" outlined label="Наименование товара" />
           <q-input v-model="product.price" class="q-mb-xs" outlined label="Стоимость товара" />
-          <q-input v-model="product.qty" class="q-mb-xs" outlined label="Количество" />
+          <!-- <q-input v-model="product.qty" class="q-mb-xs" outlined label="Количество" /> -->
           <q-input v-model="product.origin_country" class="q-mb-xs" outlined label="Страна происхождения" />
           <q-select v-model="product.category_id" :options="categoriesStore.categories" class="q-mb-xs" outlined
             label="Категория" emit-value map-options option-label="name" option-value="id" />
@@ -83,7 +83,6 @@ const product = ref<IProduct>({
   price: null,
   category_id: null,
   unit_id: null,
-  qty: null,
   description: "",
   images: '',
   origin_country: '',

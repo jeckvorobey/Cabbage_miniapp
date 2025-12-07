@@ -68,7 +68,14 @@
   import BasketsDeliveryInformation from 'components/basket/BasketsDeliveryInformation.vue';
   import { useOrderStore } from 'src/stores/orderStore';
   import { onMounted, ref } from 'vue';
+  import { useAddressesStore } from 'src/stores/addressesStore';
+  import { useRouter } from 'vue-router';
+  import { useQuasar } from 'quasar';
 
+  const emit = defineEmits(['close-basket']);
+  const $q = useQuasar();
+  const router = useRouter();
+  const addressesStore = useAddressesStore();
   const orderStore = useOrderStore();
   const step = ref(1)
   const stepper = ref()
@@ -83,6 +90,17 @@
     if (step.value === 1) {
       stepper?.value.next()
       return
+    } else if (step.value === 2) {
+        if (!addressesStore.addresses?.length) {
+          $q.notify({
+            type: 'negative',
+            message: 'Добавьте адрес доставки в личном кабинете',
+            icon: 'warning'
+          });
+          router.push('/user');
+          emit('close-basket');
+          return
+        }
     }
   }
 </script>

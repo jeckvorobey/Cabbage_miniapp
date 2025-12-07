@@ -1,15 +1,15 @@
 <template>
   <q-list>
     <div class="border-bot q-mb-md">
-      <div class="text-bold">Способ оплаты: </div>
-      <div v-for="(item, index) in paymentMethods" :key="index" >
-        <q-radio v-model="paymentMethod" :val="item.value" :label="item.label" color="green"/>
-      </div>
-    </div>
-    <div class="border-bot q-mb-md">
       <div class="text-bold">Адресс доставки: </div>
       <div v-for="(addre, aI) in addresses" :key="aI" >
         <q-radio v-model="address" :val="addre.area_id" :label="addre.address_line" color="green"/>
+      </div>
+    </div>
+    <div class="border-bot q-mb-md">
+      <div class="text-bold">Способ оплаты: </div>
+      <div v-for="(item, index) in paymentMethods" :key="index" >
+        <q-radio v-model="paymentMethod" :val="item.value" :label="item.label" color="green"/>
       </div>
     </div>
   </q-list>

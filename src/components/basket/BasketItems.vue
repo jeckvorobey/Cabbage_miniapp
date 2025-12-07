@@ -143,7 +143,7 @@ function producTotalPrice(it: any) {
         z-index: 1;
       }
       .quantity {
-        height: 28px; width: 40px;
+        height: 28px;
       }
       .add-icon {
         margin-left: -10px;

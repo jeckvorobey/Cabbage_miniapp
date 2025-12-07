@@ -27,7 +27,7 @@
         </div>
           <q-input :rules="[required]" v-model="product.name" class="q-mb-xs" outlined label="Наименование товара *" />
           <q-input :rules="[required]" v-model="product.price" class="q-mb-xs" outlined label="Стоимость товара *"/>
-          <q-input :rules="[required]" v-model="product.qty" class="q-mb-xs" outlined label="Количество *"/>
+          <!-- <q-input :rules="[required]" v-model="product.qty" class="q-mb-xs" outlined label="Количество *"/> -->
           <q-input v-model="product.origin_country" class="q-mb-xs" outlined label="Страна происхождения"/>
           <q-select
             :rules="[required]"
@@ -119,7 +119,6 @@
     price: null,
     category_id: null,
     unit_id: null,
-    qty: null,
     description: "",
     images: '',
     origin_country: '',
