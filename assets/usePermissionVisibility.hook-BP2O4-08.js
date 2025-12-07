@@ -1,0 +1,1 @@
+import{E as e}from"./useUtils-CwtG7muQ.js";import{u,c as s}from"./index-BtcsNcRd.js";function f(){const r=u().user;if(!r)throw new Error("User not found");const t=s(()=>r?.is_user===!0?!1:r?.role===+e.ADMIN),o=s(()=>!r||r?.is_user===!0?!1:r.role<=+e.MANAGER);return{isAdmin:t,isManager:o}}export{f as u};
