@@ -88,9 +88,6 @@
         <div class="text-bold text-18 q-mb-md" :class="product?.old_price ? 'text-red' : ''">
           {{ product.price }} ₽/шт.
         </div>
-        <div v-if="product.description" class="q-pa-md bg-light-gray radius-16">
-          {{ product.description }}
-        </div>
       </div>
       <div class="row justify-end">
         <q-btn
