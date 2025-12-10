@@ -1,0 +1,1 @@
+import{d as a}from"./index-B18Ac6EF.js";import{c as o}from"./vue-yandex-maps-DL7MSVvp.js";const r=a(({app:e})=>{e.use(o({apikey:"d0c80e2a-b8bd-436f-bfe0-efcd05feed2a",lang:"ru_RU",version:"2.1"}))});export{r as default};
