@@ -9,5 +9,5 @@ export interface IOrderBy {
   comment?: string,
   total_amount?: number,
   payment_method?: string,
-  address_id?: number
+  address_id?: number | null
 }
