@@ -42,7 +42,13 @@
           outlined
           label="Стоимость товара *"
         />
-        <!-- <q-input :rules="[required]" v-model="product.qty" class="q-mb-xs" outlined label="Количество *"/> -->
+        <q-input
+          :rules="[required]"
+          v-model="product.qty"
+          class="q-mb-xs"
+          outlined
+          label="Количество*"
+        />
         <q-input
           v-model="product.origin_country"
           class="q-mb-xs"
@@ -80,7 +86,7 @@
         <h6 class="q-my-md" v-if="product?.name">{{ product.name }}</h6>
         <div class="text-grey old-price" v-if="product?.old_price">{{ product.old_price }} ₽</div>
         <div class="text-bold text-18 q-mb-md" :class="product?.old_price ? 'text-red' : ''">
-          {{ product.price }} ₽/ {{ product.unit_name }}
+          {{ product.price }} ₽/шт.
         </div>
         <div v-if="product.description" class="q-pa-md bg-light-gray radius-16">
           {{ product.description }}
@@ -158,7 +164,6 @@ onMounted(() => {
 });
 
 function changeQuantity(order: any, flag: boolean) {
-  // Нормализуем quantity перед операциями
   const currentQuantity =
     typeof order.quantity === 'string' ? parseInt(order.quantity, 10) : Number(order.quantity) || 1;
 
