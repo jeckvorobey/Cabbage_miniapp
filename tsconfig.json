@@ -1,6 +1,10 @@
 {
   "extends": "./.quasar/tsconfig.json",
   "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@yandex/ymaps3-types"
+    ],
     "jsx": "preserve",
     "jsxImportSource": "vue",
     "plugins": [
