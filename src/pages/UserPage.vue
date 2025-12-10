@@ -107,22 +107,6 @@
       v-model="showAddressModal"
       :newAddress="address"
     />
-    <!-- отображение карты для тестов, позже удаить  -->
-    <yandex-map
-      v-model="map"
-      :settings="{
-        location: {
-          center: [37.617644, 55.755819],
-          zoom: 9,
-        },
-      }"
-      width="100%"
-      height="500px"
-      >
-      <yandex-map-default-scheme-layer/>
-      <yandex-map-default-features-layer/>
-      <yandex-map-default-marker :settings="{ coordinates: [37.617644, 55.755819] }"/>
-    </yandex-map>
   </div>
 </template>
 
@@ -135,16 +119,7 @@
   import { useUsersStore } from 'src/stores/usersStore';
   import { useAuthStore } from 'src/stores/authStore';
   import type { IAddresse } from 'src/types/addresse.interface';
-  import { shallowRef } from 'vue';
-  import type { YMap } from '@yandex/ymaps3-types';
-  import {
-    YandexMap,
-    YandexMapDefaultSchemeLayer,
-    YandexMapDefaultFeaturesLayer,
-    YandexMapDefaultMarker,
-  } from 'vue-yandex-maps';
 
-  const map = shallowRef<null | YMap>(null);
   const $q = useQuasar();
   const addressesStore = useAddressesStore();
   const usersStore = useUsersStore();
@@ -170,7 +145,6 @@
 
   onMounted(() => {
     userData.value = authStore.user
-    fetchAddresses()
   })
 
   function mainAddress(addres: IAddresse) {
@@ -187,7 +161,8 @@
   async function deleteAddress(addres: IAddresse) {
     try {
       $q.loading.show();
-      await addressesStore.deleteAddress(addres.id!)
+      const res = await addressesStore.deleteAddress(addres.id!)
+      if (res) fetchAddresses()
     } catch (e) {
       console.error(e);
     } finally {
@@ -203,7 +178,8 @@
   async function updateAddress(addres: IAddresse) {
     try {
       $q.loading.show();
-      await addressesStore.updateAddress(addres)
+      const res = await addressesStore.updateAddress(addres)
+      if (res) fetchAddresses()
     } catch (e) {
       console.error(e);
     } finally {
