@@ -21,9 +21,12 @@
             clearable
             outlined
             use-input
+            emit-value
+            map-options
             v-model="address.address_line"
             :options="suggestions"
             option-label="displayName"
+            option-value="displayName"
             label="Адрес доставки"
             @filter="searchAddress"
           >

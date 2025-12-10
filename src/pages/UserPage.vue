@@ -65,7 +65,7 @@
 
           <div class="row items-center q-mb-sm">
             <q-select
-              v-model="userData.addres"
+              v-model="addressesStore.address"
               :options="addressesStore.addresses"
               class="col-10"
               dense
@@ -145,7 +145,6 @@
   } from 'vue-yandex-maps';
 
   const map = shallowRef<null | YMap>(null);
-
   const $q = useQuasar();
   const addressesStore = useAddressesStore();
   const usersStore = useUsersStore();
@@ -243,7 +242,10 @@
     try {
       $q.loading.show();
       const res = await addressesStore.fetchAddresses()
-      if (res) addressesStore.addresses = res
+      if (res) {
+        addressesStore.addresses = res
+        addressesStore.address = res.find((item: IAddresse) => item.is_default === true);
+      }
     } catch (e) {
       console.error(e);
     } finally {

@@ -31,7 +31,7 @@
           <div class="q-mb-sm">
             <q-input
             label="Коментарий к заказу"
-            v-model="comment"
+            v-model="orderStore.orderDataByPay.comment"
             outlined
             type="textarea"
             rows="3"
@@ -66,11 +66,11 @@
   import BasketItems from 'components/basket/BasketItems.vue';
   import BasketsSippingCost from 'components/basket/BasketsSippingCost.vue';
   import BasketsDeliveryInformation from 'components/basket/BasketsDeliveryInformation.vue';
-  import { useOrderStore } from 'src/stores/orderStore';
   import { onMounted, ref } from 'vue';
   import { useAddressesStore } from 'src/stores/addressesStore';
   import { useRouter } from 'vue-router';
   import { useQuasar } from 'quasar';
+  import { useOrderStore } from 'src/stores/orderStore';
 
   const emit = defineEmits(['close-basket']);
   const $q = useQuasar();
@@ -79,8 +79,6 @@
   const orderStore = useOrderStore();
   const step = ref(1)
   const stepper = ref()
-  const comment = ref()
-  const order = ref()
 
   // Нормализация данных корзины: преобразование price и quantity в числа
   function normalizeBasketData(data: any[]): any[] {
@@ -120,13 +118,10 @@
 
   async function createOrder() {
     try {
-      order.value = {
-        items: orderStore.basketData,
-        comment: comment.value ?? '',
-        address_id: 1
-      }
+      orderStore.orderDataByPay.items = orderStore.basketData
+      if ( addressesStore?.address?.id ) orderStore.orderDataByPay.address_id = addressesStore.address.id
       $q.loading.show();
-      await orderStore.createOrder(order.value)
+      await orderStore.createOrder(orderStore.orderDataByPay)
     } catch (e) {
       console.error(e);
     } finally {
