@@ -1,7 +1,25 @@
 import { defineStore } from 'pinia';
 import { client } from 'src/api/client';
+import { ref } from 'vue';
 
 export const usePaymentsStore = defineStore('Payments', () => {
+  const paymentsMethods = ref()
+  const paymentMethod = ref('cash_to_courier')
+
+  async function fetchPaymentsMethods() {
+    return client
+      .get('payments/methods')
+      .then((res) => {
+        paymentsMethods.value = res.data
+      })
+      .catch((err) => {
+        console.error(
+          '[PaymentsStore] - An error occurred while fetching via fetchAddresses',
+          err.message,
+        );
+        throw err;
+      });
+  }
 
   async function createPayments() {
     return client
@@ -16,5 +34,5 @@ export const usePaymentsStore = defineStore('Payments', () => {
       });
   }
 
-  return { createPayments };
+  return { paymentsMethods, paymentMethod, createPayments, fetchPaymentsMethods };
 });
