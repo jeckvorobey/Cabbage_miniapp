@@ -10,6 +10,7 @@ export const useOrderStore = defineStore('Order', () => {
     items: [],
     comment: '',
     payment_method: 'cash_to_courier',
+    address_id: null
   })
 
   async function createOrder(order: any) {
