@@ -5,10 +5,10 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [
-    vue(),
+    vue() as any,
     quasar({
       sassVariables: 'src/css/quasar.variables.scss',
-    }),
+    }) as any,
   ],
   test: {
     globals: true,

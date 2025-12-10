@@ -64,11 +64,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRaw } from 'vue';
+import { ref, toRaw, onMounted } from 'vue';
 import { useProductsStore } from 'stores/productsStore.js';
 import { useOrderStore } from 'src/stores/orderStore';
 import { useQuasar } from 'quasar';
 import AddProductModal from '@/components/AddProductModal.vue';
+import { useUnitsStore } from 'src/stores/unitsStore';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
 import type { IProduct } from 'src/types/product.interface';
 import { getImage } from 'src/use/useUtils';
@@ -76,12 +77,24 @@ import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
 const router = useRouter();
+const unitsStore = useUnitsStore();
 const productsStore = useProductsStore();
 const orderStore = useOrderStore();
 const { isManager } = usePermissionVisibility();
 const allDataLoaded = ref(false);
 const showProductModal = ref(false);
 const product = ref<IProduct>();
+
+onMounted(async () => {
+  try {
+    await unitsStore.fetchUnits();
+    $q.loading.show();
+  } catch (e) {
+    console.error(e);
+  } finally {
+    $q.loading.hide();
+  }
+});
 
 function refreshData() {
   productsStore.pagination.offset = 0;
@@ -114,17 +127,27 @@ async function fetchProducts() {
 
 function addOrder(order: any) {
   try {
-    order.quantity = 1;
-    order.product_id = order.id;
+    // Нормализуем price и quantity перед добавлением в корзину
+    const normalizedOrder = {
+      ...structuredClone(toRaw(order)),
+      quantity: 1,
+      product_id: order.id,
+      price: typeof order.price === 'string' ? parseFloat(order.price) : Number(order.price) || 0,
+    };
+
     $q.loading.show();
     if (!orderStore.basketData.length) {
-      orderStore.basketData.push(structuredClone(toRaw(order)));
+      orderStore.basketData.push(normalizedOrder);
     } else {
       const foundItem = orderStore.basketData.find((it: any) => it.id === order.id);
       if (foundItem) {
-        foundItem.quantity += 1;
+        const currentQuantity =
+          typeof foundItem.quantity === 'string'
+            ? parseInt(foundItem.quantity, 10)
+            : Number(foundItem.quantity) || 0;
+        foundItem.quantity = currentQuantity + 1;
       } else {
-        orderStore.basketData.push(structuredClone(toRaw(order)));
+        orderStore.basketData.push(normalizedOrder);
       }
     }
     window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));

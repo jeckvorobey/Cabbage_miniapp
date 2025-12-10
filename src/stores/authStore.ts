@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import type { AxiosError } from 'axios';
-import { client } from 'src/boot/axios';
+import { client } from 'src/api/client';
 import type { IUser } from 'src/types/user.interface';
 
 interface AuthResponse {

@@ -62,20 +62,35 @@ export default defineConfig((ctx) => {
       // distDir
 
       extendViteConf(viteConf) {
+        // Добавляем алиасы @ для src директории и @img для изображений
         const srcPath = fileURLToPath(new URL('./src', import.meta.url));
         const imagesPath = fileURLToPath(new URL('./src/assets/images', import.meta.url));
-        viteConf.resolve = viteConf.resolve || {};
-        if (Array.isArray(viteConf.resolve.alias)) {
-          viteConf.resolve.alias.push(
+        if (!viteConf.resolve) {
+          viteConf.resolve = {};
+        }
+        if (!viteConf.resolve.alias) {
+          viteConf.resolve.alias = [];
+        }
+        const alias = viteConf.resolve.alias;
+        if (Array.isArray(alias)) {
+          alias.push(
             { find: '@', replacement: srcPath },
             { find: '@img', replacement: imagesPath }
           );
         } else {
-          viteConf.resolve.alias = {
-            ...viteConf.resolve.alias,
-            '@': srcPath,
-            '@img': imagesPath,
-          };
+          // Если alias - объект Record, преобразуем в массив
+          const aliasArray: Array<{ find: string; replacement: string }> = [];
+          for (const [find, replacement] of Object.entries(alias)) {
+            aliasArray.push({
+              find,
+              replacement: replacement as string,
+            });
+          }
+          aliasArray.push(
+            { find: '@', replacement: srcPath },
+            { find: '@img', replacement: imagesPath }
+          );
+          viteConf.resolve.alias = aliasArray;
         }
       },
       // viteVuePluginOptions: {},

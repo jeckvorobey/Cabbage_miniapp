@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { client } from 'src/boot/axios';
+import { client } from 'src/api/client';
 import type { IProduct } from 'src/types/product.interface';
 import { ref } from 'vue';
 
