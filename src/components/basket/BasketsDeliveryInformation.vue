@@ -4,7 +4,7 @@
       <div class="text-bold">Адресс доставки:</div>
       <div v-if="addressesStore?.addresses?.length">
         <div v-for="(addre, aIndex) in addressesStore.addresses" :key="aIndex" >
-          <q-radio v-model="addressesStore.address" :val="addre.id" :label="addre.address_line" color="green"/>
+          <q-radio v-model="addressesStore.addressId" :val="addre.id" :label="addre.address_line" color="green"/>
         </div>
       </div>
     </div>

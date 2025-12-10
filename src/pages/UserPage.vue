@@ -65,7 +65,7 @@
 
           <div class="row items-center q-mb-sm">
             <q-select
-              v-model="addressesStore.address"
+              v-model="addressesStore.addressId"
               :options="addressesStore.addresses"
               class="col-10"
               dense
@@ -244,7 +244,8 @@
       const res = await addressesStore.fetchAddresses()
       if (res) {
         addressesStore.addresses = res
-        addressesStore.address = res.find((item: IAddresse) => item.is_default === true);
+        const address = res.find((item: IAddresse) => item.is_default === true);
+        addressesStore.addressId = address.id
       }
     } catch (e) {
       console.error(e);

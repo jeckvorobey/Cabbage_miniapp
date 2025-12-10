@@ -119,8 +119,8 @@
   async function createOrder() {
     try {
       orderStore.orderDataByPay.items = orderStore.basketData
-      console.log(addressesStore?.address?.id, 'createOrder')
-      if ( addressesStore?.address?.id ) orderStore.orderDataByPay.address_id = addressesStore.address.id
+      console.log(addressesStore?.addressId, 'createOrder')
+      if ( addressesStore?.addressId ) orderStore.orderDataByPay.address_id = addressesStore.addressId
       $q.loading.show();
       await orderStore.createOrder(orderStore.orderDataByPay)
     } catch (e) {
