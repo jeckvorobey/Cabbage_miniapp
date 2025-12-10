@@ -82,9 +82,21 @@
   const comment = ref()
   const order = ref()
 
+  // Нормализация данных корзины: преобразование price и quantity в числа
+  function normalizeBasketData(data: any[]): any[] {
+    return data.map((item: any) => ({
+      ...item,
+      price: typeof item.price === 'string' ? parseFloat(item.price) || 0 : Number(item.price) || 0,
+      quantity: typeof item.quantity === 'string' ? parseInt(item.quantity, 10) || 1 : Number(item.quantity) || 1,
+    }));
+  }
+
   onMounted(() => {
     const data = window.localStorage.getItem('basket')
-    if (data) orderStore.basketData = JSON.parse(data);
+    if (data) {
+      const parsedData = JSON.parse(data);
+      orderStore.basketData = normalizeBasketData(parsedData);
+    }
   });
 
   function BasketEvents() {

@@ -24,12 +24,16 @@ import { useOrderStore } from 'src/stores/orderStore';
 import { computed } from 'vue';
 
 const orderStore = useOrderStore();
-const producTotalPrice = computed(() => (
-  orderStore.basketData.reduce((accumulator: any, item: any) => {
-    const itemCost = item.price * item.quantity;
-    return accumulator + itemCost;
-  }, 0)
-));
+
+// Безопасное вычисление общей стоимости корзины
+const producTotalPrice = computed(() => {
+  return orderStore.basketData.reduce((accumulator: number, item: any) => {
+    const price = typeof item.price === 'string' ? parseFloat(item.price) : Number(item.price) || 0;
+    const quantity = typeof item.quantity === 'string' ? parseInt(item.quantity, 10) : Number(item.quantity) || 0;
+    const itemCost = price * quantity;
+    return accumulator + (isNaN(itemCost) ? 0 : itemCost);
+  }, 0);
+});
 
 </script>
 

@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { setActivePinia, createPinia } from 'pinia';
 import { useAuthStore } from '../authStore';
-import { client } from 'src/boot/axios';
+import { client } from 'src/api/client';
 import type { IUser } from 'src/types/user.interface';
 import { EPermissionTypes } from 'src/use/useUtils';
 
 // Мокаем axios client
-vi.mock('src/boot/axios', () => ({
+vi.mock('src/api/client', () => ({
   client: {
     post: vi.fn(),
   },

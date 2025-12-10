@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { client } from 'src/boot/axios';
+import { client } from 'src/api/client';
 import type { IReviews } from 'src/types/reviews.interface';
 import { ref } from 'vue';
 

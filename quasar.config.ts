@@ -60,7 +60,37 @@ export default defineConfig((ctx) => {
       // polyfillModulePreload: true,
       // distDir
 
-      // extendViteConf (viteConf) {},
+      extendViteConf(viteConf) {
+        // Добавляем алиас @ для src директории
+        const aliasPath = fileURLToPath(new URL('./src', import.meta.url));
+        if (!viteConf.resolve) {
+          viteConf.resolve = {};
+        }
+        if (!viteConf.resolve.alias) {
+          viteConf.resolve.alias = [];
+        }
+        const alias = viteConf.resolve.alias;
+        if (Array.isArray(alias)) {
+          alias.push({
+            find: '@',
+            replacement: aliasPath,
+          });
+        } else {
+          // Если alias - объект Record, преобразуем в массив
+          const aliasArray: Array<{ find: string; replacement: string }> = [];
+          for (const [find, replacement] of Object.entries(alias)) {
+            aliasArray.push({
+              find,
+              replacement: replacement as string,
+            });
+          }
+          aliasArray.push({
+            find: '@',
+            replacement: aliasPath,
+          });
+          viteConf.resolve.alias = aliasArray;
+        }
+      },
       // viteVuePluginOptions: {},
 
       vitePlugins: [

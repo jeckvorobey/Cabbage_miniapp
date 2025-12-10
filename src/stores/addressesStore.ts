@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { client } from 'src/boot/axios';
+import { client } from 'src/api/client';
 import type { IAddresse } from 'src/types/addresse.interface';
 import { ref } from 'vue';
 

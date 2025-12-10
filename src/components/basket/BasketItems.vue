@@ -53,7 +53,7 @@
                 icon="delete"
                 @click="removeItem(index)"
               />
-              <div>{{ item.price * item.quantity }}</div>
+              <div>{{ getItemTotal(item) }}</div>
             </q-item-action>
           </q-item>
           <q-separator />
@@ -75,15 +75,25 @@ function removeItem(index: number) {
   window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
 }
 
+// Безопасное вычисление общей стоимости товара
+function getItemTotal(item: any): number {
+  const price = typeof item.price === 'string' ? parseFloat(item.price) : Number(item.price) || 0;
+  const quantity = typeof item.quantity === 'string' ? parseInt(item.quantity, 10) : Number(item.quantity) || 0;
+  return price * quantity;
+}
+
 function changeQuantity(it: any, flag: boolean, index: number) {
+  // Нормализуем quantity перед операциями
+  const currentQuantity = typeof it.quantity === 'string' ? parseInt(it.quantity, 10) : Number(it.quantity) || 1;
+  
   if (flag) {
-    it.quantity += 1
+    it.quantity = currentQuantity + 1;
   } else {
-    if ( it.quantity === 1 ) {
-      removeItem(index)
-      return
+    if (currentQuantity === 1) {
+      removeItem(index);
+      return;
     }
-    it.quantity -= 1
+    it.quantity = currentQuantity - 1;
   }
   window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
 }

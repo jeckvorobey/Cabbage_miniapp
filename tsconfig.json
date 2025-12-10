@@ -1,4 +1,13 @@
 {
   "extends": "./.quasar/tsconfig.json",
-  "exclude": ["vitest.config.ts"]
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "plugins": [
+      {
+        "name": "@vue/typescript-plugin",
+        "include": ["src/**/*.vue"]
+      }
+    ]
+  }
 }
