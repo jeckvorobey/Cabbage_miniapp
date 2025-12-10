@@ -35,7 +35,15 @@
               <q-item-label class="q-mr-xs" caption
                 >{{ item.price }} ₽/ {{ item.unit_name }}</q-item-label
               >
-              <q-btn dense round color="green" icon="shopping_cart" @click="addOrder(item)" />
+              <div>
+                <div v-if="isAdmin" class="q-mb-sm">
+                  <q-btn dense round color="red" icon="delete" @click="removeProduct(item)" />
+                </div>
+                <div>
+                  <q-btn dense round color="green" icon="shopping_cart" @click="addOrder(item)" />
+                </div>
+              </div>
+
             </div>
           </q-item-section>
         </q-item>
@@ -80,7 +88,7 @@ const router = useRouter();
 const unitsStore = useUnitsStore();
 const productsStore = useProductsStore();
 const orderStore = useOrderStore();
-const { isManager } = usePermissionVisibility();
+const { isManager, isAdmin } = usePermissionVisibility();
 const allDataLoaded = ref(false);
 const showProductModal = ref(false);
 const product = ref<IProduct>();
@@ -168,6 +176,29 @@ const onLoad = async (index: number, done: (stop?: boolean) => void) => {
   productsStore.pagination.offset += productsStore.pagination.limit;
   done();
 };
+
+function removeProduct(it: IProduct) {
+  $q.dialog({
+    title: 'Удаление товара',
+    message: 'Вы уверенны что хотите удалить товар?',
+    cancel: true,
+    persistent: true
+  }).onOk(() => {
+    deleteProduct(it)
+  })
+}
+
+async function deleteProduct(it: IProduct) {
+  try {
+    if (!it?.id) return
+    await productsStore.deleteProduct(it.id);
+    $q.loading.show();
+  } catch (e) {
+    console.error(e);
+  } finally {
+    $q.loading.hide();
+  }
+}
 
 // удалить
 // function productModal(it?: IProduct) {
