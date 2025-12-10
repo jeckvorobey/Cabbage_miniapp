@@ -9,11 +9,11 @@
           ref="uploaderRef"
           color="primary"
           flat
-          max-file-size="15728640"
+          :max-file-size="15728640"
           @added="addFile"
         >
-          <template #header="" />
-          <template #list="">
+          <template #header />
+          <template #list>
             <q-uploader-add-trigger />
             <div class="text-center upload-title">
               <q-icon class="q-mr-sm" name="note_add" size="24px" />
