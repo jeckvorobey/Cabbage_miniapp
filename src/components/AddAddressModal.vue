@@ -84,8 +84,9 @@
 
   onMounted(async () => {
     try {
+      // удалить area_id, добавил пока что сервер не дает сохранить без него
       const item = {
-        area_id: null,
+        area_id: 1,
         address_line: "",
         comment: "",
         is_default: false
