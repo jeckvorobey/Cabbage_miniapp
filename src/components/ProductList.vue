@@ -8,10 +8,7 @@
       label="Добавить товар"
     ></q-btn>
     <div class="product-card">
-      <q-list
-        v-for="(item, index) in productsStore.products"
-        :key="index"
-      >
+      <q-list v-for="(item, index) in productsStore.products" :key="index">
         <q-item>
           <q-item-section top avatar @click="openProductPage(item)">
             <q-img
@@ -26,21 +23,19 @@
             <q-item-label caption class="text-size-16">{{ item.name }}</q-item-label>
             <q-item-label>
               <div class="text-grey old-price" v-if="item?.old_price">{{ item.old_price }} ₽</div>
-              <div :class="item?.old_price ? 'text-red' : ''">{{ item.price }} ₽/ {{ item.unit_name }}</div>
+              <div :class="item?.old_price ? 'text-red' : ''">
+                {{ item.price }} ₽/ {{ item.unit_name }}
+              </div>
             </q-item-label>
           </q-item-section>
 
           <q-item-section side top class="column justify-between">
             <div></div>
             <div class="row items-end">
-              <q-item-label class="q-mr-xs" caption>{{ item.price }} ₽/ {{ item.unit_name }}</q-item-label>
-              <q-btn
-                dense
-                round
-                color="green"
-                icon="shopping_cart"
-                @click="addOrder(item)"
-              />
+              <q-item-label class="q-mr-xs" caption
+                >{{ item.price }} ₽/ {{ item.unit_name }}</q-item-label
+              >
+              <q-btn dense round color="green" icon="shopping_cart" @click="addOrder(item)" />
             </div>
           </q-item-section>
         </q-item>
@@ -69,40 +64,27 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, toRaw } from 'vue';
+import { ref, toRaw } from 'vue';
 import { useProductsStore } from 'stores/productsStore.js';
 import { useOrderStore } from 'src/stores/orderStore';
 import { useQuasar } from 'quasar';
-import AddProductModal from 'components/AddProductModal.vue';
-import { useUnitsStore } from 'src/stores/unitsStore';
+import AddProductModal from '@/components/AddProductModal.vue';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
 import type { IProduct } from 'src/types/product.interface';
 import { getImage } from 'src/use/useUtils';
 import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
-const router = useRouter()
-const unitsStore = useUnitsStore();
+const router = useRouter();
 const productsStore = useProductsStore();
 const orderStore = useOrderStore();
 const { isManager } = usePermissionVisibility();
 const allDataLoaded = ref(false);
 const showProductModal = ref(false);
-const product = ref<IProduct>()
-
-onMounted(async () => {
-  try {
-    await unitsStore.fetchUnits();
-    $q.loading.show();
-  } catch (e) {
-    console.error(e);
-  } finally {
-    $q.loading.hide();
-  }
-});
+const product = ref<IProduct>();
 
 function refreshData() {
-  productsStore.pagination.offset = 0
+  productsStore.pagination.offset = 0;
   fetchProducts();
 }
 
@@ -112,7 +94,7 @@ async function fetchProducts() {
     const params = {
       offset: productsStore.pagination.offset,
       limit: productsStore.pagination.limit,
-    }
+    };
     const res = await productsStore.fetchProducts(params);
     if (res) {
       productsStore.pagination.total = res.total;
@@ -132,15 +114,15 @@ async function fetchProducts() {
 
 function addOrder(order: any) {
   try {
-    order.quantity = 1
-    order.product_id = order.id
+    order.quantity = 1;
+    order.product_id = order.id;
     $q.loading.show();
     if (!orderStore.basketData.length) {
       orderStore.basketData.push(structuredClone(toRaw(order)));
     } else {
       const foundItem = orderStore.basketData.find((it: any) => it.id === order.id);
       if (foundItem) {
-        foundItem.quantity += 1
+        foundItem.quantity += 1;
       } else {
         orderStore.basketData.push(structuredClone(toRaw(order)));
       }
@@ -152,7 +134,6 @@ function addOrder(order: any) {
     $q.loading.hide();
   }
 }
-
 
 const onLoad = async (index: number, done: (stop?: boolean) => void) => {
   if (!productsStore.pagination.has_more) {
@@ -172,9 +153,8 @@ const onLoad = async (index: number, done: (stop?: boolean) => void) => {
 // }
 
 function openProductPage(it?: IProduct) {
-  router.push({ name: 'products-edit', params: { id: it!.id } })
+  router.push({ name: 'products-edit', params: { id: it!.id } });
 }
-
 </script>
 
 <style scoped lang="scss">

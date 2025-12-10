@@ -120,9 +120,9 @@
 </template>
 
 <script setup lang="ts">
-import BottomMenu from 'components/BottomMenu.vue';
-import BasketCompanents from 'components/basket/BasketCompanents.vue';
-import MenuItems, { type IMenuItems } from 'components/MenuItems.vue';
+import BottomMenu from '@components/BottomMenu.vue';
+import BasketCompanents from '@components/basket/BasketCompanents.vue';
+import MenuItems from '@/components/MenuItems.vue';
 import { computed, onMounted, ref, shallowReactive } from 'vue';
 import { Dark, useQuasar } from 'quasar';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
@@ -130,6 +130,7 @@ import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook'
 import { useRoute, useRouter } from 'vue-router';
 import { useProductsStore } from 'src/stores/productsStore';
 import { useOrderStore } from 'src/stores/orderStore';
+import type { IMenuItems } from 'src/components/MenuItems.vue';
 
 Dark.set(false);
 const $q = useQuasar();

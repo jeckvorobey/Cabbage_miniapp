@@ -1,9 +1,9 @@
 <template>
   <q-page class="q-mx-xs">
-    <ProductList class="q-mb-lg"></ProductList>
+    <ProductList class="q-mb-lg" />
   </q-page>
 </template>
 
 <script setup lang="ts">
-import ProductList from 'src/components/ProductList.vue';
+import ProductList from '@/components/ProductList.vue';
 </script>
