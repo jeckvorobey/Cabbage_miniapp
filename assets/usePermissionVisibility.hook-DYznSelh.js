@@ -1,0 +1,1 @@
+import{E as s}from"./useUtils-6aIDb2N_.js";import{u as i,c as t}from"./index-Bnx4yA2G.js";function a(){const e=i();if(!e.user)throw new Error("User not found");const u=t(()=>{const r=e.user;return!r||r.is_user===!0?!1:r.role===+s.ADMIN}),o=t(()=>{const r=e.user;return!r||r.is_user===!0?!1:r.role<=+s.MANAGER});return{isAdmin:u,isManager:o}}export{a as u};
