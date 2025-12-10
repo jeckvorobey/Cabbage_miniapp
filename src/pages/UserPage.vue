@@ -148,8 +148,8 @@
   })
 
   function mainAddress(addres: IAddresse) {
+    addres.is_default = true
     userData.value.addres = addres
-    console.log(userData.value.addres)
     updateAddress(addres)
   }
 
