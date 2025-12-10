@@ -3,6 +3,7 @@
 
 import {defineConfig} from '#q-app/wrappers';
 import {fileURLToPath} from 'node:url';
+import path from 'path';
 
 export default defineConfig((ctx) => {
   return {
@@ -60,9 +61,24 @@ export default defineConfig((ctx) => {
       // polyfillModulePreload: true,
       // distDir
 
-      // extendViteConf (viteConf) {},
+      extendViteConf(viteConf) {
+        const srcPath = fileURLToPath(new URL('./src', import.meta.url));
+        const imagesPath = fileURLToPath(new URL('./src/assets/images', import.meta.url));
+        viteConf.resolve = viteConf.resolve || {};
+        if (Array.isArray(viteConf.resolve.alias)) {
+          viteConf.resolve.alias.push(
+            { find: '@', replacement: srcPath },
+            { find: '@img', replacement: imagesPath }
+          );
+        } else {
+          viteConf.resolve.alias = {
+            ...viteConf.resolve.alias,
+            '@': srcPath,
+            '@img': imagesPath,
+          };
+        }
+      },
       // viteVuePluginOptions: {},
-
       vitePlugins: [
         [
           '@intlify/unplugin-vue-i18n/vite',

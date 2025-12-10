@@ -104,12 +104,9 @@
           <q-icon name="close" size="30px" @click="drawerRight = !drawerRight" />
           <span class="q-mx-auto"> Kорзина </span>
         </q-item-label>
-        <BasketCompanents
-          @close-basket="drawerRight = !drawerRight"
-        />
+        <BasketCompanents @close-basket="drawerRight = !drawerRight" />
       </q-list>
     </q-drawer>
-    <pre>{{ tmpInfo || '' }}</pre>
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -120,8 +117,8 @@
 </template>
 
 <script setup lang="ts">
-import BottomMenu from '@components/BottomMenu.vue';
-import BasketCompanents from '@components/basket/BasketCompanents.vue';
+import BottomMenu from '@/components/BottomMenu.vue';
+import BasketCompanents from '@/components/basket/BasketCompanents.vue';
 import MenuItems from '@/components/MenuItems.vue';
 import { computed, onMounted, ref, shallowReactive } from 'vue';
 import { Dark, useQuasar } from 'quasar';
@@ -157,7 +154,6 @@ const themeToggle = () => {
   Dark.toggle();
   window.localStorage.setItem('theme', themeStatus.value);
 };
-const tmpInfo = ref();
 
 const menuList = ref<IMenuItems[]>([
   {
