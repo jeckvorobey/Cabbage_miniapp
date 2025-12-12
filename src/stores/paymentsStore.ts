@@ -28,7 +28,7 @@ export const usePaymentsStore = defineStore('Payments', () => {
       .catch((err) => {
         console.error(
           '[PaymentsStore] - An error occurred while fetching via createPayments',
-          err.message,
+          err.message
         );
         throw err;
       });

@@ -15,13 +15,13 @@
         <div>
           <q-btn
             v-if="route.name !== 'dashboard'"
-            @click="routerBack()"
             text-color="grey"
             flat
             dense
             round
             icon="arrow_back_ios"
             aria-label="Home"
+            @click="routerBack()"
           />
           <q-btn v-else text-color="grey" flat dense round icon="home" aria-label="Home" />
         </div>
@@ -98,18 +98,15 @@
       </q-list>
     </q-drawer>
 
-    <q-drawer :width="screenWidth" side="right" v-model="drawerRight" show-if-above bordered>
+    <q-drawer v-model="drawerRight" :width="screenWidth" side="right" show-if-above bordered>
       <q-list>
         <q-item-label class="text-h5 flex justify-start items-center" header>
           <q-icon name="close" size="30px" @click="drawerRight = !drawerRight" />
           <span class="q-mx-auto"> Kорзина </span>
         </q-item-label>
-        <BasketCompanents
-          @close-basket="drawerRight = !drawerRight"
-        />
+        <BasketCompanents @close-basket="drawerRight = !drawerRight" />
       </q-list>
     </q-drawer>
-    <pre>{{ tmpInfo || '' }}</pre>
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -122,7 +119,7 @@
 <script setup lang="ts">
 import BottomMenu from 'components/BottomMenu.vue';
 import BasketCompanents from 'components/basket/BasketCompanents.vue';
-import MenuItems, { type IMenuItems } from 'components/MenuItems.vue';
+import MenuItems from 'components/MenuItems.vue';
 import { computed, onMounted, ref, shallowReactive } from 'vue';
 import { Dark, useQuasar } from 'quasar';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
@@ -130,6 +127,7 @@ import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook'
 import { useRoute, useRouter } from 'vue-router';
 import { useProductsStore } from 'src/stores/productsStore';
 import { useOrderStore } from 'src/stores/orderStore';
+import type { IMenuItems } from 'src/components/MenuItems.vue';
 
 Dark.set(false);
 const $q = useQuasar();
@@ -156,29 +154,28 @@ const themeToggle = () => {
   Dark.toggle();
   window.localStorage.setItem('theme', themeStatus.value);
 };
-const tmpInfo = ref();
 
 const menuList = ref<IMenuItems[]>([
   {
-    name: 'Главная',
     icon: 'home',
-    pathName: '/',
+    name: 'Главная',
     path: '/',
+    pathName: '/',
   },
   {
-    name: 'Категории',
+    hide_buttons: true,
     icon: 'reorder',
-    hide_buttons: true,
-    pathName: 'categories',
+    name: 'Категории',
     path: 'categories',
+    pathName: 'categories',
   },
   {
-    name: 'Пользователи',
-    icon: 'people',
-    hide_buttons: true,
-    pathName: 'users',
-    path: 'users',
     disabled: !isAdmin.value,
+    hide_buttons: true,
+    icon: 'people',
+    name: 'Пользователи',
+    path: 'users',
+    pathName: 'users',
   },
 ]);
 
@@ -225,8 +222,8 @@ async function fetchProductsSearch() {
     let res = [];
     if (textSearch.value) {
       params = {
-        offset: 0,
         limit: 20,
+        offset: 0,
         query: textSearch.value ? textSearch.value : '',
       };
       res = await productsStore.fetchProductsSearch(params);

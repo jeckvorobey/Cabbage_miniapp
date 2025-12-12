@@ -1,10 +1,10 @@
 <template>
   <div>
     <q-btn
-      @click="openCreateUnitModal"
       class="full-width q-mb-sm"
       color="secondary"
       label="Добавление единицы измерения"
+      @click="openCreateUnitModal"
     ></q-btn>
     <div v-if="unitsStore.units">
       <h6 class="text-center q-mt-md q-mb-md">Единицы измерения</h6>
@@ -68,10 +68,10 @@ async function fetchUnits() {
 
 function RemovaUnit(id: number) {
   $q.dialog({
-    title: 'Удаление единицы измерения',
-    message: 'Вы уверенны что хотите удалить единицу измерения?',
     cancel: true,
+    message: 'Вы уверенны что хотите удалить единицу измерения?',
     persistent: true,
+    title: 'Удаление единицы измерения',
   }).onOk(() => {
     deleteUnit(id);
   });

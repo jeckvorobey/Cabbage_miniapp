@@ -5,6 +5,7 @@ import { ref } from 'vue';
 
 export const useAddressesStore = defineStore('Addresses', () => {
   const addresses = ref<IAddresse[]>();
+  const deliveryZones = ref();
   const addressId = ref<number>()
   const deliveryZones = ref()
 
@@ -15,7 +16,7 @@ export const useAddressesStore = defineStore('Addresses', () => {
       .catch((err) => {
         console.error(
           '[AddressesStore] - An error occurred while fetching via fetchAddresses',
-          err.message,
+          err.message
         );
         throw err;
       });
@@ -28,20 +29,23 @@ export const useAddressesStore = defineStore('Addresses', () => {
       .catch((err) => {
         console.error(
           '[AddressesStore] - An error occurred while createing via createAddress',
-          err.message,
+          err.message
         );
         throw err;
       });
   }
 
-  async function updateAddress( address: IAddresse) {
+  async function updateAddress(address: IAddresse) {
     return client
-      .patch(`/addresses/${address.id}`, address )
+      .patch(`/addresses/${address.id}`, address)
       .then((res) => res.data)
       .catch((err) => {
-        console.error('[AddressesStore] - An error occurred while creating via updateAddress', err.message)
-        throw err
-      })
+        console.error(
+          '[AddressesStore] - An error occurred while creating via updateAddress',
+          err.message
+        );
+        throw err;
+      });
   }
 
   async function deleteAddress(id: number) {
@@ -51,7 +55,7 @@ export const useAddressesStore = defineStore('Addresses', () => {
       .catch((err) => {
         console.error(
           '[AddressesStore] - An error occurred while deleting via deleteAddress',
-          err.message,
+          err.message
         );
         throw err;
       });
@@ -64,11 +68,20 @@ export const useAddressesStore = defineStore('Addresses', () => {
       .catch((err) => {
         console.error(
           '[AddressesStore] - An error occurred while fetching via fetchAddresses',
-          err.message,
+          err.message
         );
         throw err;
       });
   }
 
+  return {
+    addresses,
+    deliveryZones,
+    fetchAddresses,
+    createAddress,
+    updateAddress,
+    deleteAddress,
+    fetchDeliveryZones,
+  };
   return {addresses, addressId, deliveryZones, fetchAddresses, createAddress, updateAddress, deleteAddress, fetchDeliveryZones};
 });

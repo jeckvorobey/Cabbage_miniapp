@@ -31,9 +31,9 @@ export default defineRouter(function (/* { store, ssrContext } */) {
   });
 
   router.beforeEach((to, from, next) => {
-    const authStore = useAuthStore()
-    console.log(authStore)
-    next()
+    const authStore = useAuthStore();
+    console.log(authStore);
+    next();
     // if (to.meta.hasAuth) {
     //   if (authStore?.user?.token) {
     //     next()
@@ -43,7 +43,7 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     // } else {
     //   next()
     // }
-  })
+  });
 
   return router;
 });

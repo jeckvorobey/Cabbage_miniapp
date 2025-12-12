@@ -13,6 +13,9 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'happy-dom',
+    // Используем threads вместо forks, чтобы избежать падений воркеров в sandbox
+    pool: 'threads',
+    maxWorkers: 1,
     setupFiles: [],
     coverage: {
       provider: 'v8',
@@ -29,8 +32,9 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      components: path.resolve(__dirname, './src/components'),
       src: path.resolve(__dirname, './src'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
 });
-

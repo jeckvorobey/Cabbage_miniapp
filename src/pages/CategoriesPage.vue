@@ -1,7 +1,13 @@
 <template>
   <div>
     <div class="q-mx-md">
-      <q-btn v-if="isManager || isAdmin" @click="categoryModal()" class="full-width q-mb-sm" color="green" label="Добавление категории"></q-btn>
+      <q-btn
+        v-if="isManager || isAdmin"
+        class="full-width q-mb-sm"
+        color="green"
+        label="Добавление категории"
+        @click="categoryModal()"
+      ></q-btn>
     </div>
     <h6 class="text-center q-mt-md q-mb-md">Категории</h6>
     <q-card class="my-card q-ma-sm" flat bordered>
@@ -34,10 +40,12 @@
       </q-list>
     </q-card>
     <q-dialog ref="dialogRef" v-model="showCategoryModal">
-      <q-card style="min-width: 90svw;" >
+      <q-card style="min-width: 90svw">
         <q-form greedy @submit="addCategory()">
           <q-card-section>
-            <div class="text-h6">{{ category.id ? 'Редактировать категорию' : 'Добавить категорию' }}</div>
+            <div class="text-h6">
+              {{ category.id ? 'Редактировать категорию' : 'Добавить категорию' }}
+            </div>
           </q-card-section>
 
           <q-card-section class="q-pt-none">
@@ -47,15 +55,13 @@
               flat
               max-file-size="15728640"
               @added="addFile"
-              @rejected="fileLimitValidation($q)">
-              <template #header=""/>
+              @rejected="fileLimitValidation($q)"
+            >
+              <template #header="" />
               <template #list="">
                 <q-uploader-add-trigger />
                 <div class="text-center upload-title">
-                  <q-icon
-                    class="q-mr-sm"
-                    name="note_add"
-                    size="24px" />
+                  <q-icon class="q-mr-sm" name="note_add" size="24px" />
                   <span>Загрузить картинку</span>
                 </div>
               </template>
@@ -70,7 +76,13 @@
               />
             </div>
 
-            <q-input :rules="[required]" v-model="category.name" class="q-mb-xs" outlined label="Наиминование категории *" />
+            <q-input
+              v-model="category.name"
+              :rules="[required]"
+              class="q-mb-xs"
+              outlined
+              label="Наиминование категории *"
+            />
             <!-- <q-select
               v-model="category.parent_id"
               :options="['1','2']"
@@ -79,11 +91,18 @@
               emit-value
               map-options
             /> -->
-            <q-input class="q-mt-sm" v-model="category.description" filled type="textarea" rows="2" label="Описание"/>
+            <q-input
+              v-model="category.description"
+              class="q-mt-sm"
+              filled
+              type="textarea"
+              rows="2"
+              label="Описание"
+            />
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn flat label="Отмена" color="negative" v-close-popup />
+            <q-btn v-close-popup flat label="Отмена" color="negative" />
             <q-btn flat label="Подтвердить" color="primary" type="submit" />
           </q-card-actions>
         </q-form>
@@ -103,68 +122,66 @@ import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook'
 const $q = useQuasar();
 const categoriesStore = useCategoriesStore();
 const { isManager, isAdmin } = usePermissionVisibility();
-const dialogRef = ref()
+const dialogRef = ref();
 const showCategoryModal = ref(false);
-const emptyCategory = ref<ICategorie>(
-  {
-    name: '',
-    parent_id: null,
-    description: ''
-  }
-)
-const category = ref<ICategorie>(
-  {
-    id: null,
-    name: '',
-    parent_id: null,
-    description: '',
-    image: ''
-  }
-);
+const emptyCategory = ref<ICategorie>({
+  description: '',
+  name: '',
+  parent_id: null,
+});
+const category = ref<ICategorie>({
+  description: '',
+  id: null,
+  image: '',
+  name: '',
+  parent_id: null,
+});
 
-const categoryFormData = new FormData()
+const categoryFormData = new FormData();
 
 function generateFormDate() {
-  if (category?.value?.id) categoryFormData.append('id', category.value.id.toString())
-  if (category.value?.name) categoryFormData.append('name', category.value.name)
-  if (category.value?.parent_id) categoryFormData.append('price', category.value.parent_id.toString())
-  if (category.value?.description) categoryFormData.append('category_id', category.value.description.toString())
+  if (category?.value?.id) categoryFormData.append('id', category.value.id.toString());
+  if (category.value?.name) categoryFormData.append('name', category.value.name);
+  if (category.value?.parent_id)
+    categoryFormData.append('price', category.value.parent_id.toString());
+  if (category.value?.description)
+    categoryFormData.append('category_id', category.value.description.toString());
 }
 
 function categoryModal(cat?: ICategorie) {
   if (cat?.id) {
-    category.value = cat
+    category.value = cat;
   } else {
-    category.value = emptyCategory.value
+    category.value = emptyCategory.value;
   }
-  showCategoryModal.value = !showCategoryModal.value
+  showCategoryModal.value = !showCategoryModal.value;
 }
 
 function addFile(files: any) {
-  const reader = new FileReader()
-  reader.readAsDataURL(files[0])
+  const reader = new FileReader();
+  reader.readAsDataURL(files[0]);
   reader.onload = () => {
     category.value.image = reader.result;
-  }
+  };
   categoryFormData.delete('image');
-  categoryFormData.append('image', files[0])
+  categoryFormData.append('image', files[0]);
 }
 
 function RemovaCategory(id: number) {
   $q.dialog({
-      title: 'Удаление категорию',
-      message: 'Вы уверенны что хотите удалить категорию?',
-      cancel: true,
-      persistent: true
-    }).onOk(() => {
-      deleteCategory(id)
-    })
+    cancel: true,
+    message: 'Вы уверенны что хотите удалить категорию?',
+    persistent: true,
+    title: 'Удаление категорию',
+  }).onOk(() => {
+    deleteCategory(id);
+  });
 }
 
 async function deleteCategory(id: number) {
   try {
     $q.loading.show();
-    await categoriesStore.deleteCategorie(id)
+    await categoriesStore.deleteCategorie(id);
   } catch (e) {
     console.error(e);
   } finally {
@@ -175,27 +192,25 @@ async function deleteCategory(id: number) {
 
 async function addCategory() {
   try {
-    generateFormDate()
+    generateFormDate();
     $q.loading.show();
-    if (!category.value) return
+    if (!category.value) return;
     const productMethod = category.value.id
       ? categoriesStore.updateCategorie
-      : categoriesStore.createCategories
-    const res = await productMethod(categoryFormData)
+      : categoriesStore.createCategories;
+    const res = await productMethod(categoryFormData);
     if (res) {
       await categoriesStore.fetchCategories();
       $q.notify({
-        message: `Категория успешно добавлена`,
         color: 'primary',
+        message: `Категория успешно добавлена`,
       });
     }
   } catch (e: any) {
     console.error(e);
   } finally {
-    dialogRef.value.hide()
+    dialogRef.value.hide();
     $q.loading.hide();
   }
 }
-
-
 </script>

@@ -5,6 +5,7 @@ import { ref } from 'vue';
 
 export const useOrderStore = defineStore('Order', () => {
   const basketData = ref<any>([]);
+  const totalCost = ref();
   const totalCost = ref()
   const orderDataByPay = ref<IOrderBy>({
     items: [],
@@ -18,7 +19,10 @@ export const useOrderStore = defineStore('Order', () => {
       .post<any>('order', order)
       .then((res) => res.data)
       .catch((err) => {
-        console.error('[OrderStore] - An error occurred while createing via createOrder', err.message);
+        console.error(
+          '[OrderStore] - An error occurred while createing via createOrder',
+          err.message
+        );
         throw err;
       });
   }
@@ -30,7 +34,7 @@ export const useOrderStore = defineStore('Order', () => {
       .catch((err) => {
         console.error(
           '[OrderStore] - An error occurred while fetching via fetchOrders',
-          err.message,
+          err.message
         );
         throw err;
       });
@@ -43,12 +47,11 @@ export const useOrderStore = defineStore('Order', () => {
       .catch((err) => {
         console.error(
           '[OrderStore] - An error occurred while fetching via fetchMyOrder',
-          err.message,
+          err.message
         );
         throw err;
       });
   }
-
 
   async function fetchOrderById(id: number) {
     return client
@@ -57,20 +60,23 @@ export const useOrderStore = defineStore('Order', () => {
       .catch((err) => {
         console.error(
           '[OrderStore] - An error occurred while fetching via fetchOrderById',
-          err.message,
+          err.message
         );
         throw err;
       });
   }
 
-  async function updateOrder( order: any) {
+  async function updateOrder(order: any) {
     return client
-      .patch(`/addresses/${order.id}`, order )
+      .patch(`/addresses/${order.id}`, order)
       .then((res) => res.data)
       .catch((err) => {
-        console.error('[OrderStore] - An error occurred while creating via updateOrder', err.message)
-        throw err
-      })
+        console.error(
+          '[OrderStore] - An error occurred while creating via updateOrder',
+          err.message
+        );
+        throw err;
+      });
   }
 
   async function deleteOrder(id: number) {
@@ -80,11 +86,21 @@ export const useOrderStore = defineStore('Order', () => {
       .catch((err) => {
         console.error(
           '[OrderStore] - An error occurred while deleting via deleteOrder',
-          err.message,
+          err.message
         );
         throw err;
       });
   }
 
+  return {
+    basketData,
+    totalCost,
+    createOrder,
+    fetchOrder,
+    fetchMyOrder,
+    fetchOrderById,
+    updateOrder,
+    deleteOrder,
+  };
   return { basketData, totalCost, orderDataByPay, createOrder, fetchOrder, fetchMyOrder, fetchOrderById, updateOrder, deleteOrder };
 });

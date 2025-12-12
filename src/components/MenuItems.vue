@@ -4,8 +4,8 @@
     clickable
     tag="a"
     target="_blank"
-    @click="actionMenu(name, path, action, id)"
     :class="isActiveMenu === name ? 'active-menu-item' : ''"
+    @click="actionMenu(name, path, action, id)"
   >
     <q-item-section v-if="icon" avatar>
       <q-icon :name="icon" />
@@ -67,13 +67,13 @@ export interface IMenuItems {
   parent_id?: number;
   pathName?: string;
   hide_buttons?: boolean;
-  description?: string
+  description?: string;
 }
 
 withDefaults(defineProps<IMenuItems>(), {
   deleted: false,
-  path: '#',
   icon: '',
+  path: '#',
 });
 const $q = useQuasar();
 const router = useRouter();
@@ -82,8 +82,8 @@ const productsStore = useProductsStore();
 const showCategoryModal = ref(false);
 
 function actionMenu(name: string, path?: string, action?: string, id?: number) {
-  route.meta.sorting = id
-  isActiveMenu.value = name
+  route.meta.sorting = id;
+  isActiveMenu.value = name;
   fetchProducts(id);
   if (action) showCategoryModal.value = !showCategoryModal.value;
   if (path) router.push(path);
@@ -93,17 +93,17 @@ async function fetchProducts(id?: number) {
   try {
     $q.loading.show();
     if (id) {
-      productsStore.pagination.category_ids = id
-      productsStore.pagination.offset = 0
+      productsStore.pagination.category_ids = id;
+      productsStore.pagination.offset = 0;
     } else {
-      delete productsStore.pagination.category_ids
-      productsStore.pagination.offset = 0
+      delete productsStore.pagination.category_ids;
+      productsStore.pagination.offset = 0;
     }
     const params = {
-      offset: productsStore.pagination.offset,
+      category_ids: productsStore.pagination.category_ids,
       limit: productsStore.pagination.limit,
-      category_ids: productsStore.pagination.category_ids
-    }
+      offset: productsStore.pagination.offset,
+    };
     const res = await productsStore.fetchProducts(params);
     if (res) productsStore.products = res.items;
   } catch (e: any) {
@@ -112,7 +112,6 @@ async function fetchProducts(id?: number) {
     $q.loading.hide();
   }
 }
-
 </script>
 
 <style scoped lang="scss">

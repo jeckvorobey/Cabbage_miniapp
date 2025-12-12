@@ -1,12 +1,11 @@
 import { ref } from 'vue';
 
-
 export enum EPermissionTypes {
   ADMIN = 1,
   MANAGER = 2,
-  USER = 9
+  USER = 9,
 }
-const isActiveMenu = ref('Главная')
+const isActiveMenu = ref('Главная');
 const admin = ref<boolean>(true);
 const manager = ref<boolean>(true);
 const user = ref<boolean>(false);
@@ -15,15 +14,15 @@ function accessLevel(data: any) {
   switch (data) {
     case EPermissionTypes.ADMIN:
       admin.value = true;
-      return 'Администратор'
+      return 'Администратор';
     case EPermissionTypes.MANAGER:
       manager.value = true;
-      return 'Менеджер'
+      return 'Менеджер';
     case EPermissionTypes.USER:
       user.value = true;
-      return 'Пользователь'
+      return 'Пользователь';
     default:
-      return
+      return;
   }
 }
 
@@ -43,9 +42,8 @@ const fileLimitValidation = ($q: any) => {
     type: 'negative',
     message: 'Ошибка: Файл слишком большой!',
     caption: `Максимальный размер файла — 15 МБ.`,
-    icon: 'warning'
+    icon: 'warning',
   });
 };
-
 
 export { isActiveMenu, admin, manager, accessLevel, getImage, fileLimitValidation, required };

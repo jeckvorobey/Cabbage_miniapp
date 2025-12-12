@@ -106,10 +106,7 @@ describe('unitsStore', () => {
   describe('fetchUnits', () => {
     it('должен получить список единиц измерения и сохранить в store', async () => {
       const store = useUnitsStore();
-      const mockUnits: IUnit[] = [
-        { id: 1, name: 'кг' } as IUnit,
-        { id: 2, name: 'шт' } as IUnit,
-      ];
+      const mockUnits: IUnit[] = [{ id: 1, name: 'кг' } as IUnit, { id: 2, name: 'шт' } as IUnit];
       const mockResponse = { data: mockUnits };
 
       clientGetMock.mockResolvedValueOnce(mockResponse);
@@ -199,4 +196,3 @@ describe('unitsStore', () => {
     });
   });
 });
-
