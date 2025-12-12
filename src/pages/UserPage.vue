@@ -124,11 +124,7 @@
         </q-card-section>
       </q-card>
     </div>
-    <AddAddressModal
-      v-if="showAddressModal"
-      v-model="showAddressModal"
-      :newAddress="address"
-    />
+    <AddAddressModal v-if="showAddressModal" v-model="showAddressModal" :newAddress="address" />
   </div>
 </template>
 
@@ -141,12 +137,6 @@ import { useAddressesStore } from 'src/stores/addressesStore';
 import { useUsersStore } from 'src/stores/usersStore';
 import { useAuthStore } from 'src/stores/authStore';
 import type { IAddresse } from 'src/types/addresse.interface';
-import {
-  YandexMap,
-  YandexMapDefaultSchemeLayer,
-  YandexMapDefaultFeaturesLayer,
-  YandexMapDefaultMarker,
-} from 'vue-yandex-maps';
 
 const $q = useQuasar();
 const addressesStore = useAddressesStore();
@@ -162,7 +152,6 @@ const editPhone = ref(false);
 const themeStatus = computed(() => (isDark.value ? themeState.dark : themeState.light));
 const showAddressModal = ref(false);
 const themeData = ref('dark');
-const map = ref(null);
 const userData = ref<any>({
   addres: null,
   full_name: '',
@@ -170,14 +159,6 @@ const userData = ref<any>({
   phone: '',
 });
 const address = ref<IAddresse | null>(null);
-  import { Dark, useQuasar } from 'quasar';
-  import { useAddressesStore } from 'src/stores/addressesStore';
-  import { computed, onMounted, ref, shallowReactive } from 'vue';
-  import AddAddressModal from 'components/AddAddressModal.vue';
-  import { getImage } from 'src/use/useUtils';
-  import { useUsersStore } from 'src/stores/usersStore';
-  import { useAuthStore } from 'src/stores/authStore';
-  import type { IAddresse } from 'src/types/addresse.interface';
 
 onMounted(() => {
   userData.value = authStore.user;
@@ -185,8 +166,8 @@ onMounted(() => {
 });
 
 function mainAddress(addres: IAddresse) {
+  addres.is_default = true;
   userData.value.addres = addres;
-  console.log(userData.value.addres);
   updateAddress(addres);
 }
 
@@ -198,19 +179,12 @@ function openAddressModal() {
 async function deleteAddress(addres: IAddresse) {
   try {
     $q.loading.show();
-    await addressesStore.deleteAddress(addres.id!);
+    const res = await addressesStore.deleteAddress(addres.id!);
+    if (res) fetchAddresses();
   } catch (e) {
     console.error(e);
   } finally {
     $q.loading.hide();
-  onMounted(() => {
-    userData.value = authStore.user
-  })
-
-  function mainAddress(addres: IAddresse) {
-    addres.is_default = true
-    userData.value.addres = addres
-    updateAddress(addres)
   }
 }
 
@@ -222,21 +196,12 @@ function editAddress(addres: IAddresse) {
 async function updateAddress(addres: IAddresse) {
   try {
     $q.loading.show();
-    await addressesStore.updateAddress(addres);
+    const res = await addressesStore.updateAddress(addres);
+    if (res) fetchAddresses();
   } catch (e) {
     console.error(e);
   } finally {
     $q.loading.hide();
-  async function deleteAddress(addres: IAddresse) {
-    try {
-      $q.loading.show();
-      const res = await addressesStore.deleteAddress(addres.id!)
-      if (res) fetchAddresses()
-    } catch (e) {
-      console.error(e);
-    } finally {
-      $q.loading.hide();
-    }
   }
 }
 
@@ -244,22 +209,6 @@ const themeToggle = () => {
   Dark.toggle();
   window.localStorage.setItem('theme', themeStatus.value);
 };
-  function editAddress(addres: IAddresse) {
-    address.value = addres
-    showAddressModal.value = !showAddressModal.value
-  }
-
-  async function updateAddress(addres: IAddresse) {
-    try {
-      $q.loading.show();
-      const res = await addressesStore.updateAddress(addres)
-      if (res) fetchAddresses()
-    } catch (e) {
-      console.error(e);
-    } finally {
-      $q.loading.hide();
-    }
-  }
 
 function editPhoneNumber() {
   $q.dialog({
@@ -287,25 +236,17 @@ async function fetchAddresses() {
   try {
     $q.loading.show();
     const res = await addressesStore.fetchAddresses();
-    if (res) addressesStore.addresses = res;
+    if (res) {
+      addressesStore.addresses = res;
+      const defaultAddress = res.find((item: IAddresse) => item.is_default === true);
+      if (defaultAddress) {
+        addressesStore.addressId = defaultAddress.id;
+      }
+    }
   } catch (e) {
     console.error(e);
   } finally {
     $q.loading.hide();
-  async function fetchAddresses() {
-    try {
-      $q.loading.show();
-      const res = await addressesStore.fetchAddresses()
-      if (res) {
-        addressesStore.addresses = res
-        const address = res.find((item: IAddresse) => item.is_default === true);
-        addressesStore.addressId = address.id
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      $q.loading.hide();
-    }
   }
 }
 </script>
