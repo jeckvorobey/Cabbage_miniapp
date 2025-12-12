@@ -98,7 +98,7 @@
               <template #option="scope">
                 <q-item v-bind="scope.itemProps" class="justify-between flex">
                   <q-item-section @click="mainAddress(scope.opt)">
-                    <q-item-label>{{ scope.opt.address_line }}</q-item-label>
+                    <q-item-label>{{ scope.opt?.address_line }}</q-item-label>
                   </q-item-section>
                   <q-item-action>
                     <q-icon

@@ -35,6 +35,7 @@ export default defineConfig({
       components: path.resolve(__dirname, './src/components'),
       src: path.resolve(__dirname, './src'),
       '@': path.resolve(__dirname, './src'),
+      '#q-app/wrappers': path.resolve(__dirname, './src/boot/__tests__/__mocks__/q-app-wrappers.ts'),
     },
   },
 });
