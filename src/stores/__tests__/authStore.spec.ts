@@ -29,7 +29,7 @@ describe('authStore', () => {
     localStorageSetItemMock = vi.fn((key: string, value: string) => {
       localStorageMock[key] = value;
     });
-    
+
     global.localStorage = {
       getItem: vi.fn((key: string) => localStorageMock[key] || null),
       setItem: localStorageSetItemMock,
@@ -350,4 +350,3 @@ describe('authStore', () => {
     });
   });
 });
-

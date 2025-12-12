@@ -1,11 +1,11 @@
 <template>
-  <q-infinite-scroll @load="onLoad" :offset="250">
+  <q-infinite-scroll :offset="250" @load="onLoad">
     <q-btn
       v-if="isManager"
-      @click="router.push({ name: 'products-create' })"
       class="full-width q-mb-sm"
       color="green"
       label="Добавить товар"
+      @click="router.push({ name: 'products-create' })"
     ></q-btn>
     <div class="product-card">
       <q-list v-for="(item, index) in productsStore.products" :key="index">
@@ -22,7 +22,7 @@
           <q-item-section class="column justify-between" @click="openProductPage(item)">
             <q-item-label caption class="text-size-16">{{ item.name }}</q-item-label>
             <q-item-label>
-              <div class="text-grey old-price" v-if="item?.old_price">{{ item.old_price }} ₽</div>
+              <div v-if="item?.old_price" class="text-grey old-price">{{ item.old_price }} ₽</div>
               <div :class="item?.old_price ? 'text-red' : ''">{{ item.price }} ₽</div>
             </q-item-label>
           </q-item-section>
@@ -56,21 +56,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRaw } from 'vue';
+import { ref } from 'vue';
 import { useProductsStore } from 'stores/productsStore.js';
-import { useOrderStore } from 'src/stores/orderStore';
 import { useQuasar } from 'quasar';
-import AddProductModal from '@/components/AddProductModal.vue';
+import AddProductModal from './AddProductModal.vue';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
 import type { IProduct } from 'src/types/product.interface';
 import { getImage } from 'src/use/useUtils';
 import { useRouter } from 'vue-router';
+import { useCart } from 'src/use/useCart';
 
 const $q = useQuasar();
 const router = useRouter();
 const productsStore = useProductsStore();
-const orderStore = useOrderStore();
 const { isManager } = usePermissionVisibility();
+const { addToCart } = useCart();
 const allDataLoaded = ref(false);
 const showProductModal = ref(false);
 const product = ref<IProduct>();
@@ -84,8 +84,8 @@ async function fetchProducts() {
   try {
     $q.loading.show();
     const params = {
-      offset: productsStore.pagination.offset,
       limit: productsStore.pagination.limit,
+      offset: productsStore.pagination.offset,
     };
     const res = await productsStore.fetchProducts(params);
     if (res) {
@@ -104,32 +104,13 @@ async function fetchProducts() {
   }
 }
 
+/**
+ * Добавление товара в корзину
+ */
 function addOrder(order: any) {
   try {
-    // Нормализуем price и quantity перед добавлением в корзину
-    const normalizedOrder = {
-      ...structuredClone(toRaw(order)),
-      quantity: 1,
-      product_id: order.id,
-      price: typeof order.price === 'string' ? parseFloat(order.price) : Number(order.price) || 0,
-    };
-
     $q.loading.show();
-    if (!orderStore.basketData.length) {
-      orderStore.basketData.push(normalizedOrder);
-    } else {
-      const foundItem = orderStore.basketData.find((it: any) => it.id === order.id);
-      if (foundItem) {
-        const currentQuantity =
-          typeof foundItem.quantity === 'string'
-            ? parseInt(foundItem.quantity, 10)
-            : Number(foundItem.quantity) || 0;
-        foundItem.quantity = currentQuantity + 1;
-      } else {
-        orderStore.basketData.push(normalizedOrder);
-      }
-    }
-    window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
+    addToCart(order);
   } catch (e) {
     console.error(e);
   } finally {

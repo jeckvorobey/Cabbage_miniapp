@@ -4,8 +4,7 @@ import type { IReviews } from 'src/types/reviews.interface';
 import { ref } from 'vue';
 
 export const useReviewsStore = defineStore('Reviews', () => {
-
-  const reviewsData = ref<IReviews[]>()
+  const reviewsData = ref<IReviews[]>();
 
   async function fetchReviews() {
     return client
@@ -14,7 +13,7 @@ export const useReviewsStore = defineStore('Reviews', () => {
       .catch((err) => {
         console.error(
           '[ReviewsStore] - An error occurred while fetching via fetchReviews',
-          err.message,
+          err.message
         );
         throw err;
       });
@@ -27,7 +26,7 @@ export const useReviewsStore = defineStore('Reviews', () => {
       .catch((err) => {
         console.error(
           '[ReviewsStore] - An error occurred while fetching via fetchMyReviews',
-          err.message,
+          err.message
         );
         throw err;
       });
@@ -40,20 +39,23 @@ export const useReviewsStore = defineStore('Reviews', () => {
       .catch((err) => {
         console.error(
           '[ReviewsStore] - An error occurred while createing via createReviews',
-          err.message,
+          err.message
         );
         throw err;
       });
   }
 
-  async function updateReviews( reviews: IReviews) {
+  async function updateReviews(reviews: IReviews) {
     return client
-      .patch(`/reviews/${reviews.id}`, reviews )
+      .patch(`/reviews/${reviews.id}`, reviews)
       .then((res) => res.data)
       .catch((err) => {
-        console.error('[ReviewsStore] - An error occurred while creating via updateReviews', err.message)
-        throw err
-      })
+        console.error(
+          '[ReviewsStore] - An error occurred while creating via updateReviews',
+          err.message
+        );
+        throw err;
+      });
   }
 
   async function deleteReview(id: number) {
@@ -63,7 +65,7 @@ export const useReviewsStore = defineStore('Reviews', () => {
       .catch((err) => {
         console.error(
           '[ReviewsStore] - An error occurred while deleting via deleteReview',
-          err.message,
+          err.message
         );
         throw err;
       });

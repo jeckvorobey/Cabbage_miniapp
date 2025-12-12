@@ -29,13 +29,12 @@ const orderStore = useOrderStore();
 const producTotalPrice = computed(() => {
   return orderStore.basketData.reduce((accumulator: number, item: any) => {
     const price = typeof item.price === 'string' ? parseFloat(item.price) : Number(item.price) || 0;
-    const quantity = typeof item.quantity === 'string' ? parseInt(item.quantity, 10) : Number(item.quantity) || 0;
+    const quantity =
+      typeof item.quantity === 'string' ? parseInt(item.quantity, 10) : Number(item.quantity) || 0;
     const itemCost = price * quantity;
     return accumulator + (isNaN(itemCost) ? 0 : itemCost);
   }, 0);
 });
-
 </script>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>

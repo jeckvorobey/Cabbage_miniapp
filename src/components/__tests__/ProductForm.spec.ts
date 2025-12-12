@@ -24,7 +24,17 @@ vi.mock('quasar', () => ({
   QSelect: {
     name: 'QSelect',
     template: '<select />',
-    props: ['modelValue', 'options', 'rules', 'label', 'outlined', 'emit-value', 'map-options', 'option-label', 'option-value'],
+    props: [
+      'modelValue',
+      'options',
+      'rules',
+      'label',
+      'outlined',
+      'emit-value',
+      'map-options',
+      'option-label',
+      'option-value',
+    ],
   },
   QUploader: {
     name: 'QUploader',
@@ -52,7 +62,7 @@ vi.mock('quasar', () => ({
 }));
 
 // Мокаем ProductImgCarusel
-vi.mock('@/components/ProductImgCarusel.vue', () => ({
+vi.mock('../ProductImgCarusel.vue', () => ({
   default: {
     name: 'ProductImgCarusel',
     template: '<div>ProductImgCarusel</div>',
@@ -210,7 +220,7 @@ describe('ProductForm', () => {
       expect(wrapper.emitted('submit')?.[0]).toBeDefined();
     });
 
-    it('должен эмитить refresh-data при вызове handleRefreshData', async () => {
+    it('должен эмитить refresh-data при вызове handleRefreshData', () => {
       const product = createProduct();
       const wrapper = mount(ProductForm, {
         props: { product },
@@ -263,4 +273,3 @@ describe('ProductForm', () => {
     });
   });
 });
-

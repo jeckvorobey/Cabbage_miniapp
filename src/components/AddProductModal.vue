@@ -25,9 +25,9 @@
           </q-uploader>
           <div>
             <ProductImgCarusel
-              @refresh-data="fetchProduct()"
               v-if="product?.images?.length"
               :images="product.images"
+              @refresh-data="fetchProduct()"
             />
           </div>
           <q-input v-model="product.name" class="q-mb-xs" outlined label="Наименование товара" />
@@ -51,8 +51,8 @@
             option-value="id"
           />
           <q-input
-            class="q-mt-sm"
             v-model="product.description"
+            class="q-mt-sm"
             outlined
             type="textarea"
             rows="2"
@@ -106,13 +106,13 @@ const { isManager } = usePermissionVisibility();
 const showDialog = ref(false);
 const uploaderRef = ref();
 const product = ref<IProduct>({
-  id: null,
-  name: '',
-  price: null,
   category_id: null,
   description: '',
+  id: null,
   images: '',
+  name: '',
   origin_country: '',
+  price: null,
 });
 const productFormData = new FormData();
 
@@ -130,8 +130,8 @@ async function addProduct() {
     if (res) {
       product.value.id = res.id;
       $q.notify({
-        message: `Успешно сохранено`,
         color: 'primary',
+        message: `Успешно сохранено`,
       });
       emit('refresh-data');
     }
@@ -174,8 +174,8 @@ async function uploadFile(files: any) {
     if (res) {
       fetchProduct();
       $q.notify({
-        message: `Картинка успешно добавлена`,
         color: 'primary',
+        message: `Картинка успешно добавлена`,
       });
     }
   } catch (e) {

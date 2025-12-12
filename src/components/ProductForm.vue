@@ -3,13 +3,7 @@
     <div class="text-h6 q-mb-md">
       {{ product.id ? 'Редактирование товара' : 'Добавление товара' }}
     </div>
-    <q-uploader
-      ref="uploaderRef"
-      color="primary"
-      flat
-      max-file-size="15728640"
-      @added="addFile"
-    >
+    <q-uploader ref="uploaderRef" color="primary" flat max-file-size="15728640" @added="addFile">
       <template #header="" />
       <template #list="">
         <q-uploader-add-trigger />
@@ -21,21 +15,21 @@
     </q-uploader>
     <div>
       <ProductImgCarusel
-        @refresh-data="handleRefreshData"
         v-if="product?.images?.length"
         :images="product.images"
+        @refresh-data="handleRefreshData"
       />
     </div>
     <q-input
-      :rules="[required]"
       v-model="localProduct.name"
+      :rules="[required]"
       class="q-mb-xs"
       outlined
       label="Наименование товара *"
     />
     <q-input
-      :rules="[required]"
       v-model="localProduct.price"
+      :rules="[required]"
       class="q-mb-xs"
       outlined
       label="Стоимость товара *"
@@ -47,8 +41,8 @@
       label="Страна происхождения"
     />
     <q-select
-      :rules="[required]"
       v-model="localProduct.category_id"
+      :rules="[required]"
       :options="categories"
       class="q-mb-xs"
       outlined
@@ -59,8 +53,8 @@
       option-value="id"
     />
     <q-input
-      class="q-mt-sm q-mb-sm"
       v-model="localProduct.description"
+      class="q-mt-sm q-mb-sm"
       outlined
       type="textarea"
       rows="2"
@@ -75,7 +69,7 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { computed, ref, watch } from 'vue';
-import ProductImgCarusel from '@/components/ProductImgCarusel.vue';
+import ProductImgCarusel from './ProductImgCarusel.vue';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
 import { useProductsStore } from 'src/stores/productsStore';
 import type { IProduct } from 'src/types/product.interface';
@@ -186,8 +180,8 @@ async function uploadFile(files: any) {
     if (res) {
       handleRefreshData();
       $q.notify({
-        message: `Картинка успешно добавлена`,
         color: 'primary',
+        message: `Картинка успешно добавлена`,
       });
     }
   } catch (e) {
@@ -210,4 +204,3 @@ defineExpose({
   padding: 16px;
 }
 </style>
-

@@ -11,8 +11,8 @@
     <div v-else>
       <ProductImgCarusel v-if="product?.images?.length" :images="product.images" />
       <div class="q-mb-sm">
-        <h6 class="q-my-md" v-if="product?.name">{{ product.name }}</h6>
-        <div class="text-grey old-price" v-if="product?.old_price">{{ product.old_price }} ₽</div>
+        <h6 v-if="product?.name" class="q-my-md">{{ product.name }}</h6>
+        <div v-if="product?.old_price" class="text-grey old-price">{{ product.old_price }} ₽</div>
         <div class="text-bold text-18 q-mb-md" :class="product?.old_price ? 'text-red' : ''">
           {{ product.price }} ₽
         </div>
@@ -25,25 +25,15 @@
           v-if="!productsInBasket?.id"
           color="green"
           label="Добавить в корзину"
-          @click="addOrder(product)"
+          @click="handleAddToCart"
         />
         <div v-else class="row">
           <div class="bg-green q-pa-xs radius-100">
-            <q-icon
-              name="remove"
-              color="white"
-              size="30px"
-              @click="changeQuantity(productsInBasket, false)"
-            />
+            <q-icon name="remove" color="white" size="30px" @click="handleDecreaseQuantity" />
           </div>
           <span class="q-mx-sm self-center">{{ productsInBasket.quantity }}</span>
           <div class="bg-green q-pa-xs radius-100">
-            <q-icon
-              name="add"
-              color="white"
-              size="30px"
-              @click="changeQuantity(productsInBasket, true)"
-            />
+            <q-icon name="add" color="white" size="30px" @click="handleIncreaseQuantity" />
           </div>
         </div>
       </div>
@@ -55,29 +45,29 @@
 import { useQuasar } from 'quasar';
 import { useProductsStore } from 'src/stores/productsStore';
 import type { IProduct } from 'src/types/product.interface';
-import { onMounted, ref, toRaw } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import ProductImgCarusel from '@/components/ProductImgCarusel.vue';
-import ProductForm from '@/components/ProductForm.vue';
+import ProductImgCarusel from 'components/ProductImgCarusel.vue';
+import ProductForm from 'components/ProductForm.vue';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
-import { useOrderStore } from 'src/stores/orderStore';
+import { useCart } from 'src/use/useCart';
 
 const $q = useQuasar();
 const emit = defineEmits(['refresh-data', 'add-product']);
 const route = useRoute();
 const router = useRouter();
 const productsStore = useProductsStore();
-const orderStore = useOrderStore();
 const productFormRef = ref();
 const { isManager } = usePermissionVisibility();
+const { addToCart, updateQuantity, getCartItem } = useCart();
 const product = ref<IProduct>({
-  id: null,
-  name: '',
-  price: null,
   category_id: null,
   description: '',
+  id: null,
   images: '',
+  name: '',
   origin_country: '',
+  price: null,
 });
 const productsInBasket = ref<any>([]);
 
@@ -86,63 +76,47 @@ onMounted(() => {
 });
 
 /**
- * Изменение количества товара в корзине
- */
-function changeQuantity(order: any, flag: boolean) {
-  const currentQuantity =
-    typeof order.quantity === 'string' ? parseInt(order.quantity, 10) : Number(order.quantity) || 1;
-
-  if (flag) {
-    order.quantity = currentQuantity + 1;
-    window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
-  } else {
-    if (currentQuantity === 1) {
-      const foundItemIndex = orderStore.basketData.findIndex((it: any) => it.id === order.id);
-      if (foundItemIndex !== -1) {
-        orderStore.basketData.splice(foundItemIndex, 1);
-      }
-      productsInBasket.value = [];
-      window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
-      return;
-    }
-    order.quantity = currentQuantity - 1;
-    window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
-  }
-}
-
-/**
  * Добавление товара в корзину
  */
-function addOrder(order: any) {
+function handleAddToCart() {
   try {
     $q.loading.show();
-    const normalizedOrder = {
-      ...structuredClone(toRaw(order)),
-      quantity: 1,
-      product_id: order.id,
-      price: typeof order.price === 'string' ? parseFloat(order.price) : Number(order.price) || 0,
-    };
-
-    if (!orderStore.basketData.length) {
-      orderStore.basketData.push(normalizedOrder);
-      productsInBasket.value = orderStore.basketData.find((it: any) => it.id === order.id);
-    } else {
-      const foundItem = orderStore.basketData.find((it: any) => it.id === order.id);
-      if (foundItem) {
-        const currentQuantity =
-          typeof foundItem.quantity === 'string'
-            ? parseInt(foundItem.quantity, 10)
-            : Number(foundItem.quantity) || 0;
-        foundItem.quantity = currentQuantity + 1;
-      } else {
-        orderStore.basketData.push(normalizedOrder);
-      }
+    const cartItem = addToCart(product.value);
+    if (cartItem && product.value.id) {
+      productsInBasket.value = getCartItem(product.value.id);
     }
-    window.localStorage.setItem('basket', JSON.stringify(orderStore.basketData));
   } catch (e) {
     console.error(e);
   } finally {
     $q.loading.hide();
+  }
+}
+
+/**
+ * Увеличение количества товара в корзине
+ */
+function handleIncreaseQuantity() {
+  if (productsInBasket.value) {
+    const updatedItem = updateQuantity(productsInBasket.value, 1);
+    if (updatedItem) {
+      productsInBasket.value = updatedItem;
+    } else {
+      productsInBasket.value = undefined;
+    }
+  }
+}
+
+/**
+ * Уменьшение количества товара в корзине
+ */
+function handleDecreaseQuantity() {
+  if (productsInBasket.value) {
+    const updatedItem = updateQuantity(productsInBasket.value, -1);
+    if (updatedItem) {
+      productsInBasket.value = updatedItem;
+    } else {
+      productsInBasket.value = undefined;
+    }
   }
 }
 
@@ -163,8 +137,8 @@ async function handleFormSubmit(submittedProduct: IProduct, formData: FormData) 
     if (res) {
       product.value.id = res.id;
       $q.notify({
-        message: `Успешно сохранено`,
         color: 'primary',
+        message: `Успешно сохранено`,
       });
       emit('refresh-data');
       router.back();
@@ -185,9 +159,7 @@ async function fetchProduct() {
       if (res) {
         product.value = res;
         if (product.value.id) {
-          productsInBasket.value = orderStore.basketData.find(
-            (it: any) => it.id === product.value.id,
-          );
+          productsInBasket.value = getCartItem(product.value.id);
         }
       }
     } catch (e) {
@@ -206,4 +178,3 @@ async function fetchProduct() {
   }
 }
 </style>
-

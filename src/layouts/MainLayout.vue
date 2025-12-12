@@ -15,13 +15,13 @@
         <div>
           <q-btn
             v-if="route.name !== 'dashboard'"
-            @click="routerBack()"
             text-color="grey"
             flat
             dense
             round
             icon="arrow_back_ios"
             aria-label="Home"
+            @click="routerBack()"
           />
           <q-btn v-else text-color="grey" flat dense round icon="home" aria-label="Home" />
         </div>
@@ -98,7 +98,7 @@
       </q-list>
     </q-drawer>
 
-    <q-drawer :width="screenWidth" side="right" v-model="drawerRight" show-if-above bordered>
+    <q-drawer v-model="drawerRight" :width="screenWidth" side="right" show-if-above bordered>
       <q-list>
         <q-item-label class="text-h5 flex justify-start items-center" header>
           <q-icon name="close" size="30px" @click="drawerRight = !drawerRight" />
@@ -117,9 +117,9 @@
 </template>
 
 <script setup lang="ts">
-import BottomMenu from '@/components/BottomMenu.vue';
-import BasketCompanents from '@/components/basket/BasketCompanents.vue';
-import MenuItems from '@/components/MenuItems.vue';
+import BottomMenu from 'components/BottomMenu.vue';
+import BasketCompanents from 'components/basket/BasketCompanents.vue';
+import MenuItems from 'components/MenuItems.vue';
 import { computed, onMounted, ref, shallowReactive } from 'vue';
 import { Dark, useQuasar } from 'quasar';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
@@ -157,25 +157,25 @@ const themeToggle = () => {
 
 const menuList = ref<IMenuItems[]>([
   {
-    name: 'Главная',
     icon: 'home',
-    pathName: '/',
+    name: 'Главная',
     path: '/',
+    pathName: '/',
   },
   {
-    name: 'Категории',
+    hide_buttons: true,
     icon: 'reorder',
-    hide_buttons: true,
-    pathName: 'categories',
+    name: 'Категории',
     path: 'categories',
+    pathName: 'categories',
   },
   {
-    name: 'Пользователи',
-    icon: 'people',
-    hide_buttons: true,
-    pathName: 'users',
-    path: 'users',
     disabled: !isAdmin.value,
+    hide_buttons: true,
+    icon: 'people',
+    name: 'Пользователи',
+    path: 'users',
+    pathName: 'users',
   },
 ]);
 
@@ -222,8 +222,8 @@ async function fetchProductsSearch() {
     let res = [];
     if (textSearch.value) {
       params = {
-        offset: 0,
         limit: 20,
+        offset: 0,
         query: textSearch.value ? textSearch.value : '',
       };
       res = await productsStore.fetchProductsSearch(params);

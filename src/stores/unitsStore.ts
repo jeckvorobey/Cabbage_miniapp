@@ -4,8 +4,7 @@ import type { IUnit } from 'src/types/unit.interface';
 import { ref } from 'vue';
 
 export const useUnitsStore = defineStore('Units', () => {
-
-  const units = ref<IUnit[]>([])
+  const units = ref<IUnit[]>([]);
 
   async function createUnit(unit: IUnit) {
     return client
@@ -14,7 +13,7 @@ export const useUnitsStore = defineStore('Units', () => {
       .catch((err) => {
         console.error(
           '[UnitsStore] - An error occurred while createing via createUnit',
-          err.message,
+          err.message
         );
         throw err;
       });
@@ -27,7 +26,7 @@ export const useUnitsStore = defineStore('Units', () => {
       .catch((err) => {
         console.error(
           '[UnitsStore] - An error occurred while fetching via fetchUnitsById',
-          err.message,
+          err.message
         );
         throw err;
       });
@@ -37,12 +36,12 @@ export const useUnitsStore = defineStore('Units', () => {
     return client
       .get<IUnit[]>('units')
       .then((res) => {
-        units.value = res.data
+        units.value = res.data;
       })
       .catch((err) => {
         console.error(
           '[UnitsStore] - An error occurred while fetching via fetchUnits',
-          err.message,
+          err.message
         );
         throw err;
       });
@@ -51,11 +50,14 @@ export const useUnitsStore = defineStore('Units', () => {
   async function updateUnit(id: number, data: IUnit) {
     return client
       .put(`/units/${id}`, data)
-      .then((res: any) =>  res.data)
+      .then((res: any) => res.data)
       .catch((err) => {
-        console.error('[UnitsStore] - An error occurred while fetching via updateUnit', err.message)
-        throw err
-      })
+        console.error(
+          '[UnitsStore] - An error occurred while fetching via updateUnit',
+          err.message
+        );
+        throw err;
+      });
   }
 
   async function deleteUnit(id: number) {
@@ -65,11 +67,11 @@ export const useUnitsStore = defineStore('Units', () => {
       .catch((err) => {
         console.error(
           '[UnitsStore] - An error occurred while deleting via deleteUnit',
-          err.message,
+          err.message
         );
         throw err;
       });
   }
 
-  return {createUnit, fetchUnitsById, fetchUnits, updateUnit, deleteUnit, units};
+  return { createUnit, fetchUnitsById, fetchUnits, updateUnit, deleteUnit, units };
 });

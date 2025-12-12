@@ -27,11 +27,11 @@ export const useAuthStore = defineStore('auth', () => {
       .then((res) => {
         token.value = res.data.token;
         user.value = res.data.user;
-        
+
         if (res.data.toWalletAddress) {
           toWalletAddress.value = res.data.toWalletAddress;
         }
-        
+
         try {
           if (res.data.token) {
             localStorage.setItem('token', res.data.token);
@@ -39,7 +39,7 @@ export const useAuthStore = defineStore('auth', () => {
         } catch (e: any) {
           console.warn('[AuthStore] - Cannot access localStorage to save token', e.message);
         }
-        
+
         return res.data;
       })
       .catch((err: AxiosError<any>) => {
@@ -53,6 +53,6 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     toWalletAddress,
     token,
-    telegramData
+    telegramData,
   };
 });

@@ -1,6 +1,12 @@
 <template>
   <div class="bottom-menu">
-    <q-tabs no-caps active-color="green" indicator-color="transparent" class="bg-light-gray text-light-gray flex row"  v-model="tab">
+    <q-tabs
+      v-model="tab"
+      no-caps
+      active-color="green"
+      indicator-color="transparent"
+      class="bg-light-gray text-light-gray flex row"
+    >
       <q-tab
         v-for="(button, index) in buttonsMenu"
         :key="index"
@@ -14,10 +20,10 @@
         <q-menu auto-close>
           <q-list dense>
             <q-item
-              clickable
               v-for="(rigntButton, index) in buttonsRightMenu"
               :key="index"
-              @click="router.push(rigntButton.path);"
+              clickable
+              @click="router.push(rigntButton.path)"
             >
               <q-item-section avatar>
                 <q-icon :name="rigntButton.icon" />
@@ -33,78 +39,77 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
-  import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-  interface IBottomMenu {
-    name: string;
-    label: string;
-    icon: string;
-    path: string;
+interface IBottomMenu {
+  name: string;
+  label: string;
+  icon: string;
+  path: string;
+}
+const emit = defineEmits(['open-basket']);
+const router = useRouter();
+const tab = ref('images');
+const buttonsMenu = ref<IBottomMenu[]>([
+  {
+    icon: 'home',
+    label: 'Главная',
+    name: 'dashboard',
+    path: '/',
+  },
+  {
+    icon: 'reorder',
+    label: 'Каталог',
+    name: 'catalog',
+    path: '/catalog',
+  },
+  {
+    icon: 'shopping_cart_checkout',
+    label: 'Корзина',
+    name: '',
+    path: '',
+  },
+  {
+    icon: 'local_shipping',
+    label: 'Доставка',
+    name: 'delivery',
+    path: '/delivery',
+  },
+]);
+
+const buttonsRightMenu = ref<IBottomMenu[]>([
+  {
+    icon: 'perm_identity',
+    label: 'Профиль',
+    name: 'user',
+    path: '/user',
+  },
+  {
+    icon: 'rate_review',
+    label: 'Отзывы',
+    name: 'reviews',
+    path: '/reviews',
+  },
+  {
+    icon: 'history',
+    label: 'История заказов',
+    name: 'history',
+    path: '/history',
+  },
+]);
+
+function bottomMenuActions(it: string) {
+  if (it) {
+    router.push(it);
+  } else {
+    emit('open-basket');
   }
-  const emit = defineEmits(['open-basket']);
-  const router = useRouter();
-  const tab = ref('images')
-  const buttonsMenu = ref<IBottomMenu[]>([
-    {
-      name: 'dashboard',
-      label: 'Главная',
-      icon: 'home',
-      path: '/'
-    },
-    {
-      name: 'catalog',
-      label: 'Каталог',
-      icon: 'reorder',
-      path: '/catalog'
-    },
-    {
-      name: '',
-      label: 'Корзина',
-      icon: 'shopping_cart_checkout',
-      path: ''
-    },
-    {
-      name: 'delivery',
-      label: 'Доставка',
-      icon: 'local_shipping',
-      path: '/delivery'
-    },
-  ])
-
-  const buttonsRightMenu = ref<IBottomMenu[]>([
-    {
-      name: 'user',
-      label: 'Профиль',
-      icon: 'perm_identity',
-      path: '/user'
-    },
-    {
-      name: 'reviews',
-      label: 'Отзывы',
-      icon: 'rate_review',
-      path: '/reviews'
-    },
-    {
-      name: 'history',
-      label: 'История заказов',
-      icon: 'history',
-      path: '/history'
-    }
-  ])
-
-  function bottomMenuActions(it: string) {
-    if (it) {
-      router.push(it);
-    } else {
-      emit('open-basket');
-    }
-  }
-
+}
 </script>
 
 <style scoped lang="scss">
-  // .bottom-menu {
+// .bottom-menu {
 
-  // }
+// }
 </style>
