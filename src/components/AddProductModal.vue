@@ -24,8 +24,6 @@
           <q-input v-model="product.origin_country" class="q-mb-xs" outlined label="Страна происхождения" />
           <q-select v-model="product.category_id" :options="categoriesStore.categories" class="q-mb-xs" outlined
             label="Категория" emit-value map-options option-label="name" option-value="id" />
-          <q-select v-model="product.unit_id" :options="unitsStore.units" outlined label="Единица измерения" emit-value
-            map-options option-label="name" option-value="id" />
           <q-input class="q-mt-sm" v-model="product.description" outlined type="textarea" rows="2" label="Описание" />
         </q-card-section>
         <q-card-actions align="right">
@@ -43,7 +41,6 @@
           </div>
           <div class="text-h6 text-center q-mt-sm">{{ product.name }}</div>
           <div class="text-bold">Стоимость товара: {{ product.price }}</div>
-          <div>Вес: 11 {{ product?.unit?.name || '' }}.</div>
           <div>Страна происхождения: {{ product.origin_country }}</div>
           <div>Описание: {{ product.description }}</div>
         </q-card-section>
@@ -62,7 +59,6 @@ import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook'
 import ProductImgCarusel from 'components/ProductImgCarusel.vue';
 import { useCategoriesStore } from 'src/stores/categoriesStore';
 import { useProductsStore } from 'src/stores/productsStore';
-import { useUnitsStore } from 'src/stores/unitsStore';
 import type { IProduct } from 'src/types/product.interface';
 import { ref } from 'vue';
 import { fileLimitValidation, getImage } from 'src/use/useUtils';
@@ -74,7 +70,6 @@ const productsStore = useProductsStore();
 const categoriesStore = useCategoriesStore();
 const { dialogRef } = useDialogPluginComponent()
 const { isManager } = usePermissionVisibility();
-const unitsStore = useUnitsStore()
 const showDialog = ref(false)
 const uploaderRef = ref()
 const product = ref<IProduct>({
@@ -82,11 +77,9 @@ const product = ref<IProduct>({
   name: "",
   price: null,
   category_id: null,
-  unit_id: null,
   description: "",
   images: '',
   origin_country: '',
-  unit: null
 })
 const productFormData = new FormData()
 
@@ -123,7 +116,6 @@ function generateFormDate() {
   if (product.value?.name) productFormData.append('name', product.value.name)
   if (product.value?.price) productFormData.append('price', product.value.price.toString())
   if (product.value?.category_id) productFormData.append('category_id', product.value.category_id.toString())
-  if (product.value?.unit_id) productFormData.append('unit_id', product.value.unit_id.toString())
   if (product.value?.qty) productFormData.append('qty', product.value.qty.toString())
   if (product.value?.description) productFormData.append('description', product.value.description)
   if (product.value?.origin_country) productFormData.append('origin_country', product.value.origin_country)

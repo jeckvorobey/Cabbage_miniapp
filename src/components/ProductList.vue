@@ -24,7 +24,7 @@
             <q-item-label>
               <div class="text-grey old-price" v-if="item?.old_price">{{ item.old_price }} ₽</div>
               <div :class="item?.old_price ? 'text-red' : ''">
-                {{ item.price }} ₽/ {{ item.unit_name }}
+                {{ item.price }} ₽
               </div>
             </q-item-label>
           </q-item-section>
@@ -33,7 +33,7 @@
             <div></div>
             <div class="row items-end">
               <q-item-label class="q-mr-xs" caption
-                >{{ item.price }} ₽/ {{ item.unit_name }}</q-item-label
+                >{{ item.price }} ₽</q-item-label
               >
               <q-btn dense round color="green" icon="shopping_cart" @click="addOrder(item)" />
             </div>
@@ -64,7 +64,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, toRaw, onMounted } from 'vue';
+import { onMounted, ref, toRaw } from 'vue';
 import { useProductsStore } from 'stores/productsStore.js';
 import { useOrderStore } from 'src/stores/orderStore';
 import { useQuasar } from 'quasar';

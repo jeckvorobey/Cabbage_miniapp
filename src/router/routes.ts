@@ -23,12 +23,12 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'create',
             name: 'products-create',
-            component: () => import('pages/ProductPage.vue'),
+            component: () => import('pages/ProductActionPage.vue'),
           },
           {
             path: ':id/edit',
             name: 'products-edit',
-            component: () => import('pages/ProductPage.vue'),
+            component: () => import('pages/ProductActionPage.vue'),
           },
         ],
       },
@@ -40,7 +40,7 @@ const routes: RouteRecordRaw[] = [
       { path: '/history', name: 'history', component: () => import('pages/OrderHistoryPage.vue') },
       { path: '/reviews', name: 'reviews', component: () => import('pages/ReviewsPage.vue') },
       { path: '/delivery', name: 'delivery', component: () => import('pages/DeliveryPage.vue') },
-      { path: '/product', name: 'product', component: () => import('src/pages/ProductPage.vue') },
+      { path: '/product', name: 'product', component: () => import('src/pages/ProductActionPage.vue') },
     ],
   },
   {
