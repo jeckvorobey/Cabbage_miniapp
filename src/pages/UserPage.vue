@@ -123,6 +123,7 @@
           </div>
         </q-card-section>
       </q-card>
+      <YandexMap/>
     </div>
     <AddAddressModal v-if="showAddressModal" v-model="showAddressModal" :newAddress="address" />
   </div>
@@ -137,6 +138,7 @@ import { useAddressesStore } from 'src/stores/addressesStore';
 import { useUsersStore } from 'src/stores/usersStore';
 import { useAuthStore } from 'src/stores/authStore';
 import type { IAddresse } from 'src/types/addresse.interface';
+import { YandexMap } from 'vue-yandex-maps';
 
 const $q = useQuasar();
 const addressesStore = useAddressesStore();
