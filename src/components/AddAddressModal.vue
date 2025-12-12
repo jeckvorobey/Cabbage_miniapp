@@ -20,17 +20,18 @@
             v-model="address.address_line"
           /> -->
           <q-select
+            v-model="address.address_line"
             class="q-mb-sm"
             clearable
             outlined
-            label="Адрес *"
-            :rules="[required]"
-          />
             use-input
-            v-model="address.address_line"
+            input-debounce="300"
+            label="Адрес доставки *"
+            :rules="[required]"
             :options="suggestions"
             option-label="displayName"
-            label="Адрес доставки"
+            option-value="displayName"
+            :loading="isLoading"
             @filter="searchAddress"
           >
             <template #no-option>
@@ -58,55 +59,47 @@
 </template>
 
 <script lang="ts" setup>
+import { onMounted, ref } from 'vue';
 import { useQuasar } from 'quasar';
+import { required } from 'src/use/useUtils';
 import { useAddressesStore } from 'src/stores/addressesStore';
 import type { IAddresse } from 'src/types/addresse.interface';
-import { onMounted, ref } from 'vue';
-import { required } from 'src/use/useUtils';
 
-const props = defineProps<{ newAddress: any }>();
+interface AddressSuggestion {
+  displayName: string;
+  coords: [number, number];
+}
+
+const ZELENOGRAD_BOUNDS: [number, number][] = [
+  [55.97, 37.12],
+  [56.02, 37.33],
+];
+
+const props = defineProps<{ newAddress?: IAddresse | null }>();
+
 const $q = useQuasar();
 const addressesStore = useAddressesStore();
 const showDialog = ref(true);
 const dialogRef = ref();
-const address = ref<IAddresse>();
-  import { useQuasar } from 'quasar';
-  import { useAddressesStore } from 'src/stores/addressesStore';
-  import type { IAddresse } from 'src/types/addresse.interface';
-  import { onMounted, ref } from 'vue';
-
-  interface AddressSuggestion {
-    displayName: string;
-    coords: [number, number];
-  }
-
-  const ZELENOGRAD_BOUNDS: [number, number][] = [
-    [55.97, 37.12], // Юго-Запад
-    [56.02, 37.33]  // Северо-Восток
-  ];
-  const suggestions = ref<AddressSuggestion[]>([]);
-  const isLoading = ref<boolean>(false);
-  const searchLabel = ref('Начните вводить адрес...')
-  const props = defineProps<{ newAddress: any; }>();
-  const $q = useQuasar();
-  const addressesStore = useAddressesStore();
-  const showDialog = ref(true);
-  const dialogRef = ref()
-  const address = ref<IAddresse>()
+const address = ref<IAddresse>({
+  address_line: '',
+  area_id: null,
+  comment: '',
+  is_default: false,
+});
+const suggestions = ref<AddressSuggestion[]>([]);
+const isLoading = ref<boolean>(false);
+const searchLabel = ref('Начните вводить адрес...');
 
 onMounted(async () => {
   try {
-    const item = {
+    address.value = props.newAddress ?? {
       address_line: '',
       area_id: null,
       comment: '',
       is_default: false,
     };
-    if (props.newAddress) {
-      address.value = props.newAddress;
-    } else {
-      address.value = item;
-    }
+
     $q.loading.show();
     const res = await addressesStore.fetchDeliveryZones();
     if (res) addressesStore.deliveryZones = res;
@@ -119,64 +112,60 @@ onMounted(async () => {
 
 async function addAddres() {
   try {
-    const addressMethod = address?.value?.id
+    if (!address.value) {
+      return;
+    }
+
+    const addressMethod = address.value?.id
       ? addressesStore.updateAddress
       : addressesStore.createAddress;
-    await addressMethod(address.value!);
+
+    await addressMethod(address.value);
   } catch (e) {
     console.error(e);
   } finally {
-    dialogRef.value.hide();
+    dialogRef.value?.hide();
   }
 }
-      : addressesStore.createAddress
-      await addressMethod(address.value!)
-    } catch (e) {
-      console.error(e);
-    } finally {
-      dialogRef.value.hide()
-    }
+
+async function searchAddress(query: string, update: (cb: () => void) => void) {
+  if (!query) {
+    searchLabel.value = 'Начните вводить адрес...';
+    update(() => {
+      suggestions.value = [];
+    });
+    return;
   }
 
-  async function searchAddress(query: string, update: any): Promise<void> {
-    if (!query) {
-      searchLabel.value = 'Начните вводить адрес...'
-      update(() => {
-        suggestions.value = []
-      })
-      return
-    }
-    const ymaps = (window as any).ymaps;
-    if (!ymaps) {;
-      $q.notify({ type: 'negative', message: 'Сервис карт недоступен.' });
-      return;
-    }
-    isLoading.value = true;
-    try {
-      const response = await ymaps.geocode(query, {
-        results: 5,
-        boundedBy: ZELENOGRAD_BOUNDS,
-        strictBounds: true
-      });
-      const data = response.geoObjects.toArray().map((obj: any): AddressSuggestion => ({
-          displayName: obj.properties.get('text'),
-          coords: obj.geometry.getCoordinates()
-        }));
-      update(() => {
-        if (!data?.length) {
-          suggestions.value = []
-          searchLabel.value = 'Адрес не найден'
-          return
-        }
-        suggestions.value = data
-      })
-    } catch (error) {
-      console.error('Ошибка геокодирования:', error);
-    } finally {
-      isLoading.value = false;
-    }
-  };
+  const ymaps = (window as any).ymaps;
+  if (!ymaps) {
+    $q.notify({ message: 'Сервис карт недоступен.', type: 'negative' });
+    return;
+  }
 
+  isLoading.value = true;
+  try {
+    const response = await ymaps.geocode(query, {
+      boundedBy: ZELENOGRAD_BOUNDS,
+      results: 5,
+      strictBounds: true,
+    });
+
+    const data = response.geoObjects.toArray().map((obj: any): AddressSuggestion => ({
+      coords: obj.geometry.getCoordinates(),
+      displayName: obj.properties.get('text'),
+    }));
+
+    update(() => {
+      suggestions.value = data;
+      searchLabel.value = data.length ? 'Выберите адрес из списка' : 'Адрес не найден';
+    });
+  } catch (error) {
+    console.error('Ошибка геокодирования:', error);
+  } finally {
+    isLoading.value = false;
+  }
+}
 </script>
 
 <style lang="scss" scoped></style>

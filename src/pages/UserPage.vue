@@ -145,37 +145,24 @@
       <yandex-map-default-features-layer/>
       <yandex-map-default-marker :settings="{ coordinates: [37.617644, 55.755819] }"/>
     </yandex-map>
-    <AddAddressModal v-if="showAddressModal" v-model="showAddressModal" :newAddress="address" />
   </div>
 </template>
 
 <script setup lang="ts">
-  import { Dark, useQuasar } from 'quasar';
-  import { useAddressesStore } from 'src/stores/addressesStore';
-  import { computed, onMounted, ref, shallowReactive } from 'vue';
-  import AddAddressModal from 'components/AddAddressModal.vue';
-  import { getImage } from 'src/use/useUtils';
-  import { useUsersStore } from 'src/stores/usersStore';
-  import { useAuthStore } from 'src/stores/authStore';
-  import type { IAddresse } from 'src/types/addresse.interface';
-  import { shallowRef } from 'vue';
-  import type { YMap } from '@yandex/ymaps3-types';
-  import {
-    YandexMap,
-    YandexMapDefaultSchemeLayer,
-    YandexMapDefaultFeaturesLayer,
-    YandexMapDefaultMarker,
-  } from 'vue-yandex-maps';
-
-  const map = shallowRef<null | YMap>(null);
-import { Dark, useQuasar } from 'quasar';
-import { useAddressesStore } from 'src/stores/addressesStore';
 import { computed, onMounted, ref, shallowReactive } from 'vue';
+import { Dark, useQuasar } from 'quasar';
 import AddAddressModal from 'components/AddAddressModal.vue';
 import { getImage } from 'src/use/useUtils';
+import { useAddressesStore } from 'src/stores/addressesStore';
 import { useUsersStore } from 'src/stores/usersStore';
 import { useAuthStore } from 'src/stores/authStore';
 import type { IAddresse } from 'src/types/addresse.interface';
+import {
+  YandexMap,
+  YandexMapDefaultSchemeLayer,
+  YandexMapDefaultFeaturesLayer,
+  YandexMapDefaultMarker,
+} from 'vue-yandex-maps';
 
 const $q = useQuasar();
 const addressesStore = useAddressesStore();
@@ -191,13 +178,14 @@ const editPhone = ref(false);
 const themeStatus = computed(() => (isDark.value ? themeState.dark : themeState.light));
 const showAddressModal = ref(false);
 const themeData = ref('dark');
+const map = ref(null);
 const userData = ref<any>({
   addres: null,
   full_name: '',
   mail: '',
   phone: '',
 });
-const address = ref();
+const address = ref<IAddresse | null>(null);
 
 onMounted(() => {
   userData.value = authStore.user;
