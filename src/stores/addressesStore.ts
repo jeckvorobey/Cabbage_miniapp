@@ -6,6 +6,8 @@ import { ref } from 'vue';
 export const useAddressesStore = defineStore('Addresses', () => {
   const addresses = ref<IAddresse[]>();
   const deliveryZones = ref();
+  const addressId = ref<number>()
+  const deliveryZones = ref()
 
   async function fetchAddresses() {
     return client
@@ -81,4 +83,5 @@ export const useAddressesStore = defineStore('Addresses', () => {
     deleteAddress,
     fetchDeliveryZones,
   };
+  return {addresses, addressId, deliveryZones, fetchAddresses, createAddress, updateAddress, deleteAddress, fetchDeliveryZones};
 });

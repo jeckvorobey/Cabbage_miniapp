@@ -84,7 +84,7 @@
 
           <div class="row items-center q-mb-sm">
             <q-select
-              v-model="userData.addres"
+              v-model="addressesStore.addressId"
               :options="addressesStore.addresses"
               class="col-10"
               dense
@@ -129,22 +129,6 @@
       v-model="showAddressModal"
       :newAddress="address"
     />
-    <!-- отображение карты для тестов, позже удаить  -->
-    <yandex-map
-      v-model="map"
-      :settings="{
-        location: {
-          center: [37.617644, 55.755819],
-          zoom: 9,
-        },
-      }"
-      width="100%"
-      height="500px"
-      >
-      <yandex-map-default-scheme-layer/>
-      <yandex-map-default-features-layer/>
-      <yandex-map-default-marker :settings="{ coordinates: [37.617644, 55.755819] }"/>
-    </yandex-map>
   </div>
 </template>
 
@@ -186,6 +170,14 @@ const userData = ref<any>({
   phone: '',
 });
 const address = ref<IAddresse | null>(null);
+  import { Dark, useQuasar } from 'quasar';
+  import { useAddressesStore } from 'src/stores/addressesStore';
+  import { computed, onMounted, ref, shallowReactive } from 'vue';
+  import AddAddressModal from 'components/AddAddressModal.vue';
+  import { getImage } from 'src/use/useUtils';
+  import { useUsersStore } from 'src/stores/usersStore';
+  import { useAuthStore } from 'src/stores/authStore';
+  import type { IAddresse } from 'src/types/addresse.interface';
 
 onMounted(() => {
   userData.value = authStore.user;
@@ -211,6 +203,14 @@ async function deleteAddress(addres: IAddresse) {
     console.error(e);
   } finally {
     $q.loading.hide();
+  onMounted(() => {
+    userData.value = authStore.user
+  })
+
+  function mainAddress(addres: IAddresse) {
+    addres.is_default = true
+    userData.value.addres = addres
+    updateAddress(addres)
   }
 }
 
@@ -227,6 +227,16 @@ async function updateAddress(addres: IAddresse) {
     console.error(e);
   } finally {
     $q.loading.hide();
+  async function deleteAddress(addres: IAddresse) {
+    try {
+      $q.loading.show();
+      const res = await addressesStore.deleteAddress(addres.id!)
+      if (res) fetchAddresses()
+    } catch (e) {
+      console.error(e);
+    } finally {
+      $q.loading.hide();
+    }
   }
 }
 
@@ -234,6 +244,22 @@ const themeToggle = () => {
   Dark.toggle();
   window.localStorage.setItem('theme', themeStatus.value);
 };
+  function editAddress(addres: IAddresse) {
+    address.value = addres
+    showAddressModal.value = !showAddressModal.value
+  }
+
+  async function updateAddress(addres: IAddresse) {
+    try {
+      $q.loading.show();
+      const res = await addressesStore.updateAddress(addres)
+      if (res) fetchAddresses()
+    } catch (e) {
+      console.error(e);
+    } finally {
+      $q.loading.hide();
+    }
+  }
 
 function editPhoneNumber() {
   $q.dialog({
@@ -266,6 +292,20 @@ async function fetchAddresses() {
     console.error(e);
   } finally {
     $q.loading.hide();
+  async function fetchAddresses() {
+    try {
+      $q.loading.show();
+      const res = await addressesStore.fetchAddresses()
+      if (res) {
+        addressesStore.addresses = res
+        const address = res.find((item: IAddresse) => item.is_default === true);
+        addressesStore.addressId = address.id
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      $q.loading.hide();
+    }
   }
 }
 </script>

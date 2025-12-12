@@ -25,13 +25,13 @@
             clearable
             outlined
             use-input
-            input-debounce="300"
-            label="Адрес доставки *"
-            :rules="[required]"
+            emit-value
+            map-options
+            v-model="address.address_line"
             :options="suggestions"
             option-label="displayName"
             option-value="displayName"
-            :loading="isLoading"
+            label="Адрес доставки"
             @filter="searchAddress"
           >
             <template #no-option>
@@ -110,10 +110,41 @@ onMounted(async () => {
   }
 });
 
-async function addAddres() {
-  try {
-    if (!address.value) {
-      return;
+  const ZELENOGRAD_BOUNDS: [number, number][] = [
+    [55.97, 37.12], // Юго-Запад
+    [56.02, 37.33]  // Северо-Восток
+  ];
+  const suggestions = ref<AddressSuggestion[]>([]);
+  const isLoading = ref<boolean>(false);
+  const searchLabel = ref('Начните вводить адрес...')
+  const props = defineProps<{ newAddress: any; }>();
+  const $q = useQuasar();
+  const addressesStore = useAddressesStore();
+  const showDialog = ref(true);
+  const dialogRef = ref()
+  const address = ref<IAddresse>()
+
+  onMounted(async () => {
+    try {
+      // удалить area_id, добавил пока что сервер не дает сохранить без него
+      const item = {
+        area_id: 1,
+        address_line: "",
+        comment: "",
+        is_default: false
+      }
+      if (props.newAddress) {
+        address.value = props.newAddress;
+      } else {
+        address.value = item;
+      }
+      $q.loading.show();
+      const res = await addressesStore.fetchDeliveryZones()
+      if (res) addressesStore.deliveryZones = res
+    } catch (e) {
+      console.error(e);
+    } finally {
+      $q.loading.hide();
     }
 
     const addressMethod = address.value?.id
