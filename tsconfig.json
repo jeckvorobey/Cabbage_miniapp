@@ -2,6 +2,19 @@
   "extends": "./.quasar/tsconfig.json",
   "compilerOptions": {
     "moduleResolution": "bundler",
-    "module": "esnext"
+    "module": "esnext",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@yandex/ymaps3-types"
+    ],
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "plugins": [
+      {
+        "name": "@vue/typescript-plugin",
+        "include": ["src/**/*.vue"]
+      }
+    ]
   }
 }
+

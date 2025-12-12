@@ -24,7 +24,8 @@
     "vue": "3.5.20",
     "vue-i18n": "^11.0.0",
     "vue-router": "^4.0.12",
-    "vue-tg": "^0.6.1"
+    "vue-tg": "^0.6.1",
+    "vue-yandex-maps": "^2.2.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.14.0",

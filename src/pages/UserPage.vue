@@ -124,11 +124,50 @@
         </q-card-section>
       </q-card>
     </div>
+    <AddAddressModal
+      v-if="showAddressModal"
+      v-model="showAddressModal"
+      :newAddress="address"
+    />
+    <!-- отображение карты для тестов, позже удаить  -->
+    <yandex-map
+      v-model="map"
+      :settings="{
+        location: {
+          center: [37.617644, 55.755819],
+          zoom: 9,
+        },
+      }"
+      width="100%"
+      height="500px"
+      >
+      <yandex-map-default-scheme-layer/>
+      <yandex-map-default-features-layer/>
+      <yandex-map-default-marker :settings="{ coordinates: [37.617644, 55.755819] }"/>
+    </yandex-map>
     <AddAddressModal v-if="showAddressModal" v-model="showAddressModal" :newAddress="address" />
   </div>
 </template>
 
 <script setup lang="ts">
+  import { Dark, useQuasar } from 'quasar';
+  import { useAddressesStore } from 'src/stores/addressesStore';
+  import { computed, onMounted, ref, shallowReactive } from 'vue';
+  import AddAddressModal from 'components/AddAddressModal.vue';
+  import { getImage } from 'src/use/useUtils';
+  import { useUsersStore } from 'src/stores/usersStore';
+  import { useAuthStore } from 'src/stores/authStore';
+  import type { IAddresse } from 'src/types/addresse.interface';
+  import { shallowRef } from 'vue';
+  import type { YMap } from '@yandex/ymaps3-types';
+  import {
+    YandexMap,
+    YandexMapDefaultSchemeLayer,
+    YandexMapDefaultFeaturesLayer,
+    YandexMapDefaultMarker,
+  } from 'vue-yandex-maps';
+
+  const map = shallowRef<null | YMap>(null);
 import { Dark, useQuasar } from 'quasar';
 import { useAddressesStore } from 'src/stores/addressesStore';
 import { computed, onMounted, ref, shallowReactive } from 'vue';
