@@ -13,7 +13,7 @@
           <q-item-section top avatar @click="openProductPage(item)">
             <q-img
               class="cursor-pointer radius-8"
-              :src="item[0]?.primary_image ? item[0].primary_image : getImage('/card-shop.jpg')"
+              :src="item.primary_image ? item.primary_image : getImage('/card-shop.jpg')"
               height="80px"
               width="80px"
               fit="cover"
