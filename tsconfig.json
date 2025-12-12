@@ -1,13 +1,7 @@
 {
   "extends": "./.quasar/tsconfig.json",
   "compilerOptions": {
-    "jsx": "preserve",
-    "jsxImportSource": "vue",
-    "plugins": [
-      {
-        "name": "@vue/typescript-plugin",
-        "include": ["src/**/*.vue"]
-      }
-    ]
+    "moduleResolution": "bundler",
+    "module": "esnext"
   }
 }

@@ -23,20 +23,12 @@
             <q-item-label caption class="text-size-16">{{ item.name }}</q-item-label>
             <q-item-label>
               <div class="text-grey old-price" v-if="item?.old_price">{{ item.old_price }} ₽</div>
-              <div :class="item?.old_price ? 'text-red' : ''">
-                {{ item.price }} ₽
-              </div>
+              <div :class="item?.old_price ? 'text-red' : ''">{{ item.price }} ₽</div>
             </q-item-label>
           </q-item-section>
 
-          <q-item-section side top class="column justify-between">
-            <div></div>
-            <div class="row items-end">
-              <q-item-label class="q-mr-xs" caption
-                >{{ item.price }} ₽</q-item-label
-              >
-              <q-btn dense round color="green" icon="shopping_cart" @click="addOrder(item)" />
-            </div>
+          <q-item-section side class="column justify-between">
+            <q-btn dense round color="green" icon="shopping_cart" @click="addOrder(item)" />
           </q-item-section>
         </q-item>
         <q-separator spaced inset />
@@ -64,12 +56,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, toRaw } from 'vue';
+import { ref, toRaw } from 'vue';
 import { useProductsStore } from 'stores/productsStore.js';
 import { useOrderStore } from 'src/stores/orderStore';
 import { useQuasar } from 'quasar';
 import AddProductModal from '@/components/AddProductModal.vue';
-import { useUnitsStore } from 'src/stores/unitsStore';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
 import type { IProduct } from 'src/types/product.interface';
 import { getImage } from 'src/use/useUtils';
@@ -77,24 +68,12 @@ import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
 const router = useRouter();
-const unitsStore = useUnitsStore();
 const productsStore = useProductsStore();
 const orderStore = useOrderStore();
 const { isManager } = usePermissionVisibility();
 const allDataLoaded = ref(false);
 const showProductModal = ref(false);
 const product = ref<IProduct>();
-
-onMounted(async () => {
-  try {
-    await unitsStore.fetchUnits();
-    $q.loading.show();
-  } catch (e) {
-    console.error(e);
-  } finally {
-    $q.loading.hide();
-  }
-});
 
 function refreshData() {
   productsStore.pagination.offset = 0;

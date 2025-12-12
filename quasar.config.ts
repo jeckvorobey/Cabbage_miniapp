@@ -3,7 +3,6 @@
 
 import {defineConfig} from '#q-app/wrappers';
 import {fileURLToPath} from 'node:url';
-import path from 'path';
 
 export default defineConfig((ctx) => {
   return {
@@ -61,39 +60,9 @@ export default defineConfig((ctx) => {
       // polyfillModulePreload: true,
       // distDir
 
-      extendViteConf(viteConf) {
-        // Добавляем алиасы @ для src директории и @img для изображений
-        const srcPath = fileURLToPath(new URL('./src', import.meta.url));
-        const imagesPath = fileURLToPath(new URL('./src/assets/images', import.meta.url));
-        if (!viteConf.resolve) {
-          viteConf.resolve = {};
-        }
-        if (!viteConf.resolve.alias) {
-          viteConf.resolve.alias = [];
-        }
-        const alias = viteConf.resolve.alias;
-        if (Array.isArray(alias)) {
-          alias.push(
-            { find: '@', replacement: srcPath },
-            { find: '@img', replacement: imagesPath }
-          );
-        } else {
-          // Если alias - объект Record, преобразуем в массив
-          const aliasArray: Array<{ find: string; replacement: string }> = [];
-          for (const [find, replacement] of Object.entries(alias)) {
-            aliasArray.push({
-              find,
-              replacement: replacement as string,
-            });
-          }
-          aliasArray.push(
-            { find: '@', replacement: srcPath },
-            { find: '@img', replacement: imagesPath }
-          );
-          viteConf.resolve.alias = aliasArray;
-        }
-      },
+      // extendViteConf (viteConf) {},
       // viteVuePluginOptions: {},
+
       vitePlugins: [
         [
           '@intlify/unplugin-vue-i18n/vite',
