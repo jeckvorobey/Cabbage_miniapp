@@ -35,6 +35,13 @@
       label="Стоимость товара *"
     />
     <q-input
+      v-model="localProduct.qty"
+      class="q-mb-xs"
+      outlined
+      label="Количество"
+      type="number"
+    />
+    <q-input
       v-model="localProduct.origin_country"
       class="q-mb-xs"
       outlined
@@ -54,7 +61,7 @@
     />
     <q-input
       v-model="localProduct.description"
-      class="q-mt-sm q-mb-sm"
+      class="q-mb-xs"
       outlined
       type="textarea"
       rows="2"

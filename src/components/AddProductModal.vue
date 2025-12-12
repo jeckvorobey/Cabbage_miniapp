@@ -32,7 +32,7 @@
           </div>
           <q-input v-model="product.name" class="q-mb-xs" outlined label="Наименование товара" />
           <q-input v-model="product.price" class="q-mb-xs" outlined label="Стоимость товара" />
-          <!-- <q-input v-model="product.qty" class="q-mb-xs" outlined label="Количество" /> -->
+          <q-input v-model="product.qty" class="q-mb-xs" outlined label="Количество" type="number" />
           <q-input
             v-model="product.origin_country"
             class="q-mb-xs"
@@ -52,7 +52,7 @@
           />
           <q-input
             v-model="product.description"
-            class="q-mt-sm"
+            class="q-mb-xs"
             outlined
             type="textarea"
             rows="2"
