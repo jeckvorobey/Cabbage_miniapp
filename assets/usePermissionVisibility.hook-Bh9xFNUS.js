@@ -1,0 +1,1 @@
+import{E as s}from"./useUtils-DWiSHSOY.js";import{u as n,c as t}from"./index-DLgA12qk.js";function f(){const e=n(),u=t(()=>{const r=e.user;return!r||r.is_user===!0?!1:r.role===+s.ADMIN}),i=t(()=>{const r=e.user;return!r||r.is_user===!0?!1:r.role<=+s.MANAGER});return{isAdmin:u,isManager:i}}export{f as u};
