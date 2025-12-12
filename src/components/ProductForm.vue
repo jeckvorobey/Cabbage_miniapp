@@ -1,16 +1,9 @@
 <template>
-  <q-form greedy @submit="handleSubmit">
+  <q-form class="column q-gutter-md" greedy @submit="handleSubmit">
     <div class="text-h6 q-mb-md">
       {{ product.id ? 'Редактирование товара' : 'Добавление товара' }}
     </div>
-    <q-uploader
-      ref="uploaderRef"
-      class="q-mb-md"
-      color="primary"
-      flat
-      max-file-size="15728640"
-      @added="addFile"
-    >
+    <q-uploader ref="uploaderRef" color="primary" flat max-file-size="15728640" @added="addFile">
       <template #header="" />
       <template #list="">
         <q-uploader-add-trigger />
@@ -20,7 +13,7 @@
         </div>
       </template>
     </q-uploader>
-    <div class="q-mb-md">
+    <div>
       <ProductImgCarusel
         v-if="product?.images?.length"
         :images="product.images"
@@ -30,35 +23,13 @@
     <q-input
       v-model="localProduct.name"
       :rules="[required]"
-      class="q-mb-md"
       outlined
       label="Наименование товара *"
-    />
-    <q-input
-      v-model="localProduct.price"
-      :rules="[required]"
-      class="q-mb-md"
-      outlined
-      label="Стоимость товара *"
-    />
-    <q-input
-      v-model="localProduct.qty"
-      class="q-mb-md"
-      outlined
-      label="Количество"
-      type="number"
-    />
-    <q-input
-      v-model="localProduct.origin_country"
-      class="q-mb-md"
-      outlined
-      label="Страна происхождения"
     />
     <q-select
       v-model="localProduct.category_id"
       :rules="[required]"
       :options="categories"
-      class="q-mb-md"
       outlined
       label="Категория *"
       emit-value
@@ -66,9 +37,11 @@
       option-label="name"
       option-value="id"
     />
+    <q-input v-model="localProduct.price" :rules="[required]" outlined label="Стоимость товара *" />
+    <q-input v-model="localProduct.qty" outlined label="Количество" type="number" />
+    <q-input v-model="localProduct.origin_country" outlined label="Страна происхождения" />
     <q-input
       v-model="localProduct.description"
-      class="q-mb-md"
       outlined
       type="textarea"
       rows="2"
