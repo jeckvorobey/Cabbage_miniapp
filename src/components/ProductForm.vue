@@ -3,7 +3,14 @@
     <div class="text-h6 q-mb-md">
       {{ product.id ? 'Редактирование товара' : 'Добавление товара' }}
     </div>
-    <q-uploader ref="uploaderRef" color="primary" flat max-file-size="15728640" @added="addFile">
+    <q-uploader
+      ref="uploaderRef"
+      class="q-mb-md"
+      color="primary"
+      flat
+      max-file-size="15728640"
+      @added="addFile"
+    >
       <template #header="" />
       <template #list="">
         <q-uploader-add-trigger />
@@ -13,7 +20,7 @@
         </div>
       </template>
     </q-uploader>
-    <div>
+    <div class="q-mb-md">
       <ProductImgCarusel
         v-if="product?.images?.length"
         :images="product.images"
@@ -23,27 +30,27 @@
     <q-input
       v-model="localProduct.name"
       :rules="[required]"
-      class="q-mb-xs"
+      class="q-mb-md"
       outlined
       label="Наименование товара *"
     />
     <q-input
       v-model="localProduct.price"
       :rules="[required]"
-      class="q-mb-xs"
+      class="q-mb-md"
       outlined
       label="Стоимость товара *"
     />
     <q-input
       v-model="localProduct.qty"
-      class="q-mb-xs"
+      class="q-mb-md"
       outlined
       label="Количество"
       type="number"
     />
     <q-input
       v-model="localProduct.origin_country"
-      class="q-mb-xs"
+      class="q-mb-md"
       outlined
       label="Страна происхождения"
     />
@@ -51,7 +58,7 @@
       v-model="localProduct.category_id"
       :rules="[required]"
       :options="categories"
-      class="q-mb-xs"
+      class="q-mb-md"
       outlined
       label="Категория *"
       emit-value
@@ -61,7 +68,7 @@
     />
     <q-input
       v-model="localProduct.description"
-      class="q-mb-xs"
+      class="q-mb-md"
       outlined
       type="textarea"
       rows="2"

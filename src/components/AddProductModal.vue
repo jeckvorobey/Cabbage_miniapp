@@ -8,6 +8,7 @@
           </div>
           <q-uploader
             ref="uploaderRef"
+            class="q-mb-md"
             color="primary"
             flat
             max-file-size="15728640"
@@ -23,26 +24,26 @@
               </div>
             </template>
           </q-uploader>
-          <div>
+          <div class="q-mb-md">
             <ProductImgCarusel
               v-if="product?.images?.length"
               :images="product.images"
               @refresh-data="fetchProduct()"
             />
           </div>
-          <q-input v-model="product.name" class="q-mb-xs" outlined label="Наименование товара" />
-          <q-input v-model="product.price" class="q-mb-xs" outlined label="Стоимость товара" />
-          <q-input v-model="product.qty" class="q-mb-xs" outlined label="Количество" type="number" />
+          <q-input v-model="product.name" class="q-mb-md" outlined label="Наименование товара" />
+          <q-input v-model="product.price" class="q-mb-md" outlined label="Стоимость товара" />
+          <q-input v-model="product.qty" class="q-mb-md" outlined label="Количество" type="number" />
           <q-input
             v-model="product.origin_country"
-            class="q-mb-xs"
+            class="q-mb-md"
             outlined
             label="Страна происхождения"
           />
           <q-select
             v-model="product.category_id"
             :options="categoriesStore.categories"
-            class="q-mb-xs"
+            class="q-mb-md"
             outlined
             label="Категория"
             emit-value
@@ -52,7 +53,7 @@
           />
           <q-input
             v-model="product.description"
-            class="q-mb-xs"
+            class="q-mb-md"
             outlined
             type="textarea"
             rows="2"
