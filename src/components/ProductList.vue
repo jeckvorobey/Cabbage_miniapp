@@ -83,9 +83,7 @@ import { useCart } from 'src/use/useCart';
 const $q = useQuasar();
 const router = useRouter();
 const productsStore = useProductsStore();
-const { isManager } = usePermissionVisibility();
 const { addToCart } = useCart();
-const orderStore = useOrderStore();
 const { isManager, isAdmin } = usePermissionVisibility();
 const allDataLoaded = ref(false);
 const showProductModal = ref(false);
@@ -147,13 +145,13 @@ const onLoad = async (index: number, done: (stop?: boolean) => void) => {
 
 function removeProduct(it: IProduct) {
   $q.dialog({
-    title: 'Удаление товара',
-    message: 'Вы уверенны что хотите удалить товар?',
     cancel: true,
-    persistent: true
+    message: 'Вы уверенны что хотите удалить товар?',
+    persistent: true,
+    title: 'Удаление товара',
   }).onOk(() => {
-    deleteProduct(it)
-  })
+    deleteProduct(it);
+  });
 }
 
 async function deleteProduct(it: IProduct) {

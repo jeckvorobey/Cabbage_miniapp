@@ -6,7 +6,6 @@ import { ref } from 'vue';
 export const useOrderStore = defineStore('Order', () => {
   const basketData = ref<any>([]);
   const totalCost = ref();
-  const totalCost = ref()
   const orderDataByPay = ref<IOrderBy>({
     items: [],
     comment: '',
@@ -95,6 +94,7 @@ export const useOrderStore = defineStore('Order', () => {
   return {
     basketData,
     totalCost,
+    orderDataByPay,
     createOrder,
     fetchOrder,
     fetchMyOrder,
@@ -102,5 +102,4 @@ export const useOrderStore = defineStore('Order', () => {
     updateOrder,
     deleteOrder,
   };
-  return { basketData, totalCost, orderDataByPay, createOrder, fetchOrder, fetchMyOrder, fetchOrderById, updateOrder, deleteOrder };
 });

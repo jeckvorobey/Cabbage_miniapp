@@ -25,8 +25,15 @@ describe('usePermissionVisibility', () => {
     setActivePinia(createPinia());
   });
 
-  it('бросает ошибку, если пользователь не найден в authStore', () => {
-    expect(() => usePermissionVisibility()).toThrow('User not found');
+  it('безопасно обрабатывает случай, когда пользователь не аутентифицирован', () => {
+    const authStore = useAuthStore();
+    authStore.user = null;
+
+    const { isAdmin, isManager } = usePermissionVisibility();
+
+    // Хук должен возвращать false для всех прав, если пользователь не аутентифицирован
+    expect(isAdmin.value).toBe(false);
+    expect(isManager.value).toBe(false);
   });
 
   it('ADMIN имеет права admin и manager', () => {
