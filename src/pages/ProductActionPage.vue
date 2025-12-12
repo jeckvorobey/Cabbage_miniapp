@@ -11,10 +11,11 @@
     <div v-else>
       <ProductImgCarusel v-if="product?.images?.length" :images="product.images" />
       <div class="q-mb-sm">
-        <h6 v-if="product?.name" class="q-my-md">{{ product.name }}</h6>
-        <div v-if="product?.old_price" class="text-grey old-price">{{ product.old_price }} ₽</div>
+        <h6 v-if="product?.name" class="q-my-md text-center">{{ product.name }}</h6>
+        <div v-if="product.origin_country" class="text-grey">Страна производитель: {{ product.origin_country }} </div>
+        <div v-if="product?.old_price" class="text-grey old-price">Старая цена: {{ product.old_price }} ₽</div>
         <div class="text-bold text-18 q-mb-md" :class="product?.old_price ? 'text-red' : ''">
-          {{ product.price }} ₽
+          Цена: {{ product.price }} ₽
         </div>
         <div v-if="product.description" class="q-pa-md bg-light-gray radius-16">
           {{ product.description }}
