@@ -9,6 +9,7 @@ declare module '*.vue' {
 
 interface ImportMetaEnv {
   readonly VITE_API_URL: string;
+  readonly VITE_YANDEX_MAPS_API_KEY: string;
   readonly VUE_ROUTER_MODE?: 'hash' | 'history' | 'abstract';
   readonly VUE_ROUTER_BASE?: string;
 }

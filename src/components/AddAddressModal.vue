@@ -182,10 +182,12 @@ async function searchAddress(query: string, update: (cb: () => void) => void) {
       strictBounds: true,
     });
 
-    const data = response.geoObjects.toArray().map((obj: any): AddressSuggestion => ({
-      coords: obj.geometry.getCoordinates(),
-      displayName: obj.properties.get('text'),
-    }));
+    const data = response.geoObjects.toArray().map((obj: any): AddressSuggestion => {
+      return {
+        coords: obj.geometry.getCoordinates(),
+        displayName: obj.properties.get('text'),
+      };
+    });
 
     update(() => {
       suggestions.value = data;

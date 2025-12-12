@@ -90,8 +90,9 @@ describe('ProductActionPage', () => {
       history: createWebHistory(),
       routes: [
         { path: '/', component: { template: '<div></div>' } },
-        { path: '/product/:id', name: 'product', component: { template: '<div></div>' } },
-        { path: '/product', name: 'product-list', component: { template: '<div></div>' } },
+        { path: '/products/:id', name: 'product', component: { template: '<div></div>' } },
+        { path: '/products/create', name: 'products-create', component: { template: '<div></div>' } },
+        { path: '/products/:id/edit', name: 'products-edit', component: { template: '<div></div>' } },
       ],
     });
     await router.push('/');
@@ -192,7 +193,7 @@ describe('ProductActionPage', () => {
       mockGetCartItem.mockReturnValue(mockCartItem);
       mockOrderStore.basketData = [];
 
-      router.push('/product/1');
+      router.push('/products/1');
       await router.isReady();
 
       const wrapper = mount(ProductActionPage, {
@@ -240,7 +241,7 @@ describe('ProductActionPage', () => {
       mockGetCartItem.mockReturnValue(updatedCartItem);
       mockOrderStore.basketData = [existingCartItem];
 
-      router.push('/product/1');
+      router.push('/products/1');
       await router.isReady();
 
       const wrapper = mount(ProductActionPage, {
@@ -385,7 +386,7 @@ describe('ProductActionPage', () => {
     });
 
     it('не должен загружать товар, если ID отсутствует', async () => {
-      await router.push('/product');
+      await router.push('/products/create');
       await router.isReady();
 
       const wrapper = mount(ProductActionPage, {
