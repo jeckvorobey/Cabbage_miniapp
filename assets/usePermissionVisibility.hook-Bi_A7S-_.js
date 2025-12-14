@@ -1,1 +1,0 @@
-import{E as s}from"./useUtils-76XQBTu0.js";import{u as n,c as t}from"./index-CwXbeFX2.js";function f(){const e=n(),u=t(()=>{const r=e.user;return!r||r.is_user===!0?!1:r.role===+s.ADMIN}),i=t(()=>{const r=e.user;return!r||r.is_user===!0?!1:r.role<=+s.MANAGER});return{isAdmin:u,isManager:i}}export{f as u};
