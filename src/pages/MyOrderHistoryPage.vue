@@ -13,13 +13,12 @@
   import { onMounted } from 'vue';
   import OrderHistoryItems from 'components/OrderHistoryItems.vue';
 
-
   const $q = useQuasar();
   const orderStore = useOrderStore()
 
   onMounted(async () => {
     orderStore.pagination.offset = 0
-    await fetchOrders()
+   await fetchOrders()
   })
 
   const onLoad = async (index: number, done: (stop?: boolean) => void) => {
@@ -40,7 +39,7 @@
         limit: orderStore.pagination.limit,
         offset: orderStore.pagination.offset,
       };
-      const res = await orderStore.fetchOrders(params);
+      const res = await orderStore.fetchMyOrder(params);
       if (res) {
         orderStore.pagination.total = res.total;
         orderStore.pagination.has_more = res.has_more;

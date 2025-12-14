@@ -71,11 +71,17 @@ const buttonsMenu = ref<IBottomMenu[]>([
     path: '',
   },
   {
-    icon: 'local_shipping',
-    label: 'Доставка',
-    name: 'delivery',
-    path: '/delivery',
+    icon: 'history',
+    label: 'История заказов',
+    name: 'my-history',
+    path: '/my-history',
   },
+  // {
+  //   icon: 'local_shipping',
+  //   label: 'Доставка',
+  //   name: 'delivery',
+  //   path: '/delivery',
+  // },
 ]);
 
 const buttonsRightMenu = ref<IBottomMenu[]>([
@@ -90,12 +96,6 @@ const buttonsRightMenu = ref<IBottomMenu[]>([
     label: 'Отзывы',
     name: 'reviews',
     path: '/reviews',
-  },
-  {
-    icon: 'history',
-    label: 'История заказов',
-    name: 'history',
-    path: '/history',
   },
 ]);
 

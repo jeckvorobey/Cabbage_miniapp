@@ -17,7 +17,7 @@
           <q-item-label caption lines="2">Общая сумма</q-item-label>
           <q-item-label>{{ order.total_amount }}</q-item-label>
         </q-item-section>
-        <q-item-action v-if="isManager">
+        <q-item-action v-if="adminMode">
           <q-btn-dropdown color="green" dense >
             <q-list
               v-for="(status, SIndex) in OrderStatus"
@@ -39,16 +39,16 @@
 <script setup lang="ts">
   import { useQuasar } from 'quasar';
   import { EOrderStatus } from 'src/enums/order-status.enum';
-  import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
   import { useOrderStore } from 'src/stores/orderStore';
   type OrderStatusItem = {
     value: EOrderStatus;
     label: string;
   };
+  defineProps<{
+    orderData: any;
+    adminMode: boolean;
+  }>();
 
-  defineProps<{ orderData: any; }>();
-
-  const { isManager } = usePermissionVisibility();
   const $q = useQuasar();
   const orderStore = useOrderStore()
 
