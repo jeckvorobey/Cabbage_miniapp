@@ -126,6 +126,7 @@
       </q-card>
       <YandexMap/>
       <q-toggle
+        v-if="isAdmin"
         v-model="userData.is_user"
         color="green"
         label="Администратор/Пользователь"
@@ -146,12 +147,14 @@ import { useUsersStore } from 'src/stores/usersStore';
 import { useAuthStore } from 'src/stores/authStore';
 import type { IAddresse } from 'src/types/addresse.interface';
 import { YandexMap } from 'vue-yandex-maps';
+import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
 
 const $q = useQuasar();
 const addressesStore = useAddressesStore();
 const usersStore = useUsersStore();
 const authStore = useAuthStore();
 const isDark = computed(() => Dark.isActive);
+const { isAdmin } = usePermissionVisibility();
 type Theme = 'dark' | 'light';
 const themeState = shallowReactive<Record<Theme, Theme>>({
   dark: 'dark',
