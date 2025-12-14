@@ -20,7 +20,7 @@
                   <div class="q-mb-md">
                     <span class="text-bold text-basic-green">{{ item.price }}</span> ₽
                     <span v-if="item?.oldPrice" class="old-price">{{ item.oldPrice }} ₽</span>
-                    <span>/{{ item.qty }}кг</span>
+                    <span>/шт.</span>
                   </div>
 
                   <div class="flex quantity-goods">
