@@ -28,20 +28,13 @@
           </q-item-section>
 
           <q-item-section side top class="column justify-between">
-            <div></div>
-            <div class="row items-end">
-              <q-item-label class="q-mr-xs" caption
-                >{{ item.price }} ₽/ {{ item.unit_name }}</q-item-label
-              >
-              <div>
-                <div v-if="isAdmin" class="q-mb-sm">
-                  <q-btn dense round color="red" icon="delete" @click="removeProduct(item)" />
-                </div>
-                <div>
-                  <q-btn dense round color="green" icon="shopping_cart" @click="addOrder(item)" />
-                </div>
+            <div>
+              <div v-if="isAdmin" class="q-mb-sm">
+                <q-btn dense round color="red" icon="delete" @click="removeProduct(item)" />
               </div>
-
+              <div>
+                <q-btn dense round color="green" icon="shopping_cart" @click="addOrder(item)" />
+              </div>
             </div>
           </q-item-section>
         </q-item>
@@ -156,7 +149,7 @@ function removeProduct(it: IProduct) {
 
 async function deleteProduct(it: IProduct) {
   try {
-    if (!it?.id) return
+    if (!it?.id) return;
     await productsStore.deleteProduct(it.id);
     $q.loading.show();
   } catch (e) {
