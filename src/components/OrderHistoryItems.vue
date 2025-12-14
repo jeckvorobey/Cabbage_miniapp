@@ -36,7 +36,7 @@
           </q-btn-dropdown>
         </q-item-action>
         <q-item-action v-if="!adminMode && (order.status !== EOrderStatus.CREATED)">
-          <q-btn @click="clearOrder(order.id)" round color="deep-orange" icon="close" />
+          <q-btn round color="deep-orange" icon="close" @click="clearOrder(order.id)"/>
         </q-item-action>
       </q-item>
     </q-list>
