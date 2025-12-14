@@ -27,7 +27,6 @@
       done(true);
       return;
     }
-    debugger
     await fetchOrders();
     orderStore.pagination.offset += orderStore.pagination.limit;
     done();
