@@ -23,7 +23,7 @@
             <q-item-label caption class="text-size-16">{{ item.name }}</q-item-label>
             <q-item-label>
               <div v-if="item?.old_price" class="text-grey old-price">{{ item.old_price }} ₽</div>
-              <div :class="item?.old_price ? 'text-red' : ''">{{ item.price }} ₽</div>
+              <div :class="item?.old_price ? 'text-red' : ''">{{ item.price }} ₽/шт.</div>
             </q-item-label>
           </q-item-section>
 
