@@ -18,7 +18,7 @@ export const useOrderStore = defineStore('Order', () => {
     limit: 20,
     total: 0,
     statuses: '',
-    has_more: true,
+    has_more: false,
   });
 
   async function createOrder(order: any) {

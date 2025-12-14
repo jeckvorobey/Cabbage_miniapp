@@ -180,7 +180,7 @@ const menuList = ref<IMenuItems[]>([
   {
     hide_buttons: true,
     icon: 'history',
-    name: 'История заказов',
+    name: 'Заказы',
     path: 'history',
     pathName: 'history',
   },
