@@ -18,8 +18,8 @@
                 </q-item-label>
                 <q-item-label>
                   <div class="q-mb-md">
+                    <span v-if="item?.oldPrice" class="old-price">{{ item.oldPrice }}/</span>
                     <span class="text-bold text-basic-green">{{ item.price }}</span> ₽
-                    <span v-if="item?.oldPrice" class="old-price">{{ item.oldPrice }} ₽</span>
                     <span>/шт.</span>
                   </div>
 
@@ -50,7 +50,7 @@
           </q-item-section>
           <q-item-action class="column justify-between items-end">
             <q-btn text-color="red" flat dense round icon="delete" @click="removeItem(index)" />
-            <div>{{ getItemTotal(item) }}</div>
+            <div>{{ getItemTotal(item) }} ₽</div>
           </q-item-action>
         </q-item>
         <q-separator />
