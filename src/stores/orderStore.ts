@@ -15,7 +15,7 @@ export const useOrderStore = defineStore('Order', () => {
 
   async function createOrder(order: any) {
     return client
-      .post<any>('order', order)
+      .post<any>('orders', order)
       .then((res) => res.data)
       .catch((err) => {
         console.error(
