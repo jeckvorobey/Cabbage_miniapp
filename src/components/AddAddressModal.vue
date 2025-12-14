@@ -24,6 +24,7 @@
             class="q-mb-sm"
             clearable
             outlined
+            behavior="menu"
             use-input
             emit-value
             map-options

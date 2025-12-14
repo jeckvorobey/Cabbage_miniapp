@@ -14,7 +14,7 @@
     </div> -->
     <div class="flex justify-between border-top q-mt-lg">
       <span>Стоимость: </span>
-      <span>{{ producTotalPrice }}₽</span>
+      <span>{{ producTotalPrice }} ₽</span>
     </div>
   </q-list>
 </template>
