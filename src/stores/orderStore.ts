@@ -12,6 +12,14 @@ export const useOrderStore = defineStore('Order', () => {
     payment_method: 'cash_to_courier',
     address_id: null
   })
+  const ordersData = ref()
+  const pagination = ref({
+    offset: 0,
+    limit: 20,
+    total: 0,
+    statuses: '',
+    has_more: true,
+  });
 
   async function createOrder(order: any) {
     return client
@@ -26,9 +34,9 @@ export const useOrderStore = defineStore('Order', () => {
       });
   }
 
-  async function fetchOrder() {
+  async function fetchOrders(params: any) {
     return client
-      .get('orders')
+      .get('orders', { params })
       .then((res) => res.data)
       .catch((err) => {
         console.error(
@@ -39,9 +47,9 @@ export const useOrderStore = defineStore('Order', () => {
       });
   }
 
-  async function fetchMyOrder() {
+  async function fetchMyOrder(params: any) {
     return client
-      .get('orders/my')
+      .get('orders/my', { params })
       .then((res) => res.data)
       .catch((err) => {
         console.error(
@@ -67,7 +75,7 @@ export const useOrderStore = defineStore('Order', () => {
 
   async function updateOrder(order: any) {
     return client
-      .patch(`/addresses/${order.id}`, order)
+      .patch(`/orders/${order.id}`, order)
       .then((res) => res.data)
       .catch((err) => {
         console.error(
@@ -91,15 +99,31 @@ export const useOrderStore = defineStore('Order', () => {
       });
   }
 
+  async function updateOrderStatus(id: number, status: string) {
+    return client
+      .patch(`/orders/${id}/status`, {status})
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(
+          '[OrderStore] - An error occurred while creating via updateOrderStatus',
+          err.message
+        );
+        throw err;
+      });
+  }
+
   return {
     basketData,
     totalCost,
     orderDataByPay,
+    ordersData,
+    pagination,
     createOrder,
-    fetchOrder,
+    fetchOrders,
     fetchMyOrder,
     fetchOrderById,
     updateOrder,
     deleteOrder,
+    updateOrderStatus
   };
 });
