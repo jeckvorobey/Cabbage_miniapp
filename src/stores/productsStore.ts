@@ -116,6 +116,19 @@ export const useProductsStore = defineStore('Products', () => {
       });
   }
 
+  async function setMainImage(id: number) {
+    return client
+      .patch(`/products/images/${id}/set-primary`)
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(
+          '[ProductsStore] - An error occurred while creating via setMainImage',
+          err.message
+        );
+        throw err;
+      });
+  }
+
   return {
     pagination,
     products,
@@ -127,5 +140,6 @@ export const useProductsStore = defineStore('Products', () => {
     fetchProductsById,
     uploadFile,
     deleteFile,
+    setMainImage
   };
 });

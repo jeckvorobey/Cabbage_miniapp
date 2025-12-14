@@ -72,7 +72,7 @@ const buttonsMenu = ref<IBottomMenu[]>([
   },
   {
     icon: 'history',
-    label: 'История заказов',
+    label: 'История',
     name: 'my-history',
     path: '/my-history',
   },

@@ -28,7 +28,21 @@
           :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
           @click="fullscreen = !fullscreen"
         />
-        <q-btn v-if="isManager" round dense text-color="red" icon="delete" @click="deleteImage()" />
+        <q-btn-dropdown v-if="isManager"  color="primary" label="Настройки">
+          <q-list>
+            <q-item v-close-popup clickable @click="deleteImage()">
+              <q-item-section>
+                <q-item-label class="text-res">Удалить картинку</q-item-label>
+              </q-item-section>
+            </q-item>
+
+            <q-item v-close-popup clickable @click="mainImage()">
+              <q-item-section>
+                <q-item-label class="text-green">Назначить главной</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
       </q-carousel-control>
     </template>
   </q-carousel>
@@ -64,6 +78,27 @@ async function deleteFile() {
   try {
     const currentImg = props.images[slide.value];
     await productsStore.deleteFile(currentImg.id);
+    emit('refresh-data');
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function mainImage() {
+  $q.dialog({
+    cancel: true,
+    message: 'Вы уверенны что хотите назначить эту картинку главной?',
+    persistent: true,
+    title: 'Главная картинка',
+  }).onOk(() => {
+    setMainImage();
+  });
+}
+
+async function setMainImage() {
+  try {
+    const currentImg = props.images[slide.value];
+    await productsStore.setMainImage(currentImg.id);
     emit('refresh-data');
   } catch (e) {
     console.error(e);
