@@ -177,6 +177,13 @@ const menuList = ref<IMenuItems[]>([
     path: 'users',
     pathName: 'users',
   },
+  {
+    hide_buttons: true,
+    icon: 'history',
+    name: 'История заказов',
+    path: 'history',
+    pathName: 'history',
+  },
 ]);
 
 onMounted(async () => {
