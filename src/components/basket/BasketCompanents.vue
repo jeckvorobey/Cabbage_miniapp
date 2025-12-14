@@ -64,12 +64,14 @@ import { onMounted, ref } from 'vue';
 import { useAddressesStore } from 'src/stores/addressesStore';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
+import { useCart } from 'src/use/useCart';
 
 const emit = defineEmits(['close-basket']);
 const $q = useQuasar();
 const router = useRouter();
 const addressesStore = useAddressesStore();
 const orderStore = useOrderStore();
+const { clearBasketData } = useCart();
 const step = ref(1);
 const stepper = ref();
 const comment = ref();
@@ -122,7 +124,10 @@ async function createOrder() {
       orderStore.orderDataByPay.address_id = addressesStore.addressId;
     }
     $q.loading.show();
-    await orderStore.createOrder(orderStore.orderDataByPay);
+    const res = await orderStore.createOrder(orderStore.orderDataByPay);
+    if (res) {
+      clearBasketData()
+    }
   } catch (e) {
     console.error(e);
   } finally {

@@ -187,6 +187,14 @@ export function useCart() {
     }
   }
 
+  /**
+   * Очищает корзину и localStorage
+   */
+    function clearBasketData() {
+      orderStore.basketData = []
+      saveToLocalStorage()
+    }
+
   return {
     addToCart,
     updateQuantity,
@@ -194,5 +202,6 @@ export function useCart() {
     removeFromCartByIndex,
     getCartItem,
     saveToLocalStorage,
+    clearBasketData
   };
 }
