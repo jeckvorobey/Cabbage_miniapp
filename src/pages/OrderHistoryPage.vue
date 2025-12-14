@@ -20,6 +20,7 @@
   const { isManager } = usePermissionVisibility();
 
   onMounted(async () => {
+    console.log('fetchOrders history' )
    await fetchOrders()
   })
 
