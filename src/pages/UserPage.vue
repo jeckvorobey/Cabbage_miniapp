@@ -122,8 +122,15 @@
             />
           </div>
         </q-card-section>
+
       </q-card>
       <YandexMap/>
+      <q-toggle
+        v-model="userData.is_user"
+        color="green"
+        label="Администратор/Пользователь"
+        @click="updateUserRole()"
+      />
     </div>
     <AddAddressModal v-if="showAddressModal" v-model="showAddressModal" :newAddress="address" />
   </div>
@@ -245,6 +252,17 @@ async function fetchAddresses() {
         addressesStore.addressId = defaultAddress.id;
       }
     }
+  } catch (e) {
+    console.error(e);
+  } finally {
+    $q.loading.hide();
+  }
+}
+
+async function updateUserRole() {
+  try {
+    $q.loading.show();
+    await usersStore.updateUserMode(userData.value.id)
   } catch (e) {
     console.error(e);
   } finally {
