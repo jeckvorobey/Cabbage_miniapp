@@ -18,42 +18,18 @@
           <q-item-label>{{ order.total_amount }}</q-item-label>
         </q-item-section>
         <q-item-action v-if="isManager">
-          <q-item-label><q-icon name="edit" color="green" size="24px" /></q-item-label>
-        </q-item-action>
-      </q-item>
-    </q-list>
-
-    <q-list>
-      <q-item
-        class="border-bot">
-        <q-item-section>
-          <q-item-label caption lines="2">Дата</q-item-label>
-          <q-item-label>1212</q-item-label>
-        </q-item-section>
-        <q-item-section>
-          <q-item-label caption lines="2">Статус</q-item-label>
-          <q-item-label>2121</q-item-label>
-        </q-item-section>
-        <q-item-section>
-          <q-item-label caption lines="2">Общая сумма</q-item-label>
-          <q-item-label>1212</q-item-label>
-        </q-item-section>
-
-        <q-item-action>
-          <q-item-label>
-            <q-btn-dropdown color="green" dense >
-                <q-list
-                  v-for="(status, SIndex) in OrderStatus"
-                  :key="SIndex"
-                  >
-                  <q-item v-close-popup clickable @click="editStatus(1, status.value)" >
-                    <q-item-section>
-                      <q-item-label>{{ status.label }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
-          </q-item-label>
+          <q-btn-dropdown color="green" dense >
+            <q-list
+              v-for="(status, SIndex) in OrderStatus"
+              :key="SIndex"
+              >
+              <q-item v-close-popup clickable @click="editStatus(order.id, status.value)" >
+                <q-item-section>
+                  <q-item-label>{{ status.label }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
         </q-item-action>
       </q-item>
     </q-list>
