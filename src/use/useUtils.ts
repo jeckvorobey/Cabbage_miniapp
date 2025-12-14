@@ -46,4 +46,14 @@ const fileLimitValidation = ($q: any) => {
   });
 };
 
-export { isActiveMenu, admin, manager, accessLevel, getImage, fileLimitValidation, required };
+function dateConverter(data: string) {
+  const dateData: Date = new Date(data);
+  const dayMonthYearFormat: string = dateData.toLocaleDateString('ru-RU', {
+    year: 'numeric', // Год
+    month: '2-digit', // Месяц
+    day: '2-digit', // День
+  });
+  return dayMonthYearFormat
+}
+
+export { isActiveMenu, admin, manager, accessLevel, getImage, fileLimitValidation, required, dateConverter };
