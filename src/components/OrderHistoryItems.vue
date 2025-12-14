@@ -7,11 +7,11 @@
         class="border-bot">
         <q-item-section>
           <q-item-label caption lines="2">Дата</q-item-label>
-          <q-item-label>{{ order.order_date }}</q-item-label>
+          <q-item-label>{{ dateConverter(order.order_date) }}</q-item-label>
         </q-item-section>
         <q-item-section>
           <q-item-label caption lines="2">Статус</q-item-label>
-          <q-item-label>{{ order.status }}</q-item-label>
+          <q-item-label>{{ OrderStatus.find((it: any) => it.value === it) }}</q-item-label>
         </q-item-section>
         <q-item-section>
           <q-item-label caption lines="2">Общая сумма</q-item-label>
@@ -40,6 +40,8 @@
   import { useQuasar } from 'quasar';
   import { EOrderStatus } from 'src/enums/order-status.enum';
   import { useOrderStore } from 'src/stores/orderStore';
+  import { dateConverter } from 'src/use/useUtils';
+
   type OrderStatusItem = {
     value: EOrderStatus;
     label: string;
