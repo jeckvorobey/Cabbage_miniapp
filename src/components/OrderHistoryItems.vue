@@ -11,7 +11,7 @@
         </q-item-section>
         <q-item-section>
           <q-item-label caption lines="2">Статус</q-item-label>
-          <q-item-label>{{ OrderStatus.find((it: any) => it.value === it) }}</q-item-label>
+          <q-item-label>{{ orderStatus(order.status) }}</q-item-label>
         </q-item-section>
         <q-item-section>
           <q-item-label caption lines="2">Общая сумма</q-item-label>
@@ -103,6 +103,11 @@
     } finally {
       $q.loading.hide();
     }
+  }
+
+  function orderStatus(status: string) {
+    const statusName = OrderStatus.find((it: any) => it.value === status)
+    return statusName?.label
   }
 
 </script>
