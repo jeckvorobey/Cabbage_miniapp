@@ -28,6 +28,19 @@ export const useUsersStore = defineStore('Users', () => {
       });
   }
 
+  async function updateUserMode(id: number,) {
+    return client
+      .patch(`/users/${id}/toggle-is-user`)
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(
+          '[UsersStore] - An error occurred while creating via updateUserMode',
+          err.message
+        );
+        throw err;
+      });
+  }
+
   async function updateMyPhone(phone: number) {
     return client
       .patch('/users/me/phone', { phone })
@@ -41,5 +54,5 @@ export const useUsersStore = defineStore('Users', () => {
       });
   }
 
-  return { users, fetchUsers, updateUserRole, updateMyPhone };
+  return { users, fetchUsers, updateUserRole, updateMyPhone, updateUserMode };
 });
