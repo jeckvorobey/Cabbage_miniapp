@@ -1,1 +1,0 @@
-import{_ as r}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{P as t,R as o,S as s}from"./index-Ohtvikhu.js";const n={};function a(c,e){return o(),t("div",null,[...e[0]||(e[0]=[s("h6",{class:"text-center q-mt-md"},"История заказов",-1)])])}const f=r(n,[["render",a]]);export{f as default};
