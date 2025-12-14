@@ -11,7 +11,11 @@
         </q-item-section>
         <q-item-section>
           <q-item-label caption lines="2">Статус</q-item-label>
-          <q-item-label>{{ OrderStatus.find((it: any) => it.value === it) }}</q-item-label>
+          <q-item-label>{{ orderStatus(order.status) }}</q-item-label>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label caption lines="2">Имя</q-item-label>
+          <q-item-label>{{ order.full_name }}</q-item-label>
         </q-item-section>
         <q-item-section>
           <q-item-label caption lines="2">Общая сумма</q-item-label>
@@ -30,6 +34,9 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
+        </q-item-action>
+        <q-item-action v-if="!adminMode && (order.status !== EOrderStatus.CREATED)">
+          <q-btn round color="deep-orange" icon="close" @click="clearOrder(order.id)"/>
         </q-item-action>
       </q-item>
     </q-list>
@@ -96,6 +103,39 @@
         $q.notify({
           color: 'primary',
           message: 'Статус успешно изменен',
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      $q.loading.hide();
+    }
+  }
+
+  function orderStatus(status: string) {
+    const statusName = OrderStatus.find((it: any) => it.value === status)
+    return statusName?.label
+  }
+
+  function clearOrder(id: number) {
+    $q.dialog({
+      cancel: true,
+      message: 'Вы уверенны что хотите отменить заказ?',
+      persistent: true,
+      title: 'Отмена заказа',
+    }).onOk(() => {
+      deleteOrder(id)
+    });
+  }
+
+  async function deleteOrder(id: number) {
+    try {
+      $q.loading.show();
+      const res = await orderStore.deleteOrder(id)
+      if (res) {
+        $q.notify({
+          color: 'primary',
+          message: 'Заказ отменен',
         });
       }
     } catch (e) {

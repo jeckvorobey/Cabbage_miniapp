@@ -47,7 +47,7 @@ describe('reviewsStore', () => {
 
       clientGetMock.mockResolvedValueOnce(mockResponse);
 
-      const result = await store.fetchReviews();
+      const result = await store.fetchReviews(store.pagination);
 
       expect(clientGetMock).toHaveBeenCalledWith('reviews');
       expect(result).toEqual(mockResponse.data);
@@ -60,7 +60,7 @@ describe('reviewsStore', () => {
 
       clientGetMock.mockRejectedValueOnce(mockError);
 
-      await expect(store.fetchReviews()).rejects.toThrow('Server error');
+      await expect(store.fetchReviews(store.pagination)).rejects.toThrow('Server error');
       expect(consoleSpy).toHaveBeenCalledWith(
         '[ReviewsStore] - An error occurred while fetching via fetchReviews',
         'Server error'

@@ -5,10 +5,16 @@ import { ref } from 'vue';
 
 export const useReviewsStore = defineStore('Reviews', () => {
   const reviewsData = ref<IReviews[]>();
+  const pagination = ref<any>({
+    offset: 0,
+    limit: 20,
+    total: 0,
+    has_more: false,
+  });
 
-  async function fetchReviews() {
+  async function fetchReviews(params: any) {
     return client
-      .get('reviews')
+      .get('reviews', { params } )
       .then((res) => res.data)
       .catch((err) => {
         console.error(
@@ -71,5 +77,5 @@ export const useReviewsStore = defineStore('Reviews', () => {
       });
   }
 
-  return { reviewsData, fetchReviews, fetchMyReviews, createReviews, updateReviews, deleteReview };
+  return { reviewsData, pagination, fetchReviews, fetchMyReviews, createReviews, updateReviews, deleteReview };
 });
