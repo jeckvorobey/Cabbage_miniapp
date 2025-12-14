@@ -71,14 +71,14 @@ describe('orderStore', () => {
     });
   });
 
-  describe('fetchOrder', () => {
+  describe('fetchOrders', () => {
     it('должен получить список заказов', async () => {
       const store = useOrderStore();
       const mockResponse = { data: [{ id: 1 }, { id: 2 }] };
 
       clientGetMock.mockResolvedValueOnce(mockResponse);
 
-      const result = await store.fetchOrder();
+      const result = await store.fetchOrders(store.pagination);
 
       expect(clientGetMock).toHaveBeenCalledWith('orders');
       expect(result).toEqual(mockResponse.data);
@@ -91,7 +91,7 @@ describe('orderStore', () => {
 
       clientGetMock.mockRejectedValueOnce(mockError);
 
-      await expect(store.fetchOrder()).rejects.toThrow('Server error');
+      await expect(store.fetchOrders(store.pagination)).rejects.toThrow('Server error');
       expect(consoleSpy).toHaveBeenCalledWith(
         '[OrderStore] - An error occurred while fetching via fetchOrders',
         'Server error'
@@ -108,7 +108,7 @@ describe('orderStore', () => {
 
       clientGetMock.mockResolvedValueOnce(mockResponse);
 
-      const result = await store.fetchMyOrder();
+      const result = await store.fetchMyOrder(store.pagination);
 
       expect(clientGetMock).toHaveBeenCalledWith('orders/my');
       expect(result).toEqual(mockResponse.data);
@@ -121,7 +121,7 @@ describe('orderStore', () => {
 
       clientGetMock.mockRejectedValueOnce(mockError);
 
-      await expect(store.fetchMyOrder()).rejects.toThrow('Not found');
+      await expect(store.fetchMyOrder(store.pagination)).rejects.toThrow('Not found');
       expect(consoleSpy).toHaveBeenCalledWith(
         '[OrderStore] - An error occurred while fetching via fetchMyOrder',
         'Not found'
