@@ -11,7 +11,17 @@
         </q-item-section>
         <q-item-section>
           <q-item-label caption lines="2">Имя</q-item-label>
-          <q-item-label>{{ order.user.full_name }}</q-item-label>
+          <q-item-label>
+            <a
+              :href="`tg://user?id=${order.user.id}`"
+              target="_blank"
+              class="text-primary text-decoration-none">
+              {{ order.user.full_name }}
+            </a>
+          </q-item-label>
+          <q-item-label v-if="order.user.phone" caption>
+            {{ order.user.phone }}
+          </q-item-label>
         </q-item-section>
         <q-item-section>
           <q-item-label caption lines="2">Статус</q-item-label>

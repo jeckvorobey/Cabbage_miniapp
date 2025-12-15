@@ -77,7 +77,9 @@ describe('OrderHistoryItems', () => {
       id: 1,
       order_date: '2024-01-01',
       user: {
+        id: 123456,
         full_name: 'Иван Иванов',
+        phone: '+7 (999) 123-45-67',
       },
       status: EOrderStatus.CREATED,
       total_amount: 1000,
@@ -86,7 +88,9 @@ describe('OrderHistoryItems', () => {
       id: 2,
       order_date: '2024-01-02',
       user: {
+        id: 234567,
         full_name: 'Петр Петров',
+        phone: '+7 (999) 234-56-78',
       },
       status: EOrderStatus.ASSEMBLING,
       total_amount: 2000,
@@ -95,7 +99,9 @@ describe('OrderHistoryItems', () => {
       id: 3,
       order_date: '2024-01-03',
       user: {
+        id: 345678,
         full_name: 'Сидор Сидоров',
+        phone: null,
       },
       status: EOrderStatus.DELIVERING,
       total_amount: 3000,
@@ -104,7 +110,9 @@ describe('OrderHistoryItems', () => {
       id: 4,
       order_date: '2024-01-04',
       user: {
+        id: 456789,
         full_name: 'Алексей Алексеев',
+        phone: '+7 (999) 456-78-90',
       },
       status: EOrderStatus.COMPLETED,
       total_amount: 4000,
@@ -113,7 +121,9 @@ describe('OrderHistoryItems', () => {
       id: 5,
       order_date: '2024-01-05',
       user: {
+        id: 567890,
         full_name: 'Дмитрий Дмитриев',
+        phone: '+7 (999) 567-89-01',
       },
       status: EOrderStatus.CANCELLED,
       total_amount: 5000,
@@ -169,6 +179,45 @@ describe('OrderHistoryItems', () => {
       });
 
       expect(wrapper.text()).toContain('создан');
+    });
+
+    it('должен отображать имя пользователя как ссылку на Telegram', () => {
+      const wrapper = mount(OrderHistoryItems, {
+        props: {
+          orderData: [mockOrderData[0]],
+          adminMode: false,
+        },
+      });
+
+      const link = wrapper.find('a[href="tg://user?id=123456"]');
+      expect(link.exists()).toBe(true);
+      expect(link.text()).toBe('Иван Иванов');
+    });
+
+    it('должен отображать телефон пользователя под именем', () => {
+      const wrapper = mount(OrderHistoryItems, {
+        props: {
+          orderData: [mockOrderData[0]],
+          adminMode: false,
+        },
+      });
+
+      expect(wrapper.text()).toContain('+7 (999) 123-45-67');
+    });
+
+    it('не должен отображать телефон, если он отсутствует', () => {
+      const wrapper = mount(OrderHistoryItems, {
+        props: {
+          orderData: [mockOrderData[2]], // phone: null
+          adminMode: false,
+        },
+      });
+
+      // Проверяем, что телефон не отображается
+      const phoneLabels = wrapper.findAll('.q-item-label[caption]').filter(
+        (label) => label.text().includes('+7')
+      );
+      expect(phoneLabels.length).toBe(0);
     });
   });
 
