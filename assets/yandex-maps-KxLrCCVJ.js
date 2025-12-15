@@ -1,0 +1,1 @@
+import{d as a}from"./index-Bh3MUb79.js";import"./vue-yandex-maps-HXNkf0z0.js";const p=a(({app:o})=>{{console.warn("[YandexMaps] - VITE_YANDEX_MAPS_API_KEY не установлен в переменных окружения");return}});export{p as default};
