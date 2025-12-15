@@ -2,8 +2,8 @@
   <div>
     <q-list>
       <q-item
-        v-for="(order, OIndex) in orderData"
-        :key="OIndex"
+        v-for="(order, orderIndex) in orderData"
+        :key="order.id ?? orderIndex"
         class="border-bot">
         <q-item-section>
           <q-item-label caption lines="2">Дата</q-item-label>
@@ -13,17 +13,17 @@
           <q-item-label caption lines="2">Имя</q-item-label>
           <q-item-label>
             <a
-              v-if="telegramUserLink(order)"
-              :href="telegramUserLink(order) || ''"
+              v-if="order.user.telegram_id"
+              :href="getTelegramUserLink(order.user.telegram_id)"
               target="_blank"
               rel="noopener noreferrer"
               class="text-primary text-decoration-none">
               {{ order.user.full_name }}
             </a>
-            <span v-else>{{ order?.user?.full_name }}</span>
+            <span v-else>{{ order.user.full_name }}</span>
           </q-item-label>
-          <q-item-label v-if="userPhone(order)" caption>
-            {{ userPhone(order) }}
+          <q-item-label v-if="getUserPhone(order.user)" caption>
+            {{ getUserPhone(order.user) }}
           </q-item-label>
         </q-item-section>
         <q-item-section>
@@ -60,19 +60,29 @@
   import { useQuasar } from 'quasar';
   import { EOrderStatus } from 'src/enums/order-status.enum';
   import { useOrderStore } from 'src/stores/orderStore';
+  import type { IUser } from 'src/types/user.interface';
   import { dateConverter } from 'src/use/useUtils';
 
   type OrderStatusItem = {
     value: EOrderStatus;
     label: string;
   };
+
+  type OrderHistoryItem = {
+    id: number;
+    order_date: string;
+    user: IUser;
+    status: EOrderStatus;
+    total_amount: number;
+  };
+
   defineProps<{
-    orderData: any;
+    orderData: OrderHistoryItem[];
     adminMode: boolean;
   }>();
 
   const $q = useQuasar();
-  const orderStore = useOrderStore()
+  const orderStore = useOrderStore();
 
   const OrderStatus: OrderStatusItem[] = [
     {
@@ -97,7 +107,7 @@
     },
   ];
 
-  function editStatus(id: number, status: string) {
+  function editStatus(id: number, status: EOrderStatus) {
     $q.dialog({
       cancel: true,
       message: 'Вы уверенны что хотите изменить статус?',
@@ -108,10 +118,10 @@
     });
   }
 
-  async function updateOrderStatus(id: number, status: string) {
+  async function updateOrderStatus(id: number, status: EOrderStatus) {
     try {
       $q.loading.show();
-      const res = await orderStore.updateOrderStatus(id, status)
+      const res = await orderStore.updateOrderStatus(id, status);
       if (res) {
         $q.notify({
           color: 'primary',
@@ -125,9 +135,9 @@
     }
   }
 
-  function orderStatus(status: string) {
-    const statusName = OrderStatus.find((it: any) => it.value === status)
-    return statusName?.label
+  function orderStatus(status: EOrderStatus) {
+    const statusName = OrderStatus.find((it) => it.value === status);
+    return statusName?.label;
   }
 
   function clearOrder(id: number) {
@@ -145,55 +155,16 @@
    * Ссылка на профиль в Telegram по `userId`.
    * В миниаппах корректнее открывать через `tg://`, чтобы попали в клиент Telegram.
    */
-  function getTelegramUserLink(userId: number | string) {
+  function getTelegramUserLink(userId: number) {
     return `tg://user?id=${userId}`;
   }
 
   /**
-   * В разных ответах API telegram id может лежать как `telegram_id` (часто),
-   * либо как `id` (реже). Возвращаем ссылку или `null`.
+   * Телефон может быть `null` (например, если пользователь не указал контакт).
    */
-  function telegramUserLink(order: any): string | null {
-    const telegramIdCandidate =
-      order?.user?.telegram_id ??
-      order?.user?.telegramId ??
-      order?.user?.tg_id ??
-      order?.user?.tgId ??
-      order?.user?.chat_id ??
-      order?.user?.chatId ??
-      order?.user?.id;
-
-    if (telegramIdCandidate === null || telegramIdCandidate === undefined) return null;
-    if (typeof telegramIdCandidate === 'number') return getTelegramUserLink(telegramIdCandidate);
-    if (typeof telegramIdCandidate === 'string' && telegramIdCandidate.trim().length) {
-      return getTelegramUserLink(telegramIdCandidate.trim());
-    }
-
-    return null;
-  }
-
-  /**
-   * Телефон пользователя может приходить в разных полях (в зависимости от API/DTO).
-   * Возвращаем первое валидное значение или `null`.
-   */
-  function userPhone(order: any): string | null {
-    const phoneCandidate =
-      order?.user?.phone ??
-      order?.user?.phone_number ??
-      order?.user?.phoneNumber ??
-      order?.user?.contact_phone ??
-      order?.user?.contactPhone ??
-      order?.user?.contacts?.phone ??
-      order?.user?.contacts?.phone_number ??
-      order?.user?.contacts?.phoneNumber ??
-      order?.user_phone ??
-      order?.userPhone ??
-      order?.phone;
-
-    if (typeof phoneCandidate === 'number') return String(phoneCandidate);
-    if (typeof phoneCandidate !== 'string') return null;
-
-    const trimmed = phoneCandidate.trim();
+  function getUserPhone(user: IUser): string | null {
+    if (!user.phone) return null;
+    const trimmed = user.phone.trim();
     return trimmed.length ? trimmed : null;
   }
 

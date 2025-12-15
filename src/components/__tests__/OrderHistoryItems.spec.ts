@@ -77,11 +77,9 @@ describe('OrderHistoryItems', () => {
       id: 1,
       order_date: '2024-01-01',
       user: {
-        // Имитируем реальный кейс: telegram id приходит отдельным полем
         telegram_id: 123456,
         full_name: 'Иван Иванов',
-        // Имитируем ситуацию, когда API отдает телефон в другом поле
-        phone_number: '+7 (999) 123-45-67',
+        phone: '+7 (999) 123-45-67',
       },
       status: EOrderStatus.CREATED,
       total_amount: 1000,
@@ -90,7 +88,7 @@ describe('OrderHistoryItems', () => {
       id: 2,
       order_date: '2024-01-02',
       user: {
-        id: 234567,
+        telegram_id: 234567,
         full_name: 'Петр Петров',
         phone: '+7 (999) 234-56-78',
       },
@@ -101,7 +99,7 @@ describe('OrderHistoryItems', () => {
       id: 3,
       order_date: '2024-01-03',
       user: {
-        id: 345678,
+        telegram_id: 345678,
         full_name: 'Сидор Сидоров',
         phone: null,
       },
@@ -112,7 +110,7 @@ describe('OrderHistoryItems', () => {
       id: 4,
       order_date: '2024-01-04',
       user: {
-        id: 456789,
+        telegram_id: 456789,
         full_name: 'Алексей Алексеев',
         phone: '+7 (999) 456-78-90',
       },
@@ -123,7 +121,7 @@ describe('OrderHistoryItems', () => {
       id: 5,
       order_date: '2024-01-05',
       user: {
-        id: 567890,
+        telegram_id: 567890,
         full_name: 'Дмитрий Дмитриев',
         phone: '+7 (999) 567-89-01',
       },
