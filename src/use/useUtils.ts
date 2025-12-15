@@ -52,6 +52,8 @@ function dateConverter(data: string) {
     year: 'numeric', // Год
     month: '2-digit', // Месяц
     day: '2-digit', // День
+    hour: '2-digit', // Часы
+    minute: '2-digit' // Минуты
   });
   return dayMonthYearFormat
 }
