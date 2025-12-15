@@ -5,8 +5,8 @@
         v-for="(order, orderIndex) in orderData"
         :key="order.id ?? orderIndex"
         class="border-bot">
-        <q-item-section>
-          <q-item-label v-if="getUserPhone(order.user)" caption>
+        <q-item-section @click="openHistoryModal(order)">
+          <q-item-label v-if="getUserPhone(order.user)" caption class="text-10">
             {{ getUserPhone(order.user) }}
           </q-item-label>
           <q-item-label>
@@ -21,16 +21,16 @@
             <span v-else>{{ order.user.full_name }}</span>
           </q-item-label>
         </q-item-section>
-        <q-item-section>
-          <q-item-label caption>{{ dateConverter(order.order_date) }}</q-item-label>
+        <q-item-section @click="openHistoryModal(order)">
+          <q-item-label caption class="text-10">{{ dateConverter(order.order_date) }}</q-item-label>
           <q-item-label>{{ orderStatus(order.status) }}</q-item-label>
         </q-item-section>
-        <q-item-section>
-          <q-item-label caption lines="2">Общая сумма</q-item-label>
+        <q-item-section @click="openHistoryModal(order)">
+          <q-item-label caption class="text-10">Общая сумма</q-item-label>
           <q-item-label>{{ order.total_amount }}</q-item-label>
         </q-item-section>
         <q-item-action v-if="adminMode">
-          <q-btn-dropdown color="green" dense >
+          <q-btn-dropdown size="10px" color="green" dense >
             <q-list
               v-for="(status, SIndex) in OrderStatus"
               :key="SIndex"
@@ -44,10 +44,15 @@
           </q-btn-dropdown>
         </q-item-action>
         <q-item-action v-if="!adminMode && (order.status === EOrderStatus.CREATED || order.status === EOrderStatus.ASSEMBLING)">
-          <q-btn round color="deep-orange" icon="close" @click="clearOrder(order.id)"/>
+          <q-btn size="10px" round color="deep-orange" icon="close" @click="clearOrder(order.id)"/>
         </q-item-action>
       </q-item>
     </q-list>
+    <OrderHistoryModal
+      v-if="showHistoryModal && orderHistoryData"
+      v-model="showHistoryModal"
+      :orderHistoryData="orderHistoryData"
+      :orderStatus="OrderStatus"/>
   </div>
 </template>
 
@@ -57,29 +62,21 @@
   import { useOrderStore } from 'src/stores/orderStore';
   import type { IUser } from 'src/types/user.interface';
   import { dateConverter } from 'src/use/useUtils';
-
-  type OrderStatusItem = {
-    value: EOrderStatus;
-    label: string;
-  };
-
-  type OrderHistoryItem = {
-    id: number;
-    order_date: string;
-    user: IUser;
-    status: EOrderStatus;
-    total_amount: number;
-  };
+  import OrderHistoryModal from './OrderHistoryModal.vue';
+  import { ref } from 'vue';
+  import type { IOrderHistoryItem } from 'src/types/orderHistoryItem.interface';
+  import type { IOrderStatus } from 'src/types/orderStatus.interface';
 
   defineProps<{
-    orderData: OrderHistoryItem[];
+    orderData: IOrderHistoryItem[];
     adminMode: boolean;
   }>();
 
   const $q = useQuasar();
   const orderStore = useOrderStore();
-
-  const OrderStatus: OrderStatusItem[] = [
+  const showHistoryModal = ref(false);
+  const orderHistoryData = ref<IOrderHistoryItem>()
+  const OrderStatus: IOrderStatus[] = [
     {
       label: 'создан',
       value: EOrderStatus.CREATED,
@@ -165,6 +162,11 @@
     if (!user.phone) return null;
     const trimmed = user.phone.trim();
     return trimmed.length ? trimmed : null;
+  }
+
+  function openHistoryModal(order: IOrderHistoryItem ) {
+    orderHistoryData.value = order
+    showHistoryModal.value = !showHistoryModal.value
   }
 
 </script>

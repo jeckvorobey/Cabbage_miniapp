@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { setActivePinia, createPinia } from 'pinia';
-import OrderHistoryItems from '../OrderHistoryItems.vue';
+import OrderHistoryItems from '../order/OrderHistoryItems.vue';
 import { useOrderStore } from 'src/stores/orderStore';
 import { EOrderStatus } from 'src/enums/order-status.enum';
 import type { IUser } from 'src/types/user.interface';
+import type { IOrderHistoryItem } from 'src/types/orderHistoryItem.interface';
 
 // Мокаем Quasar
 const mockNotify = vi.fn();
@@ -73,14 +74,6 @@ vi.mock('src/use/useUtils', () => ({
 describe('OrderHistoryItems', () => {
   let mockOrderStore: ReturnType<typeof useOrderStore>;
 
-  type OrderHistoryItem = {
-    id: number;
-    order_date: string;
-    user: IUser;
-    status: EOrderStatus;
-    total_amount: number;
-  };
-
   const createUser = (overrides: Partial<IUser> = {}): IUser => ({
     id: overrides.id ?? 0,
     telegram_id: overrides.telegram_id ?? 0,
@@ -97,7 +90,7 @@ describe('OrderHistoryItems', () => {
     name: overrides.name ?? '',
   });
 
-  const mockOrderData: OrderHistoryItem[] = [
+  const mockOrderData: IOrderHistoryItem[] = [
     {
       id: 1,
       order_date: '2024-01-01',

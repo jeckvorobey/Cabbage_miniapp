@@ -11,7 +11,7 @@
   import { useQuasar } from 'quasar';
   import { useOrderStore } from 'src/stores/orderStore';
   import { onMounted } from 'vue';
-  import OrderHistoryItems from 'components/OrderHistoryItems.vue';
+  import OrderHistoryItems from 'components/order/OrderHistoryItems.vue';
 
 
   const $q = useQuasar();
