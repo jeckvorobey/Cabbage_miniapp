@@ -50,7 +50,7 @@ describe('orderStore', () => {
 
       const result = await store.createOrder(mockOrder);
 
-      expect(clientPostMock).toHaveBeenCalledWith('order', mockOrder);
+      expect(clientPostMock).toHaveBeenCalledWith('orders', mockOrder);
       expect(result).toEqual(mockResponse.data);
     });
 
@@ -80,7 +80,7 @@ describe('orderStore', () => {
 
       const result = await store.fetchOrders(store.pagination);
 
-      expect(clientGetMock).toHaveBeenCalledWith('orders');
+      expect(clientGetMock).toHaveBeenCalledWith('orders', { params: store.pagination });
       expect(result).toEqual(mockResponse.data);
     });
 
@@ -110,7 +110,7 @@ describe('orderStore', () => {
 
       const result = await store.fetchMyOrder(store.pagination);
 
-      expect(clientGetMock).toHaveBeenCalledWith('orders/my');
+      expect(clientGetMock).toHaveBeenCalledWith('orders/my', { params: store.pagination });
       expect(result).toEqual(mockResponse.data);
     });
 
@@ -171,7 +171,7 @@ describe('orderStore', () => {
 
       const result = await store.updateOrder(mockOrder);
 
-      expect(clientPatchMock).toHaveBeenCalledWith('/addresses/1', mockOrder);
+      expect(clientPatchMock).toHaveBeenCalledWith('/orders/1', mockOrder);
       expect(result).toEqual(mockResponse.data);
     });
 

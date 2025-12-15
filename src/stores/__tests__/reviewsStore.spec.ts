@@ -49,7 +49,7 @@ describe('reviewsStore', () => {
 
       const result = await store.fetchReviews(store.pagination);
 
-      expect(clientGetMock).toHaveBeenCalledWith('reviews');
+      expect(clientGetMock).toHaveBeenCalledWith('reviews', { params: store.pagination });
       expect(result).toEqual(mockResponse.data);
     });
 

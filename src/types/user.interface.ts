@@ -11,4 +11,5 @@ export interface IUser {
   is_user?: boolean;
   username: string;
   name: string;
+  telegram_id: number;
 }

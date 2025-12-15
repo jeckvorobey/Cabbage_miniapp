@@ -114,6 +114,7 @@ describe('authStore', () => {
           token: 'admin_token',
           user: {
             id: 2,
+            telegram_id: 222222,
             full_name: 'Admin User',
             phone: null,
             subscribe_news: false,
@@ -144,6 +145,7 @@ describe('authStore', () => {
           token: 'test_token',
           user: {
             id: 3,
+            telegram_id: 333333,
             full_name: 'Regular User',
             role: EPermissionTypes.USER,
             phone: null,
@@ -171,6 +173,7 @@ describe('authStore', () => {
       const store = useAuthStore();
       const mockUser: IUser = {
         id: 4,
+        telegram_id: 444444,
         full_name: 'Complete User',
         phone: '+1234567890',
         subscribe_news: true,
@@ -237,6 +240,7 @@ describe('authStore', () => {
           token: 'test_token',
           user: {
             id: 5,
+            telegram_id: 555555,
             full_name: 'Test User',
             role: EPermissionTypes.USER,
             phone: null,
@@ -294,6 +298,16 @@ describe('authStore', () => {
           token: 'test_token',
           user: {
             id: 6,
+            telegram_id: 666666,
+            full_name: 'Manager User',
+            phone: null,
+            subscribe_news: false,
+            language_code: 'ru',
+            is_premium: false,
+            main_image_url: '',
+            is_bot: false,
+            username: 'manager6',
+            name: 'Manager',
             role: EPermissionTypes.MANAGER,
             is_user: false,
           } as IUser,
@@ -320,6 +334,16 @@ describe('authStore', () => {
           token: 'token1',
           user: {
             id: 7,
+            telegram_id: 777777,
+            full_name: 'Manager User',
+            phone: null,
+            subscribe_news: false,
+            language_code: 'ru',
+            is_premium: false,
+            main_image_url: '',
+            is_bot: false,
+            username: 'manager7',
+            name: 'Manager',
             role: EPermissionTypes.MANAGER,
             is_user: false,
           } as IUser,
@@ -337,6 +361,16 @@ describe('authStore', () => {
           token: 'token2',
           user: {
             id: 7,
+            telegram_id: 777777,
+            full_name: 'Manager User',
+            phone: null,
+            subscribe_news: false,
+            language_code: 'ru',
+            is_premium: false,
+            main_image_url: '',
+            is_bot: false,
+            username: 'manager7',
+            name: 'Manager',
             role: EPermissionTypes.MANAGER,
             is_user: true, // Включен режим просмотра как USER
           } as IUser,

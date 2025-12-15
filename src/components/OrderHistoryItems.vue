@@ -2,8 +2,8 @@
   <div>
     <q-list>
       <q-item
-        v-for="(order, OIndex) in orderData"
-        :key="OIndex"
+        v-for="(order, orderIndex) in orderData"
+        :key="order.id ?? orderIndex"
         class="border-bot">
         <q-item-section>
           <q-item-label caption lines="2">Дата</q-item-label>
@@ -11,7 +11,20 @@
         </q-item-section>
         <q-item-section>
           <q-item-label caption lines="2">Имя</q-item-label>
-          <q-item-label>{{ order.user.full_name }}</q-item-label>
+          <q-item-label>
+            <a
+              v-if="getTelegramUserLink(order.user)"
+              :href="getTelegramUserLink(order.user)!"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-primary text-decoration-none">
+              {{ order.user.full_name }}
+            </a>
+            <span v-else>{{ order.user.full_name }}</span>
+          </q-item-label>
+          <q-item-label v-if="getUserPhone(order.user)" caption>
+            {{ getUserPhone(order.user) }}
+          </q-item-label>
         </q-item-section>
         <q-item-section>
           <q-item-label caption lines="2">Статус</q-item-label>
@@ -35,7 +48,7 @@
             </q-list>
           </q-btn-dropdown>
         </q-item-action>
-        <q-item-action v-if="!adminMode && (order.status !== EOrderStatus.CREATED)">
+        <q-item-action v-if="!adminMode && (order.status === EOrderStatus.CREATED || order.status === EOrderStatus.ASSEMBLING)">
           <q-btn round color="deep-orange" icon="close" @click="clearOrder(order.id)"/>
         </q-item-action>
       </q-item>
@@ -47,19 +60,29 @@
   import { useQuasar } from 'quasar';
   import { EOrderStatus } from 'src/enums/order-status.enum';
   import { useOrderStore } from 'src/stores/orderStore';
+  import type { IUser } from 'src/types/user.interface';
   import { dateConverter } from 'src/use/useUtils';
 
   type OrderStatusItem = {
     value: EOrderStatus;
     label: string;
   };
+
+  type OrderHistoryItem = {
+    id: number;
+    order_date: string;
+    user: IUser;
+    status: EOrderStatus;
+    total_amount: number;
+  };
+
   defineProps<{
-    orderData: any;
+    orderData: OrderHistoryItem[];
     adminMode: boolean;
   }>();
 
   const $q = useQuasar();
-  const orderStore = useOrderStore()
+  const orderStore = useOrderStore();
 
   const OrderStatus: OrderStatusItem[] = [
     {
@@ -84,7 +107,7 @@
     },
   ];
 
-  function editStatus(id: number, status: string) {
+  function editStatus(id: number, status: EOrderStatus) {
     $q.dialog({
       cancel: true,
       message: 'Вы уверенны что хотите изменить статус?',
@@ -95,10 +118,10 @@
     });
   }
 
-  async function updateOrderStatus(id: number, status: string) {
+  async function updateOrderStatus(id: number, status: EOrderStatus) {
     try {
       $q.loading.show();
-      const res = await orderStore.updateOrderStatus(id, status)
+      const res = await orderStore.updateOrderStatus(id, status);
       if (res) {
         $q.notify({
           color: 'primary',
@@ -112,9 +135,9 @@
     }
   }
 
-  function orderStatus(status: string) {
-    const statusName = OrderStatus.find((it: any) => it.value === status)
-    return statusName?.label
+  function orderStatus(status: EOrderStatus) {
+    const statusName = OrderStatus.find((it) => it.value === status);
+    return statusName?.label;
   }
 
   function clearOrder(id: number) {
@@ -124,25 +147,29 @@
       persistent: true,
       title: 'Отмена заказа',
     }).onOk(() => {
-      deleteOrder(id)
+      updateOrderStatus(id, EOrderStatus.CANCELLED);
     });
   }
 
-  async function deleteOrder(id: number) {
-    try {
-      $q.loading.show();
-      const res = await orderStore.deleteOrder(id)
-      if (res) {
-        $q.notify({
-          color: 'primary',
-          message: 'Заказ отменен',
-        });
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      $q.loading.hide();
-    }
+  /**
+   * Ссылка на профиль в Telegram.
+   *
+   * Важно: корректная `https://t.me/...` ссылка строится по `username`.
+   * По числовому `telegram_id` универсальной `https://t.me/...` ссылки нет.
+   */
+  function getTelegramUserLink(user: Pick<IUser, 'username'>): string | null {
+    const username = user.username?.trim().replace(/^@/, '');
+    if (!username) return null;
+    return `https://t.me/${encodeURIComponent(username)}`;
+  }
+
+  /**
+   * Телефон может быть `null` (например, если пользователь не указал контакт).
+   */
+  function getUserPhone(user: IUser): string | null {
+    if (!user.phone) return null;
+    const trimmed = user.phone.trim();
+    return trimmed.length ? trimmed : null;
   }
 
 </script>
