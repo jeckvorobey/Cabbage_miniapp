@@ -9,7 +9,7 @@ export const useProductsStore = defineStore('Products', () => {
     offset: 0,
     limit: 20,
     total: 0,
-    has_more: false,
+    has_more: true,
   });
 
   async function createProduct(product: any) {

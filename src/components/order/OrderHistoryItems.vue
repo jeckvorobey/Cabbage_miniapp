@@ -72,6 +72,7 @@
     orderData: IOrderHistoryItem[];
     adminMode: boolean;
   }>();
+  const emit = defineEmits(['refresh']);
 
   const $q = useQuasar();
   const orderStore = useOrderStore();
@@ -120,6 +121,7 @@
           color: 'primary',
           message: 'Статус успешно изменен',
         });
+        emit('refresh');
       }
     } catch (e) {
       console.error(e);
