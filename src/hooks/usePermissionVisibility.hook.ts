@@ -40,8 +40,17 @@ export function usePermissionVisibility() {
     return user.role <= +EPermissionTypes.MANAGER;
   });
 
+  const isManagerWithoutIsUser = computed(() => {
+    // Безопасная проверка: если пользователь не загружен или не аутентифицирован, возвращаем false
+    const user = authStore.user;
+    if (!user) return false;
+    // Проверяем роль менеджера или администратора
+    return user.role <= +EPermissionTypes.MANAGER;
+  });
+
   return {
     isAdmin,
     isManager,
+    isManagerWithoutIsUser
   } as const;
 }
