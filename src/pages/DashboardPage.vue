@@ -6,9 +6,4 @@
 
 <script setup lang="ts">
 import ProductList from 'src/components/ProductList.vue';
-import { onMounted } from 'vue';
-
-onMounted(() => {
-  console.log('dashboard');
-});
 </script>

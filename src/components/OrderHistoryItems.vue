@@ -35,7 +35,7 @@
             </q-list>
           </q-btn-dropdown>
         </q-item-action>
-        <q-item-action v-if="!adminMode && (order.status !== EOrderStatus.CREATED)">
+        <q-item-action v-if="!adminMode && (order.status === EOrderStatus.CREATED || order.status === EOrderStatus.ASSEMBLING)">
           <q-btn round color="deep-orange" icon="close" @click="clearOrder(order.id)"/>
         </q-item-action>
       </q-item>
@@ -124,25 +124,8 @@
       persistent: true,
       title: 'Отмена заказа',
     }).onOk(() => {
-      deleteOrder(id)
+      updateOrderStatus(id, EOrderStatus.CANCELLED);
     });
-  }
-
-  async function deleteOrder(id: number) {
-    try {
-      $q.loading.show();
-      const res = await orderStore.deleteOrder(id)
-      if (res) {
-        $q.notify({
-          color: 'primary',
-          message: 'Заказ отменен',
-        });
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      $q.loading.hide();
-    }
   }
 
 </script>
