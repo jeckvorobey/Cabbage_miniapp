@@ -6,6 +6,9 @@
         :key="order.id ?? orderIndex"
         class="border-bot">
         <q-item-section>
+          <q-item-label v-if="getUserPhone(order.user)" caption>
+            {{ getUserPhone(order.user) }}
+          </q-item-label>
           <q-item-label>
             <a
               v-if="getTelegramUserLink(order.user)"
@@ -17,12 +20,9 @@
             </a>
             <span v-else>{{ order.user.full_name }}</span>
           </q-item-label>
-          <q-item-label v-if="getUserPhone(order.user)" caption>
-            {{ getUserPhone(order.user) }}
-          </q-item-label>
         </q-item-section>
         <q-item-section>
-          <q-item-label>{{ dateConverter(order.order_date) }}</q-item-label>
+          <q-item-label caption>{{ dateConverter(order.order_date) }}</q-item-label>
           <q-item-label>{{ orderStatus(order.status) }}</q-item-label>
         </q-item-section>
         <q-item-section>
