@@ -38,6 +38,10 @@ body.body--dark {
   font-size: 10px;
 }
 
+.image-grayscale-100 {
+  filter: grayscale(100%);
+}
+
 .border-top {
   border-top: 1px solid var(--light-gray);
 }
