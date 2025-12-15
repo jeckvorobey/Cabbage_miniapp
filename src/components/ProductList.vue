@@ -83,6 +83,7 @@ const showProductModal = ref(false);
 const product = ref<IProduct>();
 
 onMounted(async () => {
+  productsStore.products = []
   await fetchProducts();
 })
 
