@@ -4,7 +4,7 @@
       <q-item
         v-for="(order, orderIndex) in orderData"
         :key="order.id ?? orderIndex"
-        class="border-bot" :class="order.is_paid ? 'light-red' : 'light-green'">
+        class="border-bot" :class="order.is_paid ? 'light-green' : 'light-red'">
         <q-item-section @click="openHistoryModal(order)">
           <q-item-label v-if="getUserPhone(order.user)" caption class="text-10">
             {{ getUserPhone(order.user) }}
