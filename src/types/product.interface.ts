@@ -9,4 +9,5 @@ export interface IProduct {
   price?: number | null;
   images?: any;
   primary_image?: string
+  available_qty?: number
 }

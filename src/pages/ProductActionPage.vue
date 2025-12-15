@@ -9,11 +9,11 @@
       />
     </div>
     <div v-else>
-      <ProductImgCarusel v-if="product?.images?.length" :images="product.images" />
+      <ProductImgCarusel v-if="product?.images?.length" :class="!product?.available_qty ? 'image-grayscale-100' : ''"  :images="product.images"  />
       <div class="q-mb-sm">
         <h6 v-if="product?.name" class="q-my-md text-center">{{ product.name }}</h6>
         <div v-if="product?.origin_country" class="text-grey">Страна производитель: {{ product.origin_country }} </div>
-        <div v-if="product?.qty" class="text-grey">Остаток: {{ product.qty }} шт.</div>
+        <div class="text-grey">Остаток: {{ product?.available_qty ? `${product.available_qty} шт.` : 'Нет в наличии' }}</div>
         <div v-if="product?.old_price" class="text-grey old-price">Старая цена: {{ product.old_price }} ₽</div>
         <div class="text-bold text-18 q-mb-md" :class="product?.old_price ? 'text-red' : ''">
           Цена: {{ product.price }} ₽
@@ -25,6 +25,7 @@
       <div class="row justify-end">
         <q-btn
           v-if="!productsInBasket?.id"
+          :disabled="!product.available_qty"
           color="green"
           label="Добавить в корзину"
           @click="handleAddToCart"

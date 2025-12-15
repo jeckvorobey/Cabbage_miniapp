@@ -43,9 +43,10 @@
             </q-list>
           </q-btn-dropdown>
         </q-item-action>
-        <q-item-action v-if="!adminMode && (order.status === EOrderStatus.CREATED || order.status === EOrderStatus.ASSEMBLING)">
+        <!-- Отмена заказа у пользователя -->
+        <!-- <q-item-action v-if="!adminMode && (order.status === EOrderStatus.CREATED || order.status === EOrderStatus.ASSEMBLING)">
           <q-btn size="10px" round color="deep-orange" icon="close" @click="clearOrder(order.id)"/>
-        </q-item-action>
+        </q-item-action> -->
       </q-item>
     </q-list>
     <OrderHistoryModal
@@ -132,16 +133,17 @@
     return statusName?.label;
   }
 
-  function clearOrder(id: number) {
-    $q.dialog({
-      cancel: true,
-      message: 'Вы уверенны что хотите отменить заказ?',
-      persistent: true,
-      title: 'Отмена заказа',
-    }).onOk(() => {
-      updateOrderStatus(id, EOrderStatus.CANCELLED);
-    });
-  }
+  // Отмена заказа у пользователя
+  // function clearOrder(id: number) {
+  //   $q.dialog({
+  //     cancel: true,
+  //     message: 'Вы уверенны что хотите отменить заказ?',
+  //     persistent: true,
+  //     title: 'Отмена заказа',
+  //   }).onOk(() => {
+  //     updateOrderStatus(id, EOrderStatus.CANCELLED);
+  //   });
+  // }
 
   /**
    * Ссылка на профиль в Telegram.
