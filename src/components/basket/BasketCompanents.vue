@@ -71,7 +71,7 @@ const $q = useQuasar();
 const router = useRouter();
 const addressesStore = useAddressesStore();
 const orderStore = useOrderStore();
-const { clearBasketData } = useCart();
+const { clearBasketData, saveToLocalStorage } = useCart();
 const step = ref(1);
 const stepper = ref();
 const comment = ref();
@@ -133,11 +133,37 @@ async function createOrder() {
     if (e?.response && e?.response?.status === 422) {
       const errorDetails = e?.response?.data?.detail;
       console.log('errorDetails basket', errorDetails)
+      $q.notify({
+        icon: 'warning',
+        message: `${errorDetails.message}`,
+        type: 'negative',
+      });
+      updateQuantities(errorDetails.items)
     }
     console.error(e);
   } finally {
     $q.loading.hide();
   }
+}
+
+function updateQuantities(errorItems: any) {
+    const errorMap = new Map<number, number>();
+    errorItems.forEach((item: {available_qty: number, product_id: number}) => {
+        errorMap.set(item.product_id, item.available_qty);
+    });
+    orderStore.basketData = orderStore.basketData.map((item: any) => {
+        const newAvailableQty = errorMap.get(item.product_id);
+        if (newAvailableQty) {
+            const correctedQuantity = Math.min(item.quantity, newAvailableQty);
+            return {
+                ...item,
+                quantity: correctedQuantity
+            };
+        }
+        return item;
+    });
+    saveToLocalStorage()
+    stepper?.value.previous();
 }
 </script>
 
