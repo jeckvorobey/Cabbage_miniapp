@@ -13,7 +13,7 @@
           <q-item-section top avatar @click="openProductPage(item)">
             <q-img
               class="radius-8"
-              :class="!item.qty ? 'image-grayscale-100' : 'cursor-pointer'"
+              :class="!item.available_qty ? 'image-grayscale-100' : 'cursor-pointer'"
               :src="item.primary_image ? item.primary_image : getImage('/card-shop.jpg')"
               height="80px"
               width="80px"
@@ -22,7 +22,7 @@
           </q-item-section>
           <q-item-section class="column justify-between" @click="openProductPage(item)">
             <q-item-label caption class="text-size-16">{{ item.name }}</q-item-label>
-            <q-item-label v-if="!item.qty" caption class="text-18 text-red"> Нет в наличии</q-item-label>
+            <q-item-label v-if="!item.available_qty" caption class="text-18 text-red"> Нет в наличии</q-item-label>
             <q-item-label>
               <div v-if="item?.old_price" class="text-grey old-price">{{ item.old_price }} ₽</div>
               <div :class="item?.old_price ? 'text-red' : ''">{{ item.price }} ₽/шт.</div>
@@ -35,7 +35,7 @@
                 <q-btn dense round color="red" icon="delete" @click="removeProduct(item)" />
               </div>
               <div>
-                <q-btn :disabled="!item.qty" dense round color="green" icon="shopping_cart" @click="addOrder(item)" />
+                <q-btn :disabled="!item.available_qty" dense round color="green" icon="shopping_cart" @click="addOrder(item)" />
               </div>
             </div>
           </q-item-section>
