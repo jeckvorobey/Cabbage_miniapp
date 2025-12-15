@@ -41,6 +41,7 @@
 
 ## Commit & Pull Request Guidelines
 
+- **Обязательно**: Все коммиты должны быть на русском языке.
 - Используй формат коммитов: `<type>(core): <короткое действие в повелительном наклонении>` на русском языке (например, `feat(core): добавить фильтрацию единиц`, `fix(core): исправить ошибку корзины`). Сообщения должны быть краткими, максимум ~50 символов после двоеточия. Squash local noise before pushing.
 - Branch naming: `feature/<topic>` or `fix/<issue>`.
 - PRs should include intent summary, linked issue/Telegram task when relevant, screenshots/GIFs for UI changes, and the commands you ran (lint/build).
