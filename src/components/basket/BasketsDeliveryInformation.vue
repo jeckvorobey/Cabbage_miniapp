@@ -22,7 +22,6 @@
 import { onMounted } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAddressesStore } from 'src/stores/addressesStore';
-import { useOrderStore } from 'src/stores/orderStore';
 import { usePaymentsStore } from 'src/stores/paymentsStore';
 
 const $q = useQuasar();

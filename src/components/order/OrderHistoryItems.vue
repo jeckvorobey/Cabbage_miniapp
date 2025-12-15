@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="order-history">
     <q-list>
       <q-item
         v-for="(order, orderIndex) in orderData"
         :key="order.id ?? orderIndex"
-        class="border-bot">
+        class="border-bot" :class="order.is_paid ? 'light-red' : 'light-green'">
         <q-item-section @click="openHistoryModal(order)">
           <q-item-label v-if="getUserPhone(order.user)" caption class="text-10">
             {{ getUserPhone(order.user) }}
@@ -170,3 +170,16 @@
   }
 
 </script>
+
+<style lang="scss" scoped>
+  .order-history {
+    .light-green {
+      background-color: #00800029;
+    }
+    .light-red {
+      background-color: #fd000029;
+    }
+  }
+
+ </style>
+
