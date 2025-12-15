@@ -14,6 +14,7 @@ export interface IOrderHistoryItem {
   user: IUser;
   status: EOrderStatus;
   total_amount: number;
+  is_paid?: boolean;
   items?: IHistoryProduct[];
   comment?: string;
 }
