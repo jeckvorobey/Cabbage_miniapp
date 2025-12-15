@@ -77,7 +77,8 @@ describe('OrderHistoryItems', () => {
       id: 1,
       order_date: '2024-01-01',
       user: {
-        id: 123456,
+        // Имитируем реальный кейс: telegram id приходит отдельным полем
+        telegram_id: 123456,
         full_name: 'Иван Иванов',
         // Имитируем ситуацию, когда API отдает телефон в другом поле
         phone_number: '+7 (999) 123-45-67',

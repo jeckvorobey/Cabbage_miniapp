@@ -13,9 +13,10 @@
           <q-item-label caption lines="2">Имя</q-item-label>
           <q-item-label>
             <a
-              v-if="order?.user?.id"
-              :href="getTelegramUserLink(order.user.id)"
+              v-if="telegramUserLink(order)"
+              :href="telegramUserLink(order) || ''"
               target="_blank"
+              rel="noopener noreferrer"
               class="text-primary text-decoration-none">
               {{ order.user.full_name }}
             </a>
@@ -149,6 +150,29 @@
   }
 
   /**
+   * В разных ответах API telegram id может лежать как `telegram_id` (часто),
+   * либо как `id` (реже). Возвращаем ссылку или `null`.
+   */
+  function telegramUserLink(order: any): string | null {
+    const telegramIdCandidate =
+      order?.user?.telegram_id ??
+      order?.user?.telegramId ??
+      order?.user?.tg_id ??
+      order?.user?.tgId ??
+      order?.user?.chat_id ??
+      order?.user?.chatId ??
+      order?.user?.id;
+
+    if (telegramIdCandidate === null || telegramIdCandidate === undefined) return null;
+    if (typeof telegramIdCandidate === 'number') return getTelegramUserLink(telegramIdCandidate);
+    if (typeof telegramIdCandidate === 'string' && telegramIdCandidate.trim().length) {
+      return getTelegramUserLink(telegramIdCandidate.trim());
+    }
+
+    return null;
+  }
+
+  /**
    * Телефон пользователя может приходить в разных полях (в зависимости от API/DTO).
    * Возвращаем первое валидное значение или `null`.
    */
@@ -157,6 +181,11 @@
       order?.user?.phone ??
       order?.user?.phone_number ??
       order?.user?.phoneNumber ??
+      order?.user?.contact_phone ??
+      order?.user?.contactPhone ??
+      order?.user?.contacts?.phone ??
+      order?.user?.contacts?.phone_number ??
+      order?.user?.contacts?.phoneNumber ??
       order?.user_phone ??
       order?.userPhone ??
       order?.phone;
