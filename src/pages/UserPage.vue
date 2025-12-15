@@ -132,7 +132,7 @@
         v-if="isManagerWithoutIsUser"
         v-model="userData.is_user"
         color="green"
-        label="Администратор/Пользователь"
+        :label="userData.is_user ? 'Пользователь' : 'Администратор'"
         @click="updateUserRole()"
       />
     </div>
