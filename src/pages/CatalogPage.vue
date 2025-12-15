@@ -1,5 +1,5 @@
 <template>
-  <div class="q-px-md">
+  <div class="q-px-sm">
     <h5 class="text-center q-ma-none q-mb-sm">Каталог</h5>
     <div class="text-18 text-bold q-mb-sm">Список каталога:</div>
     <div class="row q-col-gutter-sm">
@@ -11,16 +11,16 @@
       >
         <q-card class="my-card radius-16">
           <q-card-section class="row q-pa-sm">
-            <div class="q-mr-sm">
+            <div class="col-auto">
               <q-img
-                class="cursor-pointer radius-8"
+                class="cursor-pointer radius-8 q-mr-sm"
                 :src="category?.image ? category.image : getImage('/card-shop.jpg')"
                 height="60px"
                 width="60px"
                 fit="cover"
               />
             </div>
-            <div class="self-center text-18">
+            <div class="self-center col text-clamp-3">
               {{ category.name }}
             </div>
           </q-card-section>
@@ -72,3 +72,13 @@ async function fetchProducts(id?: number) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+ .text-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+</style>

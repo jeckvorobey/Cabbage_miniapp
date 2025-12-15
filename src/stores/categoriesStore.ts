@@ -22,7 +22,7 @@ export const useCategoriesStore = defineStore('Categories', () => {
   async function updateCategorie(data: any) {
     const id = data.get('id');
     return client
-      .put(`/categories/${id}`, data)
+      .patch(`/categories/${id}`, data)
       .then((res: any) => res.data)
       .catch((err) => {
         console.error(
