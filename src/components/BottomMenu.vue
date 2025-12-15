@@ -91,12 +91,12 @@ const buttonsRightMenu = ref<IBottomMenu[]>([
     name: 'user',
     path: '/user',
   },
-  {
-    icon: 'rate_review',
-    label: 'Отзывы',
-    name: 'reviews',
-    path: '/reviews',
-  },
+  // {
+  //   icon: 'rate_review',
+  //   label: 'Отзывы',
+  //   name: 'reviews',
+  //   path: '/reviews',
+  // },
 ]);
 
 function bottomMenuActions(it: string) {
