@@ -13,8 +13,8 @@
           <q-item-label caption lines="2">Имя</q-item-label>
           <q-item-label>
             <a
-              v-if="order.user.telegram_id"
-              :href="getTelegramUserLink(order.user.telegram_id)"
+              v-if="getTelegramUserLink(order.user)"
+              :href="getTelegramUserLink(order.user)!"
               target="_blank"
               rel="noopener noreferrer"
               class="text-primary text-decoration-none">
@@ -152,11 +152,15 @@
   }
 
   /**
-   * Ссылка на профиль в Telegram по `userId`.
-   * В миниаппах корректнее открывать через `tg://`, чтобы попали в клиент Telegram.
+   * Ссылка на профиль в Telegram.
+   *
+   * Важно: корректная `https://t.me/...` ссылка строится по `username`.
+   * По числовому `telegram_id` универсальной `https://t.me/...` ссылки нет.
    */
-  function getTelegramUserLink(userId: number) {
-    return `tg://user?id=${userId}`;
+  function getTelegramUserLink(user: Pick<IUser, 'username'>): string | null {
+    const username = user.username?.trim().replace(/^@/, '');
+    if (!username) return null;
+    return `https://t.me/${encodeURIComponent(username)}`;
   }
 
   /**

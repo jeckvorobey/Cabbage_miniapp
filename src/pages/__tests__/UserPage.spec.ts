@@ -109,7 +109,22 @@ vi.mock('src/stores/authStore', () => ({
 // Мокаем useUtils
 vi.mock('src/use/useUtils', () => ({
   getImage: vi.fn((path: string) => `/assets${path}`),
+  EPermissionTypes: {
+    ADMIN: 1,
+    MANAGER: 2,
+    USER: 9,
+  },
 }));
+
+vi.mock(
+  'vue-yandex-maps',
+  () => ({
+    YandexMap: {
+      name: 'YandexMap',
+      template: '<div class="yandex-map"></div>',
+    },
+  })
+);
 
 describe('UserPage', () => {
   let mockAddressesStore: ReturnType<typeof useAddressesStore>;
@@ -133,6 +148,7 @@ describe('UserPage', () => {
       is_user: false,
       username: 'testuser',
       name: 'Test',
+      telegram_id: 123,
     };
 
     mockAddressesStore = {
@@ -315,4 +331,3 @@ describe('UserPage', () => {
     );
   });
 });
-

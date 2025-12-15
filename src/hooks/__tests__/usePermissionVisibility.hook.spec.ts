@@ -18,6 +18,7 @@ const createUser = (role: EPermissionTypes, isUser = false): IUser => ({
   is_user: isUser,
   username: 'test',
   name: 'Test',
+  telegram_id: 123,
 });
 
 describe('usePermissionVisibility', () => {

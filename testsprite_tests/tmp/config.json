@@ -1,7 +1,6 @@
 {
   "status": "init",
-  "scope": "diff",
   "type": "frontend",
-  "localEndpoint": "http://localhost:5173/",
-  "serverPort": 35321
+  "scope": "diff",
+  "localEndpoint": "http://localhost:5173/"
 }

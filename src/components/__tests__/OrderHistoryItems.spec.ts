@@ -4,6 +4,7 @@ import { setActivePinia, createPinia } from 'pinia';
 import OrderHistoryItems from '../OrderHistoryItems.vue';
 import { useOrderStore } from 'src/stores/orderStore';
 import { EOrderStatus } from 'src/enums/order-status.enum';
+import type { IUser } from 'src/types/user.interface';
 
 // Мокаем Quasar
 const mockNotify = vi.fn();
@@ -72,59 +73,98 @@ vi.mock('src/use/useUtils', () => ({
 describe('OrderHistoryItems', () => {
   let mockOrderStore: ReturnType<typeof useOrderStore>;
 
-  const mockOrderData = [
+  type OrderHistoryItem = {
+    id: number;
+    order_date: string;
+    user: IUser;
+    status: EOrderStatus;
+    total_amount: number;
+  };
+
+  const createUser = (overrides: Partial<IUser> = {}): IUser => ({
+    id: overrides.id ?? 0,
+    telegram_id: overrides.telegram_id ?? 0,
+    full_name: overrides.full_name ?? '',
+    phone: overrides.phone ?? null,
+    subscribe_news: overrides.subscribe_news ?? false,
+    role: overrides.role ?? 0,
+    language_code: overrides.language_code ?? 'ru',
+    is_premium: overrides.is_premium ?? false,
+    main_image_url: overrides.main_image_url ?? '',
+    is_bot: overrides.is_bot ?? false,
+    is_user: overrides.is_user ?? false,
+    username: overrides.username ?? '',
+    name: overrides.name ?? '',
+  });
+
+  const mockOrderData: OrderHistoryItem[] = [
     {
       id: 1,
       order_date: '2024-01-01',
-      user: {
+      user: createUser({
+        id: 101,
         telegram_id: 123456,
         full_name: 'Иван Иванов',
         phone: '+7 (999) 123-45-67',
-      },
+        username: 'ivan',
+        name: 'Иван',
+      }),
       status: EOrderStatus.CREATED,
       total_amount: 1000,
     },
     {
       id: 2,
       order_date: '2024-01-02',
-      user: {
+      user: createUser({
+        id: 102,
         telegram_id: 234567,
         full_name: 'Петр Петров',
         phone: '+7 (999) 234-56-78',
-      },
+        username: 'petr',
+        name: 'Петр',
+      }),
       status: EOrderStatus.ASSEMBLING,
       total_amount: 2000,
     },
     {
       id: 3,
       order_date: '2024-01-03',
-      user: {
+      user: createUser({
+        id: 103,
         telegram_id: 345678,
         full_name: 'Сидор Сидоров',
         phone: null,
-      },
+        username: 'sidor',
+        name: 'Сидор',
+      }),
       status: EOrderStatus.DELIVERING,
       total_amount: 3000,
     },
     {
       id: 4,
       order_date: '2024-01-04',
-      user: {
+      user: createUser({
+        id: 104,
         telegram_id: 456789,
         full_name: 'Алексей Алексеев',
         phone: '+7 (999) 456-78-90',
-      },
+        username: 'alexey',
+        name: 'Алексей',
+      }),
       status: EOrderStatus.COMPLETED,
       total_amount: 4000,
     },
     {
       id: 5,
       order_date: '2024-01-05',
-      user: {
+      user: createUser({
+        id: 105,
         telegram_id: 567890,
         full_name: 'Дмитрий Дмитриев',
         phone: '+7 (999) 567-89-01',
-      },
+        username: 'dmitry',
+        name: 'Дмитрий',
+      }),
       status: EOrderStatus.CANCELLED,
       total_amount: 5000,
     },
@@ -162,7 +202,7 @@ describe('OrderHistoryItems', () => {
     it('должен отображать дату заказа', () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[0]],
+          orderData: [mockOrderData[0]!],
           adminMode: false,
         },
       });
@@ -173,7 +213,7 @@ describe('OrderHistoryItems', () => {
     it('должен отображать статус заказа', () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[0]],
+          orderData: [mockOrderData[0]!],
           adminMode: false,
         },
       });
@@ -184,20 +224,40 @@ describe('OrderHistoryItems', () => {
     it('должен отображать имя пользователя как ссылку на Telegram', () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[0]],
+          orderData: [mockOrderData[0]!],
           adminMode: false,
         },
       });
 
-      const link = wrapper.find('a[href="tg://user?id=123456"]');
+      const link = wrapper.find('a[href="https://t.me/ivan"]');
       expect(link.exists()).toBe(true);
       expect(link.text()).toBe('Иван Иванов');
+    });
+
+    it('не должен отображать ссылку на Telegram, если username пустой', () => {
+      const wrapper = mount(OrderHistoryItems, {
+        props: {
+          orderData: [
+            {
+              ...mockOrderData[0]!,
+              user: createUser({
+                ...mockOrderData[0]!.user,
+                username: '',
+              }),
+            },
+          ],
+          adminMode: false,
+        },
+      });
+
+      expect(wrapper.find('a[href^="https://t.me/"]').exists()).toBe(false);
+      expect(wrapper.text()).toContain('Иван Иванов');
     });
 
     it('должен отображать телефон пользователя под именем', () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[0]],
+          orderData: [mockOrderData[0]!],
           adminMode: false,
         },
       });
@@ -208,7 +268,7 @@ describe('OrderHistoryItems', () => {
     it('не должен отображать телефон, если он отсутствует', () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[2]], // phone: null
+          orderData: [mockOrderData[2]!], // phone: null
           adminMode: false,
         },
       });
@@ -225,7 +285,7 @@ describe('OrderHistoryItems', () => {
     it('должен показывать выпадающий список статусов для админа', () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[0]],
+          orderData: [mockOrderData[0]!],
           adminMode: true,
         },
       });
@@ -237,7 +297,7 @@ describe('OrderHistoryItems', () => {
     it('не должен показывать кнопку отмены для админа', () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[0]],
+          orderData: [mockOrderData[0]!],
           adminMode: true,
         },
       });
@@ -249,7 +309,7 @@ describe('OrderHistoryItems', () => {
     it('должен вызывать updateOrderStatus при изменении статуса админом', async () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[0]],
+          orderData: [mockOrderData[0]!],
           adminMode: true,
         },
       });
@@ -266,7 +326,7 @@ describe('OrderHistoryItems', () => {
     it('должен показывать кнопку отмены для заказа со статусом CREATED', () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[0]], // CREATED
+          orderData: [mockOrderData[0]!], // CREATED
           adminMode: false,
         },
       });
@@ -281,7 +341,7 @@ describe('OrderHistoryItems', () => {
     it('должен показывать кнопку отмены для заказа со статусом ASSEMBLING', () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[1]], // ASSEMBLING
+          orderData: [mockOrderData[1]!], // ASSEMBLING
           adminMode: false,
         },
       });
@@ -295,7 +355,7 @@ describe('OrderHistoryItems', () => {
     it('не должен показывать кнопку отмены для заказа со статусом DELIVERING', () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[2]], // DELIVERING
+          orderData: [mockOrderData[2]!], // DELIVERING
           adminMode: false,
         },
       });
@@ -309,7 +369,7 @@ describe('OrderHistoryItems', () => {
     it('не должен показывать кнопку отмены для заказа со статусом COMPLETED', () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[3]], // COMPLETED
+          orderData: [mockOrderData[3]!], // COMPLETED
           adminMode: false,
         },
       });
@@ -323,7 +383,7 @@ describe('OrderHistoryItems', () => {
     it('не должен показывать кнопку отмены для заказа со статусом CANCELLED', () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[4]], // CANCELLED
+          orderData: [mockOrderData[4]!], // CANCELLED
           adminMode: false,
         },
       });
@@ -354,7 +414,7 @@ describe('OrderHistoryItems', () => {
     it('должен показывать диалог подтверждения при клике на кнопку отмены', async () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[0]], // CREATED
+          orderData: [mockOrderData[0]!], // CREATED
           adminMode: false,
         },
       });
@@ -374,7 +434,7 @@ describe('OrderHistoryItems', () => {
     it('должен вызывать updateOrderStatus со статусом CANCELLED при подтверждении', async () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[0]], // CREATED
+          orderData: [mockOrderData[0]!], // CREATED
           adminMode: false,
         },
       });
@@ -388,7 +448,7 @@ describe('OrderHistoryItems', () => {
     it('должен показывать уведомление об успешной отмене заказа', async () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[0]], // CREATED
+          orderData: [mockOrderData[0]!], // CREATED
           adminMode: false,
         },
       });
@@ -410,7 +470,7 @@ describe('OrderHistoryItems', () => {
 
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[0]], // CREATED
+          orderData: [mockOrderData[0]!], // CREATED
           adminMode: false,
         },
       });
@@ -428,7 +488,7 @@ describe('OrderHistoryItems', () => {
     it('должен отменять заказ со статусом ASSEMBLING', async () => {
       const wrapper = mount(OrderHistoryItems, {
         props: {
-          orderData: [mockOrderData[1]], // ASSEMBLING
+          orderData: [mockOrderData[1]!], // ASSEMBLING
           adminMode: false,
         },
       });
@@ -470,4 +530,3 @@ describe('OrderHistoryItems', () => {
     });
   });
 });
-

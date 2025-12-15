@@ -41,7 +41,7 @@ describe('productsStore', () => {
         offset: 0,
         limit: 20,
         total: 0,
-        has_more: true,
+        has_more: false,
       });
     });
   });
