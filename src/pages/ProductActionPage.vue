@@ -25,6 +25,7 @@
       <div class="row justify-end">
         <q-btn
           v-if="!productsInBasket?.id"
+          :disabled="!product.qty"
           color="green"
           label="Добавить в корзину"
           @click="handleAddToCart"

@@ -35,7 +35,7 @@
                 <q-btn dense round color="red" icon="delete" @click="removeProduct(item)" />
               </div>
               <div>
-                <q-btn dense round color="green" icon="shopping_cart" @click="addOrder(item)" />
+                <q-btn :disabled="!item.qty" dense round color="green" icon="shopping_cart" @click="addOrder(item)" />
               </div>
             </div>
           </q-item-section>
