@@ -8,4 +8,5 @@ export interface IProduct {
   origin_country?: string;
   price?: number | null;
   images?: any;
+  primary_image?: string
 }

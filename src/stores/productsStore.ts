@@ -4,7 +4,7 @@ import type { IProduct } from 'src/types/product.interface';
 import { ref } from 'vue';
 
 export const useProductsStore = defineStore('Products', () => {
-  const products = ref();
+  const products = ref<IProduct[]>([]);
   const pagination = ref<any>({
     offset: 0,
     limit: 20,
