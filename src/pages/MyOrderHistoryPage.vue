@@ -2,7 +2,7 @@
   <div>
     <q-infinite-scroll :offset="250" @load="onLoad">
       <h6 class="text-center q-mt-md q-mb-md">История заказов</h6>
-      <OrderHistoryItems :orderData="orderStore.ordersData" :adminMode="true"/>
+      <OrderHistoryItems :orderData="orderStore.ordersData" :adminMode="false"/>
     </q-infinite-scroll>
   </div>
 </template>

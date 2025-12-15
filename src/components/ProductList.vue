@@ -82,8 +82,8 @@ const allDataLoaded = ref(false);
 const showProductModal = ref(false);
 const product = ref<IProduct>();
 
-onMounted(() => {
-  onLoad(0, () => {});
+onMounted(async () => {
+  await fetchProducts();
 })
 
 function refreshData() {
