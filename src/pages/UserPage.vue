@@ -3,6 +3,7 @@
     <h6 class="text-center q-mb-md">Личный кабинет</h6>
     <div class="q-pa-sm">
       <q-card class="my-card full-height" flat bordered>
+
         <q-card-section>
           <div class="justify-center row q-mb-md">
             <q-img
@@ -12,6 +13,7 @@
               :src="userData?.main_image_url ? userData.main_image_url : getImage('/card-shop.jpg')"
             />
           </div>
+
           <div class="text-h5 justify-between q-mb-sm row">
             <div>
               {{ userData.full_name }}
@@ -122,11 +124,12 @@
             />
           </div>
         </q-card-section>
-
       </q-card>
+
       <YandexMap/>
+
       <q-toggle
-        v-if="isAdmin"
+        v-if="isManagerWithoutIsUser"
         v-model="userData.is_user"
         color="green"
         label="Администратор/Пользователь"
@@ -154,7 +157,7 @@ const addressesStore = useAddressesStore();
 const usersStore = useUsersStore();
 const authStore = useAuthStore();
 const isDark = computed(() => Dark.isActive);
-const { isAdmin } = usePermissionVisibility();
+const { isManagerWithoutIsUser } = usePermissionVisibility();
 type Theme = 'dark' | 'light';
 const themeState = shallowReactive<Record<Theme, Theme>>({
   dark: 'dark',

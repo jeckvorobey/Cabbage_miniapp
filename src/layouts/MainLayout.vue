@@ -107,9 +107,11 @@
         <BasketCompanents @close-basket="drawerRight = !drawerRight" />
       </q-list>
     </q-drawer>
+
     <q-page-container>
       <router-view />
     </q-page-container>
+    
     <q-footer elevated>
       <BottomMenu @open-basket="drawerRight = !drawerRight" />
     </q-footer>

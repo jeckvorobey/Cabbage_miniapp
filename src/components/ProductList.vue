@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useProductsStore } from 'stores/productsStore.js';
 import { useQuasar } from 'quasar';
 import AddProductModal from './AddProductModal.vue';
@@ -81,6 +81,10 @@ const { isManager, isAdmin } = usePermissionVisibility();
 const allDataLoaded = ref(false);
 const showProductModal = ref(false);
 const product = ref<IProduct>();
+
+onMounted(() => {
+  onLoad(0, () => {});
+})
 
 function refreshData() {
   productsStore.pagination.offset = 0;
