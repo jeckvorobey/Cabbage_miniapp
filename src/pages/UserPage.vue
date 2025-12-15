@@ -67,7 +67,7 @@
               @click="editPhone = !editPhone"
             />
             <q-input
-              v-model="userData.phone"
+              v-model="newPhoneNumber"
               class="col-9"
               dense
               outlined
@@ -173,6 +173,7 @@ const userData = ref<any>({
   mail: '',
   phone: '',
 });
+const newPhoneNumber = ref()
 const address = ref<IAddresse | null>(null);
 
 onMounted(() => {
@@ -237,6 +238,7 @@ function editPhoneNumber() {
 }
 
 async function updateMyPhone() {
+  userData.value.phone = newPhoneNumber.value
   try {
     $q.loading.show();
     await usersStore.updateMyPhone(userData.value.phone);
