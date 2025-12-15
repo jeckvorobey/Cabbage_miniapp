@@ -125,10 +125,15 @@ async function createOrder() {
     }
     $q.loading.show();
     const res = await orderStore.createOrder(orderStore.orderDataByPay);
+
     if (res) {
       clearBasketData()
     }
-  } catch (e) {
+  } catch (e: any) {
+    if (e?.response && e?.response?.status === 422) {
+      const errorDetails = e?.response?.data?.detail;
+      console.log('errorDetails basket', errorDetails)
+    }
     console.error(e);
   } finally {
     $q.loading.hide();
