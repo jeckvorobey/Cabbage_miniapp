@@ -6,11 +6,6 @@
         :key="order.id ?? orderIndex"
         class="border-bot">
         <q-item-section>
-          <q-item-label caption lines="2">Дата</q-item-label>
-          <q-item-label>{{ dateConverter(order.order_date) }}</q-item-label>
-        </q-item-section>
-        <q-item-section>
-          <q-item-label caption lines="2">Имя</q-item-label>
           <q-item-label>
             <a
               v-if="getTelegramUserLink(order.user)"
@@ -27,7 +22,7 @@
           </q-item-label>
         </q-item-section>
         <q-item-section>
-          <q-item-label caption lines="2">Статус</q-item-label>
+          <q-item-label>{{ dateConverter(order.order_date) }}</q-item-label>
           <q-item-label>{{ orderStatus(order.status) }}</q-item-label>
         </q-item-section>
         <q-item-section>
