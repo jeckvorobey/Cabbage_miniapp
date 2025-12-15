@@ -4,7 +4,7 @@
       <q-card-section class="row items-center q-pb-xs q-pr-xs q-pt-xs">
         <div class="text-h6 q-mt-xs">
           <q-item-label >Детали Заказа</q-item-label>
-          <q-item-label caption>{{ dateConverter(orderHistoryData.order_date) }}г</q-item-label>
+          <q-item-label caption>{{ dateConverter(orderHistoryData.order_date) }}</q-item-label>
         </div>
         <q-space />
         <q-item-label v-if="orderHistoryData?.status" class="q-mr-sm">

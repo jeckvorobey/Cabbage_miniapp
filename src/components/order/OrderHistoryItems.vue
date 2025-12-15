@@ -4,7 +4,7 @@
       <q-item
         v-for="(order, orderIndex) in orderData"
         :key="order.id ?? orderIndex"
-        class="border-bot" :class="order.is_paid ? 'light-red' : 'light-green'">
+        class="border-bot" :class="order.is_paid ? 'light-green' : 'light-red'">
         <q-item-section @click="openHistoryModal(order)">
           <q-item-label v-if="getUserPhone(order.user)" caption class="text-10">
             {{ getUserPhone(order.user) }}
@@ -72,6 +72,7 @@
     orderData: IOrderHistoryItem[];
     adminMode: boolean;
   }>();
+  const emit = defineEmits(['refresh']);
 
   const $q = useQuasar();
   const orderStore = useOrderStore();
@@ -120,6 +121,7 @@
           color: 'primary',
           message: 'Статус успешно изменен',
         });
+        emit('refresh');
       }
     } catch (e) {
       console.error(e);
