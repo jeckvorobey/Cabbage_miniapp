@@ -48,18 +48,20 @@
 import { useQuasar } from 'quasar';
 import { useProductsStore } from 'src/stores/productsStore';
 import type { IProduct } from 'src/types/product.interface';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ProductImgCarusel from 'components/ProductImgCarusel.vue';
 import ProductForm from 'components/ProductForm.vue';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
 import { useCart } from 'src/use/useCart';
+import { useOrderStore } from 'src/stores/orderStore';
 
 const $q = useQuasar();
 const emit = defineEmits(['refresh-data', 'add-product']);
 const route = useRoute();
 const router = useRouter();
 const productsStore = useProductsStore();
+const orderStore = useOrderStore();
 const productFormRef = ref();
 const { isManager } = usePermissionVisibility();
 const { addToCart, updateQuantity, getCartItem } = useCart();
@@ -73,6 +75,10 @@ const product = ref<IProduct>({
   price: null,
 });
 const productsInBasket = ref<any>([]);
+
+watch(orderStore.basketData, (value) => {
+  productsInBasket.value = value.find((it: any) => it.id === productsInBasket.value.id)
+});
 
 onMounted(() => {
   fetchProduct();
