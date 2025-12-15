@@ -9,7 +9,7 @@ export const useOrderStore = defineStore('Order', () => {
   const orderDataByPay = ref<IOrderBy>({
     items: [],
     comment: '',
-    payment_method: 'cash_to_courier',
+    payment_method: 'prepaid',
     address_id: null
   })
   const ordersData = ref()

@@ -8,12 +8,13 @@
         </div>
       </div>
     </div>
-    <div class="border-bot q-mb-md">
+    <!-- Способы оплаты -->
+    <!-- <div class="border-bot q-mb-md">
       <div class="text-bold">Способ оплаты:</div>
       <div v-for="(payment, pIndex) in paymentsStore.paymentsMethods" :key="pIndex">
         <q-radio v-model="orderStore.orderDataByPay.payment_method" :val="payment.id" :label="payment.name" color="green"/>
       </div>
-    </div>
+    </div> -->
   </q-list>
 </template>
 
@@ -27,7 +28,6 @@ import { usePaymentsStore } from 'src/stores/paymentsStore';
 const $q = useQuasar();
 const addressesStore = useAddressesStore();
 const paymentsStore = usePaymentsStore();
-const orderStore = useOrderStore();
 
 onMounted(async () => {
   if (paymentsStore.paymentsMethods) return;
