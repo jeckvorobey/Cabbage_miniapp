@@ -13,14 +13,16 @@
           <q-item-label caption lines="2">Имя</q-item-label>
           <q-item-label>
             <a
-              :href="`tg://user?id=${order.user.id}`"
+              v-if="order?.user?.id"
+              :href="getTelegramUserLink(order.user.id)"
               target="_blank"
               class="text-primary text-decoration-none">
               {{ order.user.full_name }}
             </a>
+            <span v-else>{{ order?.user?.full_name }}</span>
           </q-item-label>
-          <q-item-label v-if="order.user.phone" caption>
-            {{ order.user.phone }}
+          <q-item-label v-if="userPhone(order)" caption>
+            {{ userPhone(order) }}
           </q-item-label>
         </q-item-section>
         <q-item-section>
@@ -136,6 +138,34 @@
     }).onOk(() => {
       updateOrderStatus(id, EOrderStatus.CANCELLED);
     });
+  }
+
+  /**
+   * Ссылка на профиль в Telegram по `userId`.
+   * В миниаппах корректнее открывать через `tg://`, чтобы попали в клиент Telegram.
+   */
+  function getTelegramUserLink(userId: number | string) {
+    return `tg://user?id=${userId}`;
+  }
+
+  /**
+   * Телефон пользователя может приходить в разных полях (в зависимости от API/DTO).
+   * Возвращаем первое валидное значение или `null`.
+   */
+  function userPhone(order: any): string | null {
+    const phoneCandidate =
+      order?.user?.phone ??
+      order?.user?.phone_number ??
+      order?.user?.phoneNumber ??
+      order?.user_phone ??
+      order?.userPhone ??
+      order?.phone;
+
+    if (typeof phoneCandidate === 'number') return String(phoneCandidate);
+    if (typeof phoneCandidate !== 'string') return null;
+
+    const trimmed = phoneCandidate.trim();
+    return trimmed.length ? trimmed : null;
   }
 
 </script>

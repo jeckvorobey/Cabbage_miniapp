@@ -79,7 +79,8 @@ describe('OrderHistoryItems', () => {
       user: {
         id: 123456,
         full_name: 'Иван Иванов',
-        phone: '+7 (999) 123-45-67',
+        // Имитируем ситуацию, когда API отдает телефон в другом поле
+        phone_number: '+7 (999) 123-45-67',
       },
       status: EOrderStatus.CREATED,
       total_amount: 1000,
