@@ -1,1 +1,0 @@
-import{E as s}from"./use-quasar-CGKpR-Bz.js";import{u as n,m as t}from"./index-BQmYaI96.js";function f(){const e=n(),u=t(()=>{const r=e.user;return!r||r.is_user===!0?!1:r.role===+s.ADMIN}),i=t(()=>{const r=e.user;return!r||r.is_user===!0?!1:r.role<=+s.MANAGER});return{isAdmin:u,isManager:i}}export{f as u};
