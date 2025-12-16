@@ -1,8 +1,9 @@
 import { defineBoot } from '#q-app/wrappers';
 import { createYmaps } from 'vue-yandex-maps';
 
+
 export default defineBoot(({ app }) => {
-  // Получаем API ключ из переменных окружения
+    // Получаем API ключ из переменных окружения
   const apiKey = import.meta.env.VITE_YANDEX_MAPS_API_KEY;
 
   if (!apiKey) {
@@ -13,7 +14,6 @@ export default defineBoot(({ app }) => {
 
   app.use(createYmaps({
     apikey: apiKey,
-    lang: 'ru_RU',
-    version: '2.1'
   }));
+
 });
