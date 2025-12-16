@@ -15,12 +15,10 @@
             option-label="title"
             option-value="id"
             :rules="[required]"
-          />
-          <q-input
-            v-model="address.address_line"
           /> -->
           <q-select
             v-model="address.address_line"
+            debounce="800"
             class="q-mb-sm"
             clearable
             outlined
@@ -29,8 +27,8 @@
             emit-value
             map-options
             :options="suggestions"
-            option-label="displayName"
-            option-value="displayName"
+            option-label="title"
+            option-value="title"
             label="Адрес доставки"
             @filter="searchAddress"
           >
@@ -59,20 +57,15 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useAddressesStore } from 'src/stores/addressesStore';
 import type { IAddresse } from 'src/types/addresse.interface';
+import { ref, onMounted } from 'vue';
 
 interface AddressSuggestion {
-  displayName: string;
-  coords: [number, number];
+  subtitle?: string;
+  title?: string;
 }
-
-const ZELENOGRAD_BOUNDS: [number, number][] = [
-  [55.97, 37.12],
-  [56.02, 37.33],
-];
 
 const props = defineProps<{ newAddress?: IAddresse | null }>();
 const emit = defineEmits(['refresh']);
@@ -128,38 +121,22 @@ async function addAddres() {
 }
 
 async function searchAddress(query: string, update: (cb: () => void) => void) {
-  if (!query) {
-    searchLabel.value = 'Начните вводить адрес...';
-    update(() => {
-      suggestions.value = [];
-    });
-    return;
-  }
-
-  const ymaps = (window as any).ymaps;
-  if (!ymaps) {
-    $q.notify({ message: 'Сервис карт недоступен.', type: 'negative' });
-    return;
-  }
-
-  isLoading.value = true;
   try {
-    const response = await ymaps.geocode(query, {
-      boundedBy: ZELENOGRAD_BOUNDS,
-      results: 5,
-      strictBounds: true,
+    if (!ymaps3) {
+      $q.notify({ message: 'Сервис карт недоступен.', type: 'negative' });
+      return;
+    }
+    const data = await ymaps3.suggest({
+      bounds: [[37.135, 55.945], [37.265, 56.025]],
+        text: query,
+        types: ['biz'],
     });
-
-    const data = response.geoObjects.toArray().map((obj: any): AddressSuggestion => {
-      return {
-        coords: obj.geometry.getCoordinates(),
-        displayName: obj.properties.get('text'),
-      };
-    });
-
     update(() => {
-      suggestions.value = data;
-      searchLabel.value = data.length ? 'Выберите адрес из списка' : 'Адрес не найден';
+      suggestions.value = data.map(item => ({
+        subtitle: item.subtitle?.text ?? '',
+        title: item.title?.text ?? '',
+      }));
+      searchLabel.value = data.length && query ? 'Адрес не найден' : 'Выберите адрес из списка';
     });
   } catch (error) {
     console.error('Ошибка геокодирования:', error);
@@ -169,4 +146,5 @@ async function searchAddress(query: string, update: (cb: () => void) => void) {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>
