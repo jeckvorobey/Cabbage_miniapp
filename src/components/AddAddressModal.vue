@@ -75,7 +75,7 @@ const ZELENOGRAD_BOUNDS: [number, number][] = [
 ];
 
 const props = defineProps<{ newAddress?: IAddresse | null }>();
-
+const emit = defineEmits(['refresh']);
 const $q = useQuasar();
 const addressesStore = useAddressesStore();
 const showDialog = ref(true);
@@ -105,6 +105,7 @@ onMounted(async () => {
   } catch (e) {
     console.error(e);
   } finally {
+    emit('refresh');
     $q.loading.hide();
   }
 });

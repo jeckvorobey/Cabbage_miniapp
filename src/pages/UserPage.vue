@@ -136,7 +136,7 @@
         @click="updateUserRole()"
       />
     </div>
-    <AddAddressModal v-if="showAddressModal" v-model="showAddressModal" :newAddress="address" />
+    <AddAddressModal v-if="showAddressModal" v-model="showAddressModal" :newAddress="address" @refresh="fetchAddresses()"/>
   </div>
 </template>
 
