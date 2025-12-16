@@ -1,16 +1,16 @@
 import { defineStore } from 'pinia';
-import { client } from 'src/boot/axios';
+import { client } from 'src/api/client';
 import type { IProduct } from 'src/types/product.interface';
 import { ref } from 'vue';
 
 export const useProductsStore = defineStore('Products', () => {
-  const products = ref();
+  const products = ref<IProduct[]>([]);
   const pagination = ref<any>({
     offset: 0,
     limit: 20,
     total: 0,
     has_more: true,
-  })
+  });
 
   async function createProduct(product: any) {
     return client
@@ -19,20 +19,23 @@ export const useProductsStore = defineStore('Products', () => {
       .catch((err) => {
         console.error(
           '[ProductsStore] - An error occurred while createing via product',
-          err.message,
+          err.message
         );
         throw err;
       });
   }
 
-  async function updateProduct( product: IProduct) {
+  async function updateProduct(product: IProduct) {
     return client
-      .patch(`/products/${product.id}`, product )
+      .patch(`/products/${product.id}`, product)
       .then((res) => res.data)
       .catch((err) => {
-        console.error('[ProductsStore] - An error occurred while creating via updateProduct', err.message)
-        throw err
-      })
+        console.error(
+          '[ProductsStore] - An error occurred while creating via updateProduct',
+          err.message
+        );
+        throw err;
+      });
   }
 
   async function fetchProductsById(id: number) {
@@ -42,7 +45,7 @@ export const useProductsStore = defineStore('Products', () => {
       .catch((err) => {
         console.error(
           '[ProductsStore] - An error occurred while fetching via product',
-          err.message,
+          err.message
         );
         throw err;
       });
@@ -55,7 +58,20 @@ export const useProductsStore = defineStore('Products', () => {
       .catch((err) => {
         console.error(
           '[ProductsStore] - An error occurred while fetching via products',
-          err.message,
+          err.message
+        );
+        throw err;
+      });
+  }
+
+  async function fetchProductsSearch(params: any) {
+    return client
+      .get('products/search', { params })
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(
+          '[ProductsStore] - An error occurred while fetching via ProductsSearch',
+          err.message
         );
         throw err;
       });
@@ -68,7 +84,7 @@ export const useProductsStore = defineStore('Products', () => {
       .catch((err) => {
         console.error(
           '[ProductsStore] - An error occurred while deleting via Product',
-          err.message,
+          err.message
         );
         throw err;
       });
@@ -81,7 +97,7 @@ export const useProductsStore = defineStore('Products', () => {
       .catch((err) => {
         console.error(
           '[ProductsStore] - An error occurred while createing via uploadFile',
-          err.message,
+          err.message
         );
         throw err;
       });
@@ -94,11 +110,36 @@ export const useProductsStore = defineStore('Products', () => {
       .catch((err) => {
         console.error(
           '[ProductsStore] - An error occurred while createing via deleteFile',
-          err.message,
+          err.message
         );
         throw err;
       });
   }
 
-  return {pagination, products, createProduct, updateProduct, fetchProducts, deleteProduct, fetchProductsById, uploadFile, deleteFile };
+  async function setMainImage(id: number) {
+    return client
+      .patch(`/products/images/${id}/set-primary`)
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(
+          '[ProductsStore] - An error occurred while creating via setMainImage',
+          err.message
+        );
+        throw err;
+      });
+  }
+
+  return {
+    pagination,
+    products,
+    createProduct,
+    updateProduct,
+    fetchProducts,
+    fetchProductsSearch,
+    deleteProduct,
+    fetchProductsById,
+    uploadFile,
+    deleteFile,
+    setMainImage
+  };
 });

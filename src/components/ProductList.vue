@@ -1,66 +1,47 @@
 <template>
-  <q-infinite-scroll @load="onLoad" :offset="250">
+  <q-infinite-scroll :offset="250" @load="onLoad">
     <q-btn
       v-if="isManager"
-      @click="productModal()"
       class="full-width q-mb-sm"
-      color="secondary"
+      color="green"
       label="Добавить товар"
+      @click="router.push({ name: 'products-create' })"
     ></q-btn>
-    <div class="product-card row q-col-gutter-xs">
-      <div class="col-6" v-for="(item, index) in productsStore.products" :key="index">
-        <q-card class="my-card radius-16 full-height"  flat bordered>
-          <q-card-section class="q-pa-sm full-height">
-            <div @click="productModal(item)">
-              <q-img
-                class="cursor-pointer radius-8"
-                :src="item?.primary_image ? item.primary_image : getImage('/card-shop.jpg')"
-                height="160px"
-                fit="cover"
-              />
-            </div>
-            <q-card-section class="q-pa-sm card-container">
-              <div class="text-center card-title">{{ item.name }}</div>
-              <div class="text-center">
-                <span class="text-bold">{{ item.price }}</span> ₽
-                <span v-if="item?.oldPrice" class="text-grey old-price"
-                  >{{ item.old_price }} ₽</span
-                >
-                / {{ item.unit_name }}
-                <div class="text-grey">{{ item.origin_country }}</div>
-              </div>
+    <div class="product-card">
+      <q-list v-for="(item, index) in productsStore.products" :key="index">
+        <q-item>
+          <q-item-section top avatar @click="openProductPage(item)">
+            <q-img
+              class="radius-8"
+              :class="!item.available_qty ? 'image-grayscale-100' : 'cursor-pointer'"
+              :src="item.primary_image ? item.primary_image : getImage('/card-shop.jpg')"
+              height="80px"
+              width="80px"
+              fit="cover"
+            />
+          </q-item-section>
+          <q-item-section class="column justify-between" @click="openProductPage(item)">
+            <q-item-label caption class="text-size-16">{{ item.name }}</q-item-label>
+            <q-item-label v-if="!item.available_qty" caption class="text-18 text-red"> Нет в наличии</q-item-label>
+            <q-item-label>
+              <div v-if="item?.old_price" class="text-grey old-price">{{ item.old_price }} ₽</div>
+              <div :class="item?.old_price ? 'text-red' : ''">{{ item.price }} ₽/шт.</div>
+            </q-item-label>
+          </q-item-section>
 
-              <!-- <div class="q-mt-sm q-mb-xs text-center">
-                Итого:
-                <span class="text-bold">{{ item.price * item.quantity }}</span> ₽
-              </div> -->
-            </q-card-section>
-            <q-card-actions class="justify-center">
-              <!-- <q-btn padding="xs" color="secondary" icon="add" @click="item.quantity += 1" />
-              <div class="q-px-md">
-                {{ item.quantity }}
+          <q-item-section side top class="column justify-between">
+            <div>
+              <div v-if="isAdmin" class="q-mb-sm">
+                <q-btn dense round color="red" icon="delete" @click="removeProduct(item)" />
               </div>
-              <q-btn
-                :disabled="item.quantity === 1"
-                padding="xs"
-                color="secondary"
-                icon="remove"
-                @click="item.quantity -= 1"
-              />
-              <q-space /> -->
-              <q-btn
-                dense
-                no-caps
-                class="full-width"
-                color="secondary"
-                icon="add_shopping_cart"
-                label="В корзину"
-                @click="addOrder(item)"
-              />
-            </q-card-actions>
-          </q-card-section>
-        </q-card>
-      </div>
+              <div>
+                <q-btn :disabled="!item.available_qty" dense round color="green" icon="shopping_cart" @click="addOrder(item)" />
+              </div>
+            </div>
+          </q-item-section>
+        </q-item>
+        <q-separator spaced inset />
+      </q-list>
     </div>
 
     <!-- <template v-slot:loading>
@@ -84,40 +65,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, toRaw } from 'vue';
+import { ref } from 'vue';
 import { useProductsStore } from 'stores/productsStore.js';
-import { useOrderStore } from 'src/stores/orderStore';
 import { useQuasar } from 'quasar';
-import AddProductModal from 'components/AddProductModal.vue';
-import { useUnitsStore } from 'src/stores/unitsStore';
+import AddProductModal from './AddProductModal.vue';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
-import { useAuthStore } from 'stores/authStore';
 import type { IProduct } from 'src/types/product.interface';
 import { getImage } from 'src/use/useUtils';
+import { useRouter } from 'vue-router';
+import { useCart } from 'src/use/useCart';
 
 const $q = useQuasar();
-const unitsStore = useUnitsStore();
+const router = useRouter();
 const productsStore = useProductsStore();
-const orderStore = useOrderStore();
-const authStore = useAuthStore();
-const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
+const { addToCart } = useCart();
+const { isManager, isAdmin } = usePermissionVisibility();
 const allDataLoaded = ref(false);
 const showProductModal = ref(false);
-const product = ref<IProduct>()
-
-onMounted(async () => {
-  try {
-    await unitsStore.fetchUnits();
-    $q.loading.show();
-  } catch (e) {
-    console.error(e);
-  } finally {
-    $q.loading.hide();
-  }
-});
+const product = ref<IProduct>();
 
 function refreshData() {
-  productsStore.pagination.offset = 0
+  productsStore.pagination.offset = 0;
   fetchProducts();
 }
 
@@ -125,9 +93,9 @@ async function fetchProducts() {
   try {
     $q.loading.show();
     const params = {
-      offset: productsStore.pagination.offset,
       limit: productsStore.pagination.limit,
-    }
+      offset: productsStore.pagination.offset,
+    };
     const res = await productsStore.fetchProducts(params);
     if (res) {
       productsStore.pagination.total = res.total;
@@ -145,38 +113,19 @@ async function fetchProducts() {
   }
 }
 
-function addOrder(it: any) {
+/**
+ * Добавление товара в корзину
+ */
+function addOrder(order: any) {
   try {
     $q.loading.show();
-    if (orderStore.basketData?.length) {
-      orderStore.basketData.push(structuredClone(toRaw(it)));
-      // const coincidences = orderStore.basketData.find((item: any) => item.id === it.id);
-
-      // debugger
-      // if (coincidences) {
-      //   recalculationGoods(coincidences, it);
-      // } else {
-      //   orderStore.basketData.push(structuredClone(toRaw(it)));
-      // }
-    } else {
-      orderStore.basketData.push(structuredClone(toRaw(it)));
-    }
+    addToCart(order);
   } catch (e) {
     console.error(e);
   } finally {
-    $q.notify({
-      message: `Товар ${it.name} добавлен в корзину`,
-      color: 'primary',
-    });
     $q.loading.hide();
   }
 }
-
-// function recalculationGoods(newGoods: any, oldGoods: any) {
-//   if (newGoods.price) newGoods.price += oldGoods.price;
-//   if (newGoods.weight) newGoods.weight += oldGoods.weight;
-//   if (newGoods.oldPrice) newGoods.oldPrice += oldGoods.oldPrice;
-// }
 
 const onLoad = async (index: number, done: (stop?: boolean) => void) => {
   if (!productsStore.pagination.has_more) {
@@ -189,25 +138,44 @@ const onLoad = async (index: number, done: (stop?: boolean) => void) => {
   done();
 };
 
-function productModal(it?: IProduct) {
-  product.value = it
-  showProductModal.value = !showProductModal.value
+function removeProduct(it: IProduct) {
+  $q.dialog({
+    cancel: true,
+    message: 'Вы уверенны что хотите удалить товар?',
+    persistent: true,
+    title: 'Удаление товара',
+  }).onOk(() => {
+    deleteProduct(it);
+  });
+}
+
+async function deleteProduct(it: IProduct) {
+  try {
+    if (!it?.id) return;
+    await productsStore.deleteProduct(it.id);
+    $q.loading.show();
+  } catch (e) {
+    console.error(e);
+  } finally {
+    $q.loading.hide();
+  }
+}
+
+// удалить
+// function productModal(it?: IProduct) {
+//   product.value = it
+//   showProductModal.value = !showProductModal.value
+// }
+
+function openProductPage(it?: IProduct) {
+  router.push({ name: 'products-edit', params: { id: it!.id } });
 }
 </script>
 
 <style scoped lang="scss">
 .product-card {
-  .card-container {
-    min-height: 86px;
-    .card-title {
-      font-size: 18px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .old-price {
-      text-decoration: line-through;
-    }
+  .old-price {
+    text-decoration: line-through;
   }
 }
 </style>

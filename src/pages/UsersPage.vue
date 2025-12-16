@@ -1,5 +1,5 @@
 <template>
-  <q-infinite-scroll @load="onLoad" :offset="250">
+  <q-infinite-scroll :offset="250" @load="onLoad">
     <h6 class="text-center q-mt-md q-mb-md">Пользователи</h6>
     <q-card class="my-card q-ma-sm" flat bordered>
       <q-list v-for="(user, index) in usersStore.users" :key="index">
@@ -9,8 +9,7 @@
           </q-item-section>
 
           <q-item-section>
-            <q-item-label>{{ user.name }}</q-item-label>
-            <q-item-label caption>{{ user.telegram_id }}</q-item-label>
+            <q-item-label>{{ user.full_name }}</q-item-label>
           </q-item-section>
           <q-item-section>
             <q-item-label caption>{{ accessLevel(user.role) }}</q-item-label>
@@ -57,10 +56,10 @@ import type { IUser } from 'src/types/user.interface';
 const $q = useQuasar();
 const usersStore = useUsersStore();
 const pagination = ref({
-  offset: 0,
-  limit: 20,
-  total: 0,
   has_more: true,
+  limit: 20,
+  offset: 0,
+  total: 0,
 });
 
 const roleData = ref([
@@ -97,10 +96,10 @@ async function fetchUsers() {
 
 function selectRole(user: IUser, role: number) {
   $q.dialog({
-    title: 'Изменение прав пользователя',
-    message: 'Вы уверенны что хотите изменить права этого пользователя?',
     cancel: true,
+    message: 'Вы уверенны что хотите изменить права этого пользователя?',
     persistent: true,
+    title: 'Изменение прав пользователя',
   }).onOk(() => {
     changeRole(user, role);
   });
@@ -109,12 +108,12 @@ function selectRole(user: IUser, role: number) {
 async function changeRole(user: IUser, role: number) {
   try {
     $q.loading.show();
-    const res = await usersStore.updateUserRole(user.id!, role);
+    const res = await usersStore.updateUserRole(user.id, role);
     if (res) {
-      user.role = role
+      user.role = role;
       $q.notify({
-        message: `Роль изменена`,
         color: 'primary',
+        message: `Роль изменена`,
       });
     }
   } catch (e) {

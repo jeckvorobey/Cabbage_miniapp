@@ -1,10 +1,10 @@
 <template>
   <div>
     <q-btn
-      @click="openCreateUnitModal"
       class="full-width q-mb-sm"
       color="secondary"
       label="Добавление единицы измерения"
+      @click="openCreateUnitModal"
     ></q-btn>
     <div v-if="unitsStore.units">
       <h6 class="text-center q-mt-md q-mb-md">Единицы измерения</h6>
@@ -40,16 +40,14 @@
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
 import { useUnitsStore } from 'src/stores/unitsStore';
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import AddUnitModal from 'components/AddUnitModal.vue';
 import { usePermissionVisibility } from 'src/hooks/usePermissionVisibility.hook';
-import { useAuthStore } from 'src/stores/authStore';
 import type { IUnit } from 'src/types/unit.interface';
 
 const $q = useQuasar();
-const authStore = useAuthStore();
 const unitsStore = useUnitsStore();
-const { isManager } = usePermissionVisibility(computed(() => authStore.user?.role));
+const { isManager } = usePermissionVisibility();
 const showUnitModal = ref(false);
 const unitData = ref<IUnit>();
 
@@ -70,10 +68,10 @@ async function fetchUnits() {
 
 function RemovaUnit(id: number) {
   $q.dialog({
-    title: 'Удаление единицы измерения',
-    message: 'Вы уверенны что хотите удалить единицу измерения?',
     cancel: true,
+    message: 'Вы уверенны что хотите удалить единицу измерения?',
     persistent: true,
+    title: 'Удаление единицы измерения',
   }).onOk(() => {
     deleteUnit(id);
   });

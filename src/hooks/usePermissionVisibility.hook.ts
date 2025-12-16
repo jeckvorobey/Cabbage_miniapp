@@ -1,92 +1,56 @@
-import type { Ref } from 'vue';
-import { computed, unref } from 'vue';
+import { computed } from 'vue';
 import { EPermissionTypes } from 'src/use/useUtils';
-
-export type PermissionLike = EPermissionTypes | number | string;
-
-export type MaybeRef<T> = T | Ref<T>;
-
-export type PermissionSource =
-  | MaybeRef<PermissionLike | null | undefined>
-  | { role?: MaybeRef<PermissionLike | null | undefined> }
-  | MaybeRef<{ role?: MaybeRef<PermissionLike | null | undefined> } | null | undefined>;
-
-function extractRawPermission(source: PermissionSource): PermissionLike | null | undefined {
-  const s = unref(source);
-
-  if (s && typeof s === 'object' && 'role' in s) {
-    const r = (s as { role?: MaybeRef<PermissionLike | null | undefined> }).role;
-    return r != null ? unref(r) : null;
-  }
-
-  return s as PermissionLike | null | undefined;
-}
+import { useAuthStore } from 'src/stores/authStore';
 
 /**
  * Хук для проверки прав доступа по ролям.
  *
- * Правило: ADMIN обладает всеми правами MANAGER и USER.
+ * Правила:
+ * 1. Если is_user === true, пользователь всегда видит интерфейс как USER, независимо от роли
+ * 2. ADMIN обладает всеми правами MANAGER и USER
+ * 3. MANAGER обладает правами USER
+ *
+ * Обрабатывает случай, когда пользователь еще не аутентифицирован (возвращает false для всех прав)
+ * Не выбрасывает ошибки, если пользователь еще не загружен или не аутентифицирован
  */
-export function usePermissionVisibility(source: PermissionSource) {
-  const permission = computed<EPermissionTypes | undefined>(() => {
-    const raw = extractRawPermission(source);
-    if (raw == null) return undefined;
+export function usePermissionVisibility() {
+  const authStore = useAuthStore();
 
-    const value = Number(raw) as EPermissionTypes;
-
-    if (!Object.values(EPermissionTypes).includes(value)) return undefined;
-
-    return value;
+  const isAdmin = computed(() => {
+    // Безопасная проверка: если пользователь не загружен или не аутентифицирован, возвращаем false
+    const user = authStore.user;
+    if (!user) return false;
+    // Если пользователь помечен как обычный пользователь, не показываем админские права
+    if (user.is_user === true) {
+      return false;
+    }
+    // Проверяем роль администратора
+    return user.role === +EPermissionTypes.ADMIN;
   });
 
-  const isAdmin = computed(() => permission.value === EPermissionTypes.ADMIN);
-
-  const isManager = computed(
-    () => permission.value ? permission.value <= EPermissionTypes.MANAGER : false,
-  );
-
-  const isUser = computed(() => {
-    const current = permission.value;
-    return (
-      current === EPermissionTypes.USER ||
-      current === EPermissionTypes.MANAGER ||
-      current === EPermissionTypes.ADMIN
-    );
+  const isManager = computed(() => {
+    // Безопасная проверка: если пользователь не загружен или не аутентифицирован, возвращаем false
+    const user = authStore.user;
+    if (!user) return false;
+    // Если пользователь помечен как обычный пользователь, не показываем менеджерские права
+    if (user.is_user === true) {
+      return false;
+    }
+    // Проверяем роль менеджера или администратора
+    return user.role <= +EPermissionTypes.MANAGER;
   });
 
-  /**
-   * Универсальная проверка роли.
-   * Для MANAGER автоматически учитывается ADMIN,
-   * для USER — и MANAGER, и ADMIN.
-   */
-  const hasPermission = (target: PermissionLike) =>
-    computed(() => {
-      const current = permission.value;
-      if (current == null) return false;
-
-      const targetValue = Number(target) as EPermissionTypes;
-
-      switch (targetValue) {
-        case EPermissionTypes.ADMIN:
-          return current === EPermissionTypes.ADMIN;
-        case EPermissionTypes.MANAGER:
-          return current === EPermissionTypes.MANAGER || current === EPermissionTypes.ADMIN;
-        case EPermissionTypes.USER:
-          return (
-            current === EPermissionTypes.USER ||
-            current === EPermissionTypes.MANAGER ||
-            current === EPermissionTypes.ADMIN
-          );
-        default:
-          return false;
-      }
-    });
+  const isManagerWithoutIsUser = computed(() => {
+    // Безопасная проверка: если пользователь не загружен или не аутентифицирован, возвращаем false
+    const user = authStore.user;
+    if (!user) return false;
+    // Проверяем роль менеджера или администратора
+    return user.role <= +EPermissionTypes.MANAGER;
+  });
 
   return {
-    permission,
     isAdmin,
     isManager,
-    isUser,
-    hasPermission,
+    isManagerWithoutIsUser
   } as const;
 }

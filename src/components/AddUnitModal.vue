@@ -60,7 +60,7 @@ watch(
   (value) => {
     unit.value = { ...(value ?? { name: '', symbol: '' }) };
   },
-  { immediate: true, deep: true },
+  { deep: true, immediate: true }
 );
 
 watch(
@@ -68,7 +68,7 @@ watch(
   (value) => {
     showDialog.value = value;
   },
-  { immediate: true },
+  { immediate: true }
 );
 
 watch(showDialog, (value) => {
@@ -81,16 +81,16 @@ async function addProduct() {
       const res = await unitsStore.createUnit(unit.value);
       if (res) {
         $q.notify({
-          message: `Единица измерения успешно создана`,
           color: 'primary',
+          message: `Единица измерения успешно создана`,
         });
       }
     } else {
       const res = await unitsStore.updateUnit(unit.value.id, unit.value);
       if (res) {
         $q.notify({
-          message: `Единица измерения успешно обновлена`,
           color: 'primary',
+          message: `Единица измерения успешно обновлена`,
         });
       }
     }

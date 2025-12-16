@@ -26,7 +26,7 @@ export default defineBoot(async () => {
     try {
       window.Telegram?.WebApp?.ready?.();
       window.Telegram?.WebApp?.expand?.();
-    } catch (e: any){
+    } catch (e: any) {
       console.error(`ready/expand false: ${e}`);
     }
 

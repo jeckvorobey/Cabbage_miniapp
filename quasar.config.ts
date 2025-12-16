@@ -1,8 +1,8 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
-import {defineConfig} from '#q-app/wrappers';
-import {fileURLToPath} from 'node:url';
+import { defineConfig } from '#q-app/wrappers';
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig((ctx) => {
   return {
@@ -12,7 +12,7 @@ export default defineConfig((ctx) => {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['i18n', 'axios', 'telegram'],
+    boot: ['i18n', 'axios', 'telegram', 'yandex-maps'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
     css: ['app.scss'],
@@ -90,7 +90,7 @@ export default defineConfig((ctx) => {
               useFlatConfig: true,
             },
           },
-          {server: false},
+          { server: false },
         ],
       ],
     },
@@ -215,7 +215,7 @@ export default defineConfig((ctx) => {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'Cabbage'
+        appId: 'Cabbage',
       },
     },
 

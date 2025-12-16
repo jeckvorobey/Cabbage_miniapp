@@ -1,32 +1,33 @@
 import { defineStore } from 'pinia';
-import { client } from 'src/boot/axios';
+import { client } from 'src/api/client';
 import type { ICategorie } from 'src/types/categorie.interface';
 import { ref } from 'vue';
 
 export const useCategoriesStore = defineStore('Categories', () => {
-  const categories = ref<any[]>()
+  const categories = ref<any[]>();
 
-  async function createCategories(categori: ICategorie) {
+  async function createCategories(categori: any) {
     return client
       .post<ICategorie>('/categories', categori)
       .then((res) => res.data)
       .catch((err) => {
         console.error(
           '[CategoriesStore] - An error occurred while createing via Categori',
-          err.message,
+          err.message
         );
         throw err;
       });
   }
 
-  async function updateCategorie(data: ICategorie) {
+  async function updateCategorie(data: any) {
+    const id = data.get('id');
     return client
-      .put(`/categories/${data.id}`, data)
+      .patch(`/categories/${id}`, data)
       .then((res: any) => res.data)
       .catch((err) => {
         console.error(
           '[CategoriesStore] - An error occurred while fetching via updateCategorie',
-          err.message,
+          err.message
         );
         throw err;
       });
@@ -36,13 +37,13 @@ export const useCategoriesStore = defineStore('Categories', () => {
     return client
       .get<ICategorie[]>('categories')
       .then((res) => {
-        categories.value = res.data
-        return res.data
+        categories.value = res.data;
+        return res.data;
       })
       .catch((err) => {
         console.error(
           '[CategoriesStore] - An error occurred while fetching via fetchCategorie',
-          err.message,
+          err.message
         );
         throw err;
       });
@@ -55,11 +56,11 @@ export const useCategoriesStore = defineStore('Categories', () => {
       .catch((err) => {
         console.error(
           '[CategoriesStore] - An error occurred while deleting via deleteCategorie',
-          err.message,
+          err.message
         );
         throw err;
       });
   }
 
-  return {categories, createCategories, fetchCategories, updateCategorie, deleteCategorie };
+  return { categories, createCategories, fetchCategories, updateCategorie, deleteCategorie };
 });

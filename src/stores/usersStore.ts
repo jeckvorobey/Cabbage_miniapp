@@ -1,20 +1,16 @@
 import { defineStore } from 'pinia';
-import { client } from 'src/boot/axios';
+import { client } from 'src/api/client';
 import { ref } from 'vue';
 
 export const useUsersStore = defineStore('Users', () => {
-
-  const users = ref()
+  const users = ref();
 
   async function fetchUsers(params: any) {
     return client
       .get('users', { params })
       .then((res) => res.data)
       .catch((err) => {
-        console.error(
-          '[UsersStore] - An error occurred while fetching via Users',
-          err.message,
-        );
+        console.error('[UsersStore] - An error occurred while fetching via Users', err.message);
         throw err;
       });
   }
@@ -26,12 +22,37 @@ export const useUsersStore = defineStore('Users', () => {
       .catch((err) => {
         console.error(
           '[UsersStore] - An error occurred while creating via updateUserRole',
-          err.message,
+          err.message
         );
         throw err;
       });
   }
 
+  async function updateUserMode(id: number,) {
+    return client
+      .patch(`/users/${id}/toggle-is-user`)
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(
+          '[UsersStore] - An error occurred while creating via updateUserMode',
+          err.message
+        );
+        throw err;
+      });
+  }
 
-  return {users, fetchUsers, updateUserRole};
+  async function updateMyPhone(phone: number) {
+    return client
+      .patch('/users/me/phone', { phone })
+      .then((res) => res.data)
+      .catch((err) => {
+        console.error(
+          '[UsersStore] - An error occurred while creating via updateMyPhone',
+          err.message
+        );
+        throw err;
+      });
+  }
+
+  return { users, fetchUsers, updateUserRole, updateMyPhone, updateUserMode };
 });

@@ -41,6 +41,92 @@ export default defineConfigWithVueTs(
       '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
     },
   },
+
+  {
+    files: ['**/*.vue'],
+    rules: {
+      // Порядок атрибутов в Vue компонентах согласно Vue Style Guide
+      'vue/attributes-order': [
+        'error',
+        {
+          order: [
+            'DEFINITION', // is, v-is
+            'LIST_RENDERING', // v-for
+            'CONDITIONALS', // v-if, v-else-if, v-else, v-show, v-cloak
+            'RENDER_MODIFIERS', // v-once, v-pre
+            'GLOBAL', // id, class
+            ['UNIQUE', 'SLOT'], // ref, key, v-slot
+            'TWO_WAY_BINDING', // v-model
+            'OTHER_DIRECTIVES', // v-custom-directive
+            'OTHER_ATTR', // обычные атрибуты
+            'EVENTS', // @click, v-on
+            'CONTENT', // v-text, v-html
+          ],
+          alphabetical: false,
+        },
+      ],
+      // Порядок блоков в Vue компонентах (template первым согласно Vue Style Guide)
+      'vue/block-order': [
+        'error',
+        {
+          order: ['template', 'script', 'style'],
+        },
+      ],
+      // Порядок свойств в компонентах
+      'vue/order-in-components': [
+        'error',
+        {
+          order: [
+            'el',
+            'name',
+            'key',
+            'parent',
+            'functional',
+            ['delimiters', 'comments'],
+            ['components', 'directives', 'filters'],
+            'extends',
+            'mixins',
+            ['provide', 'inject'],
+            'ROUTER_GUARDS',
+            'layout',
+            'middleware',
+            'validate',
+            'scrollToTop',
+            'transition',
+            'loading',
+            'inheritAttrs',
+            'model',
+            ['props', 'propsData'],
+            'emits',
+            'setup',
+            'asyncData',
+            'data',
+            'fetch',
+            'head',
+            'computed',
+            'watch',
+            'watchQuery',
+            'LIFECYCLE_HOOKS',
+            'methods',
+            ['template', 'render'],
+            'renderError',
+          ],
+        },
+      ],
+      // Порядок ключей в объектах (для props, data и т.д.)
+      'vue/sort-keys': [
+        'error',
+        'asc',
+        {
+          caseSensitive: true,
+          ignoreChildrenOf: ['model'],
+          ignoreGrandchildrenOf: ['computed', 'directives', 'inject', 'props', 'watch'],
+          minKeys: 2,
+          natural: false,
+        },
+      ],
+    },
+  },
   // https://github.com/vuejs/eslint-config-typescript
   vueTsConfigs.recommendedTypeChecked,
 
@@ -81,5 +167,5 @@ export default defineConfigWithVueTs(
     },
   },
 
-  prettierSkipFormatting,
+  prettierSkipFormatting
 );
